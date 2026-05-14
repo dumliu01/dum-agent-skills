@@ -1,0 +1,2690 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>{{DECK_TITLE}}</title>
+<meta name="description" content="{{DECK_DESCRIPTION}}" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* =============================================================
+     Fintech Dark — inspired by NexBank reference style.
+     Deep indigo background · cyan/indigo gradients · glass cards.
+     ============================================================= */
+  :root {
+    /* Surfaces */
+    --bg:           #0A0E27;
+    --bg-alt:       #0D1230;
+    --bg-deep:      #06091B;
+    --bg-glass:     rgba(255, 255, 255, 0.04);
+    --bg-glass-2:   rgba(255, 255, 255, 0.06);
+
+    /* Text */
+    --text:         #F5F7FA;
+    --text-dim:     #C3CADB;
+    --text-muted:   #8A94AD;
+    --text-faint:   #5B647A;
+
+    /* Lines */
+    --border:       rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.14);
+
+    /* Brand */
+    --primary:      #6366F1;  /* indigo */
+    --primary-2:    #818CF8;
+    --accent:       #06B6D4;  /* cyan */
+    --accent-2:     #22D3EE;
+    --success:      #22C55E;
+    --gold:         #FBBF24;
+    --rose:         #F43F5E;
+    --violet:       #A855F7;
+
+    /* Gradients */
+    --grad-primary: linear-gradient(135deg, #6366F1 0%, #06B6D4 100%);
+    --grad-text:    linear-gradient(135deg, #818CF8 0%, #22D3EE 60%, #34E8BB 100%);
+    --grad-card:    linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+    --grad-glow-1:  radial-gradient(closest-side, rgba(99,102,241,0.45), transparent 70%);
+    --grad-glow-2:  radial-gradient(closest-side, rgba(6,182,212,0.40), transparent 70%);
+    --grad-account: linear-gradient(135deg, #6366F1 0%, #4338CA 50%, #0EA5E9 100%);
+
+    /* Shadows */
+    --shadow-card:  0 30px 80px -30px rgba(2, 6, 23, 0.7), 0 0 0 1px rgba(255,255,255,0.04) inset;
+    --shadow-glow:  0 0 60px rgba(99, 102, 241, 0.35);
+    --shadow-glow-accent: 0 0 60px rgba(6, 182, 212, 0.35);
+
+    /* Type scale */
+    --t-display: clamp(48px, 7vw, 104px);
+    --t-section: clamp(36px, 4.4vw, 68px);
+    --t-page:    clamp(28px, 2.8vw, 42px);
+    --t-h3:      clamp(18px, 1.5vw, 24px);
+    --t-h4:      clamp(15px, 1.15vw, 18px);
+    --t-body:    clamp(14px, 1vw, 16px);
+    --t-small:   clamp(12px, 0.82vw, 13.5px);
+    --t-eyebrow: 11px;
+
+    /* Spacing */
+    --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px;
+    --s-5: 20px; --s-6: 24px; --s-7: 32px; --s-8: 48px;
+    --s-9: 64px; --s-10: 96px;
+
+    --r-sm: 8px;
+    --r-md: 14px;
+    --r-lg: 20px;
+    --r-xl: 28px;
+
+    --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+    --duration: 360ms;
+  }
+
+  /* Reset */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  body {
+    font-family: 'DM Sans', 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.6;
+    font-feature-settings: "ss01", "cv11";
+    position: relative;
+  }
+
+  /* Global glow background — fixed, never moves */
+  body::before, body::after {
+    content: "";
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(110px);
+    pointer-events: none;
+    z-index: 0;
+    will-change: opacity;
+  }
+  body::before {
+    top: -200px; left: 20%;
+    width: 700px; height: 700px;
+    background: var(--grad-glow-1);
+    opacity: 0.6;
+  }
+  body::after {
+    bottom: -200px; right: 10%;
+    width: 600px; height: 600px;
+    background: var(--grad-glow-2);
+    opacity: 0.55;
+  }
+
+  /* Subtle noise */
+  .noise {
+    position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+    opacity: 0.4; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* =============================================================
+     Slide framework
+     ============================================================= */
+  .deck {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    z-index: 1;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 88px clamp(48px, 6vw, 96px) 72px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(12px);
+    transition: opacity var(--duration) var(--ease-soft), transform var(--duration) var(--ease-soft);
+  }
+  .slide.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .slide { transition: none !important; transform: none !important; }
+    body::before, body::after { opacity: 0.4; }
+  }
+
+  /* =============================================================
+     Chrome — top brand bar, bottom progress + pager
+     ============================================================= */
+  .chrome-top {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 clamp(40px, 5vw, 80px);
+    border-bottom: 1px solid var(--border);
+    background: rgba(10, 14, 39, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 200;
+    font-size: var(--t-eyebrow);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .brand {
+    display: inline-flex; align-items: center; gap: 12px;
+    color: var(--text);
+    font-weight: 600;
+  }
+  .brand-glyph {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--grad-primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: white;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    box-shadow: 0 8px 24px -8px rgba(99,102,241,0.6);
+  }
+  .chrome-top .right { display: inline-flex; align-items: center; gap: 20px; }
+  .chrome-top .pill-stamp {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 4px 10px;
+    border: 1px solid var(--border-strong);
+    border-radius: 99px;
+    color: var(--text-dim);
+  }
+  .chrome-top .pill-stamp::before {
+    content: ""; width: 6px; height: 6px; border-radius: 99px;
+    background: var(--success);
+    box-shadow: 0 0 8px var(--success);
+  }
+
+  .progress-rail {
+    position: fixed; top: 56px; left: 0; right: 0;
+    height: 2px; background: rgba(255,255,255,0.04);
+    z-index: 199;
+  }
+  .progress-bar {
+    height: 2px;
+    background: var(--grad-primary);
+    width: 0;
+    transition: width var(--duration) var(--ease-soft);
+    box-shadow: 0 0 12px rgba(99,102,241,0.5);
+  }
+
+  .chrome-bottom {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 clamp(40px, 5vw, 80px);
+    border-top: 1px solid var(--border);
+    background: rgba(10, 14, 39, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 200;
+    font-size: var(--t-eyebrow);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .chrome-bottom .section-label { color: var(--text); font-weight: 500; }
+  .chrome-bottom .pager {
+    font-family: 'JetBrains Mono', monospace;
+    font-feature-settings: "tnum";
+    color: var(--text);
+    letter-spacing: 0.06em;
+  }
+  .chrome-bottom .pager .cur { color: var(--accent-2); font-weight: 600; }
+  .chrome-bottom .pager .sep { color: var(--text-faint); margin: 0 8px; }
+
+  /* =============================================================
+     Type
+     ============================================================= */
+  .display-h {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--t-display);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    color: var(--text);
+  }
+  .section-h {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--t-section);
+    font-weight: 700;
+    line-height: 1.22;
+    letter-spacing: -0.005em;
+    color: var(--text);
+  }
+  /* English-only headings can use tighter tracking */
+  .section-h:lang(en), .display-h:lang(en) { letter-spacing: -0.025em; line-height: 1.05; }
+
+  .page-h {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--t-page);
+    font-weight: 700;
+    line-height: 1.22;
+    letter-spacing: -0.005em;
+    color: var(--text);
+  }
+
+  /* Chapter tag — small standalone label above section-h (e.g. "团队协作") */
+  .chapter-tag-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: var(--s-5);
+  }
+  .chapter-tag {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(15px, 1.3vw, 20px);
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+  .gold-dash {
+    flex: 0 0 56px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent-2), transparent);
+  }
+  .card-h {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--t-h3);
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--text);
+    letter-spacing: -0.005em;
+  }
+  .sub-h {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--t-h4);
+    font-weight: 600;
+    color: var(--text);
+  }
+  .lede {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(16px, 1.2vw, 20px);
+    line-height: 1.5;
+    color: var(--text-dim);
+    max-width: 64ch;
+    font-weight: 400;
+  }
+  .body {
+    font-size: var(--t-body);
+    line-height: 1.65;
+    color: var(--text-muted);
+  }
+  .body.strong { color: var(--text-dim); }
+  .caption {
+    font-size: var(--t-small);
+    line-height: 1.5;
+    color: var(--text-faint);
+  }
+
+  /* Gradient text — like NexBank "Simple" / "Manage Money" */
+  .gradient-text {
+    background: var(--grad-text);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* Eyebrow & badges */
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .eyebrow::before {
+    content: ""; width: 6px; height: 6px; border-radius: 99px;
+    background: var(--accent-2);
+    box-shadow: 0 0 10px rgba(34,211,238,0.6);
+  }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px;
+    border-radius: 99px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg-glass);
+    color: var(--text-dim);
+    font-size: 12px;
+    font-weight: 500;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .badge-primary {
+    color: var(--primary-2);
+    background: rgba(99,102,241,0.08);
+    border-color: rgba(99,102,241,0.3);
+  }
+  .badge-accent {
+    color: var(--accent-2);
+    background: rgba(6,182,212,0.08);
+    border-color: rgba(6,182,212,0.3);
+  }
+  .badge-success {
+    color: var(--success);
+    background: rgba(34,197,94,0.10);
+    border-color: rgba(34,197,94,0.3);
+  }
+  .badge-gold {
+    color: var(--gold);
+    background: rgba(251,191,36,0.08);
+    border-color: rgba(251,191,36,0.3);
+  }
+  .badge-rose {
+    color: #FB7185;
+    background: rgba(244,63,94,0.08);
+    border-color: rgba(244,63,94,0.3);
+  }
+  .badge svg, .badge .dot { width: 12px; height: 12px; }
+  .badge .dot {
+    border-radius: 99px;
+    background: currentColor;
+  }
+
+  /* =============================================================
+     Glass card — signature component
+     ============================================================= */
+  .glass {
+    background: var(--grad-card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: var(--s-6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+  }
+  .glass.pad-sm { padding: var(--s-5); }
+  .glass.glow {
+    box-shadow: var(--shadow-card), var(--shadow-glow);
+    border-color: rgba(99,102,241,0.25);
+  }
+  .glass.glow-accent {
+    box-shadow: var(--shadow-card), var(--shadow-glow-accent);
+    border-color: rgba(6,182,212,0.25);
+  }
+  .glass.bordered-primary { border-color: rgba(99,102,241,0.35); }
+  .glass.bordered-accent  { border-color: rgba(6,182,212,0.35); }
+
+  /* Top-edge accent line on important cards */
+  .glass.edge-top::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(99,102,241,0.6), rgba(6,182,212,0.6), transparent);
+  }
+
+  /* Account-card — premium gradient block (like total balance card) */
+  .account-card {
+    background: var(--grad-account);
+    border-radius: var(--r-lg);
+    padding: var(--s-6);
+    color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 24px 60px -20px rgba(67,56,202,0.55);
+  }
+  .account-card::before {
+    content: "";
+    position: absolute;
+    top: -40%; right: -20%;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(255,255,255,0.25), transparent);
+    pointer-events: none;
+  }
+  .account-card .balance-label {
+    font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    font-weight: 500;
+  }
+  .account-card .balance-figure {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 700;
+    margin: 6px 0 4px;
+    letter-spacing: -0.02em;
+    font-feature-settings: "tnum";
+  }
+
+  /* CTA buttons (decorative for visual rhythm; not used as actual nav) */
+  .btn-primary {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px 22px;
+    border-radius: 12px;
+    background: var(--grad-primary);
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    border: 0;
+    cursor: pointer;
+    white-space: nowrap;
+    line-height: 1.2;
+    box-shadow: 0 12px 32px -12px rgba(99,102,241,0.65);
+    transition: transform 180ms var(--ease-soft), box-shadow 180ms var(--ease-soft);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 18px 36px -14px rgba(99,102,241,0.75); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px 22px;
+    border-radius: 12px;
+    background: var(--bg-glass-2);
+    color: var(--text);
+    font-weight: 600;
+    font-size: 14px;
+    border: 1px solid var(--border-strong);
+    cursor: pointer;
+    white-space: nowrap;
+    line-height: 1.2;
+    transition: background 180ms var(--ease-soft), border-color 180ms var(--ease-soft);
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.10); border-color: rgba(255,255,255,0.20); }
+  .btn-primary svg, .btn-secondary svg {
+    width: 16px; height: 16px;
+    flex-shrink: 0;
+  }
+
+  /* =============================================================
+     Slide head & layout helpers
+     ============================================================= */
+  .slide-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--s-7);
+    margin-bottom: var(--s-7);
+    padding-bottom: var(--s-5);
+    border-bottom: 1px solid var(--border);
+  }
+  .slide-head .lhs { display: flex; flex-direction: column; gap: 10px; }
+  .slide-head .rhs {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--text-faint);
+    text-transform: uppercase;
+  }
+
+  .content {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-6);
+  }
+
+  .grid-2  { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-5); }
+  .grid-3  { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-5); }
+  .grid-4  { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-4); }
+  .grid-2-3 { display: grid; grid-template-columns: 2fr 3fr; gap: var(--s-6); }
+  .grid-3-2 { display: grid; grid-template-columns: 3fr 2fr; gap: var(--s-6); }
+  .stack   { display: flex; flex-direction: column; gap: var(--s-4); }
+  .stack-sm{ display: flex; flex-direction: column; gap: var(--s-3); }
+  .row     { display: flex; gap: var(--s-4); align-items: center; }
+
+  /* Icon box — colored tile */
+  .icon-box {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(99,102,241,0.14);
+    color: var(--primary-2);
+    border: 1px solid rgba(99,102,241,0.3);
+    flex-shrink: 0;
+  }
+  .icon-box.accent  { background: rgba(6,182,212,0.14);  color: var(--accent-2);   border-color: rgba(6,182,212,0.3); }
+  .icon-box.success { background: rgba(34,197,94,0.14);  color: var(--success);    border-color: rgba(34,197,94,0.3); }
+  .icon-box.gold    { background: rgba(251,191,36,0.14); color: var(--gold);       border-color: rgba(251,191,36,0.3); }
+  .icon-box.violet  { background: rgba(168,85,247,0.14); color: var(--violet);     border-color: rgba(168,85,247,0.3); }
+  .icon-box.rose    { background: rgba(244,63,94,0.14);  color: var(--rose);       border-color: rgba(244,63,94,0.3); }
+  .icon-box.lg { width: 56px; height: 56px; border-radius: 14px; }
+  .icon-box svg { width: 22px; height: 22px; }
+  .icon-box.lg svg { width: 28px; height: 28px; }
+
+  /* Lists */
+  ul.lc { list-style: none; padding: 0; }
+  ul.lc li {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 6px 0;
+    font-size: var(--t-body);
+    color: var(--text-muted);
+    line-height: 1.55;
+  }
+  ul.lc li::before {
+    content: "";
+    flex-shrink: 0;
+    width: 14px; height: 14px;
+    border-radius: 99px;
+    background: rgba(34,197,94,0.18);
+    border: 1px solid rgba(34,197,94,0.45);
+    position: relative;
+    margin-top: 4px;
+  }
+  ul.lc li::after {
+    content: "";
+    position: absolute;
+    transform: translate(-11px, 8px);
+    width: 6px; height: 3px;
+    border-left: 1.5px solid var(--success);
+    border-bottom: 1.5px solid var(--success);
+    rotate: -45deg;
+  }
+  ul.lc li b { color: var(--text); font-weight: 600; }
+  ul.lc.dense li { padding: 3px 0; font-size: var(--t-small); }
+
+  /* Numbered list */
+  ol.lcn { list-style: none; padding: 0; counter-reset: nn; }
+  ol.lcn > li {
+    counter-increment: nn;
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: var(--s-3);
+    padding: var(--s-3) 0;
+    border-top: 1px solid var(--border);
+    font-size: var(--t-body);
+    color: var(--text-dim);
+  }
+  ol.lcn > li:first-child { border-top: 0; padding-top: 0; }
+  ol.lcn > li::before {
+    content: counter(nn, decimal-leading-zero);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent-2);
+    letter-spacing: 0.1em;
+    padding-top: 3px;
+    background: rgba(6,182,212,0.08);
+    border: 1px solid rgba(6,182,212,0.25);
+    border-radius: 6px;
+    text-align: center;
+    height: 22px;
+    line-height: 20px;
+  }
+  ol.lcn > li b { color: var(--text); }
+
+  /* Tables — fintech dark */
+  table.t {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: var(--t-small);
+    font-variant-numeric: tabular-nums;
+  }
+  table.t thead th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-faint);
+    padding: var(--s-3) var(--s-4);
+    border-bottom: 1px solid var(--border-strong);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.02);
+  }
+  table.t tbody td {
+    padding: var(--s-4);
+    border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+    vertical-align: top;
+  }
+  table.t tbody tr:last-child td { border-bottom: 0; }
+  table.t tbody td:first-child {
+    font-weight: 600;
+    color: var(--text);
+  }
+  table.t.boxed {
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+
+  /* Pills */
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    background: var(--bg-glass-2);
+    border: 1px solid var(--border-strong);
+    color: var(--text-dim);
+    font-size: 11.5px;
+    font-weight: 500;
+  }
+  .pill.primary  { color: var(--primary-2); background: rgba(99,102,241,0.10); border-color: rgba(99,102,241,0.3); }
+  .pill.accent   { color: var(--accent-2);  background: rgba(6,182,212,0.10);  border-color: rgba(6,182,212,0.3); }
+  .pill.success  { color: var(--success);   background: rgba(34,197,94,0.10);  border-color: rgba(34,197,94,0.3); }
+  .pill.gold     { color: var(--gold);      background: rgba(251,191,36,0.10); border-color: rgba(251,191,36,0.3); }
+  .pill.rose     { color: #FB7185;          background: rgba(244,63,94,0.10);  border-color: rgba(244,63,94,0.3); }
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  /* Stat */
+  .stat .figure {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 700;
+    line-height: 1;
+    background: var(--grad-text);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    letter-spacing: -0.02em;
+  }
+  .stat .figure .unit { font-size: 0.42em; color: var(--text-muted); margin-left: 4px; -webkit-text-fill-color: var(--text-muted); }
+  .stat .label { font-size: var(--t-small); color: var(--text-muted); margin-top: 6px; }
+
+  /* Code */
+  pre.code {
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: var(--s-4) var(--s-5);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.65;
+    color: var(--text-dim);
+    overflow: hidden;
+    position: relative;
+  }
+  pre.code::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(99,102,241,0.5), rgba(6,182,212,0.5), transparent);
+  }
+  pre.code .c-comment { color: var(--text-faint); font-style: italic; }
+  pre.code .c-key { color: var(--accent-2); font-weight: 500; }
+  pre.code .c-str { color: var(--success); }
+  pre.code .c-warn { color: var(--gold); }
+  pre.code .c-rose { color: #FB7185; }
+
+  /* Pull quote */
+  .pull-quote {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(22px, 2.4vw, 36px);
+    line-height: 1.35;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.005em;
+    max-width: min(720px, 100%);
+  }
+  .pull-quote-wrap {
+    position: relative;
+    padding-left: var(--s-6);
+    border-left: 2px solid;
+    border-image: linear-gradient(180deg, var(--primary), var(--accent)) 1;
+  }
+
+  /* Section divider — dramatic with mega number */
+  .section-divider {
+    justify-content: space-between;
+  }
+  .section-divider .roman {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(180px, 26vw, 380px);
+    font-weight: 700;
+    line-height: 0.85;
+    letter-spacing: -0.06em;
+    background: var(--grad-text);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    user-select: none;
+  }
+  .section-divider .meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--s-7);
+    border-top: 1px solid var(--border);
+    padding-top: var(--s-4);
+  }
+  .section-divider .meta-grid .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: var(--s-2);
+  }
+  .section-divider .meta-grid .value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 17px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* Stage badge */
+  .stage-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 4px 10px;
+    background: var(--bg-glass-2);
+    border: 1px solid var(--border-strong);
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    border-radius: 6px;
+  }
+  .stage-badge.active {
+    background: var(--grad-primary);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 8px 24px -8px rgba(99,102,241,0.6);
+  }
+
+  /* Timeline */
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--s-5);
+    position: relative;
+  }
+  .timeline::before {
+    content: "";
+    position: absolute;
+    top: 14px;
+    left: 16px; right: 16px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border) 0%, var(--primary) 65%, var(--accent) 100%);
+  }
+  .timeline-col { display: flex; flex-direction: column; gap: 8px; padding-top: 32px; position: relative; }
+  .timeline-col::before {
+    content: "";
+    position: absolute;
+    top: 7px; left: 0;
+    width: 14px; height: 14px;
+    background: var(--bg);
+    border: 2px solid var(--border-strong);
+    border-radius: 99px;
+  }
+  .timeline-col.active::before {
+    background: var(--accent-2);
+    border-color: var(--accent-2);
+    box-shadow: 0 0 16px rgba(34,211,238,0.6);
+  }
+
+  /* Compare panel */
+  .compare-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: var(--s-5);
+    align-items: stretch;
+  }
+  .compare-arrow {
+    align-self: center;
+    color: var(--accent-2);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 32px;
+    font-weight: 300;
+  }
+
+  /* Nav arrows */
+  .nav-arrows {
+    position: fixed;
+    right: clamp(28px, 4vw, 56px);
+    bottom: 64px;
+    display: flex; gap: 6px;
+    z-index: 210;
+  }
+  .nav-arrows button {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg-glass-2);
+    color: var(--text);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: background 180ms var(--ease-soft), border-color 180ms var(--ease-soft);
+  }
+  .nav-arrows button:hover:not(:disabled) {
+    background: var(--grad-primary);
+    border-color: transparent;
+  }
+  .nav-arrows button:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+  .nav-arrows button:disabled { opacity: 0.35; cursor: not-allowed; }
+  .nav-arrows svg { width: 16px; height: 16px; }
+
+  /* Overview */
+  .overview-mask {
+    position: fixed; inset: 0;
+    background: rgba(6, 9, 27, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 500;
+    display: none;
+    overflow-y: auto;
+    padding: 56px clamp(40px, 5vw, 80px);
+  }
+  .overview-mask.show { display: block; }
+  .ov-panel {
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: var(--s-7);
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .ov-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--s-5); }
+  .ov-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--s-3);
+  }
+  .ov-card {
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--border);
+    background: var(--bg-glass);
+    border-radius: 10px;
+    padding: var(--s-3);
+    cursor: pointer;
+    display: flex; flex-direction: column; justify-content: space-between;
+    transition: all 160ms var(--ease-soft);
+  }
+  .ov-card:hover { border-color: var(--accent-2); transform: translateY(-2px); }
+  .ov-card.current { border-color: var(--accent-2); border-width: 1px; box-shadow: 0 0 16px rgba(34,211,238,0.3); }
+  .ov-card .ov-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+  }
+  .ov-card .ov-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.3;
+    font-weight: 500;
+  }
+
+  /* Print */
+  @media print {
+    body { overflow: visible; background: var(--bg); color: var(--text); }
+    body::before, body::after, .noise { display: none; }
+    .chrome-top, .chrome-bottom, .nav-arrows, .progress-rail, .overview-mask { display: none !important; }
+    .deck { position: static; }
+    .slide { position: relative; opacity: 1 !important; pointer-events: auto; transform: none !important; min-height: 100vh; page-break-after: always; padding: 48px 56px; }
+  }
+
+  /* Small screens */
+  @media (max-width: 900px) {
+    .grid-2, .grid-2-3, .grid-3-2 { grid-template-columns: 1fr; gap: var(--s-4); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .compare-row { grid-template-columns: 1fr; }
+    .compare-arrow { transform: rotate(90deg); }
+    .timeline { grid-template-columns: 1fr 1fr; }
+    .section-divider .meta-grid { grid-template-columns: 1fr; gap: var(--s-3); }
+    .slide { padding: 76px 20px 56px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="noise" aria-hidden="true"></div>
+
+<!-- Top chrome -->
+<header class="chrome-top" aria-hidden="true">
+  <div class="brand">
+    <span class="brand-glyph">{{BRAND_INITIAL}}</span>
+    <span>{{BRAND_NAME}} · {{BRAND_TAGLINE}}</span>
+  </div>
+  <div class="right">
+    <span class="pill-stamp">Live Briefing</span>
+    <span>{{DATE_LABEL}} · {{VERSION}}</span>
+  </div>
+</header>
+<div class="progress-rail"><div class="progress-bar" id="progressBar"></div></div>
+
+<!-- Deck -->
+<main class="deck" id="deck" aria-roledescription="presentation">
+
+  <!-- 01 — Cover -->
+  <section class="slide active" data-title="封面" data-section="Cover">
+    <div class="content" style="justify-content: space-between;">
+
+      <div class="row" style="justify-content: space-between;">
+        <span class="badge badge-primary">
+          <span class="dot"></span>
+          Industry Briefing · 2026
+        </span>
+        <span class="badge">VOLUME 01 · ISSUE 05</span>
+      </div>
+
+      <div style="max-width: 1200px;">
+        <span class="eyebrow" style="margin-bottom: 24px; display: inline-flex;">AI ENGINEERING · PARADIGM REPORT</span>
+        <h1 class="display-h" style="margin-top: 20px;">
+          The AI Programming<br/>
+          Paradigm <span class="gradient-text">Shift</span>.
+        </h1>
+        <p class="lede" style="margin-top: 28px; font-size: 20px;">
+          Claude 4.5 之后，软件研发的<span style="color: var(--text);">能力分布、工具梯队、协作范式</span>正在同时重构。<br/>
+          一份给企业的完整参考。
+        </p>
+        <div class="row" style="margin-top: 36px; gap: 12px;">
+          <button class="btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            阅读完整简报
+          </button>
+          <button class="btn-secondary">联系作者</button>
+        </div>
+      </div>
+
+      <div class="grid-4" style="border-top: 1px solid var(--border); padding-top: var(--s-5);">
+        <div><div class="caption" style="text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 4px;">Author</div><div class="sub-h">Zego· Dum</div></div>
+        <div><div class="caption" style="text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 4px;">Audience</div><div class="sub-h">CTO · Eng Leaders · PMs</div></div>
+        <div><div class="caption" style="text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 4px;">Reading time</div><div class="sub-h">≈ 45 minutes</div></div>
+        <div><div class="caption" style="text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 4px;">Status</div><div class="sub-h" style="color: var(--success);">External · For partners</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 — About -->
+  <section class="slide" data-title="About" data-section="About">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">Foreword</span>
+        <h2 class="page-h">About this <span class="gradient-text">briefing</span>.</h2>
+      </div>
+      <div class="rhs">02</div>
+    </div>
+
+    <div class="content grid-3-2">
+      <div class="stack">
+        <p class="lede">
+          2025 年底，Claude Opus 4.5 / 4.6 的发布悄悄改变了一件事 —— <span style="color: var(--text);">代码生成的准确率从「可以辅助」变成了「可以交付」</span>。
+        </p>
+        <p class="body strong" style="font-size: 17px; line-height: 1.65;">
+          这不再只是一个工具升级。它意味着研发组织里的<b style="color: var(--text);">能力分布</b>、<b style="color: var(--text);">协作模式</b>、<b style="color: var(--text);">价值评估方式</b>都要被重新校准。
+        </p>
+        <p class="body" style="font-size: 15px;">
+          我们整理了过去 12 个月在真实项目中累积的实践、试错和反思，希望这份简报能帮助同行更快地穿越这场转变期。它不是技术教程，而是一份<b style="color: var(--text);">关于「研发组织如何应对范式变化」</b>的视角合集。
+        </p>
+        <p class="caption" style="border-top: 1px solid var(--border); padding-top: 12px; margin-top: 8px;">
+          内容基于真实项目数据与团队访谈；所有模型评估为定性观察，不构成正式基准。
+        </p>
+      </div>
+
+      <div class="stack">
+        <div class="glass">
+          <span class="eyebrow">谁应该读</span>
+          <ul class="lc dense" style="margin-top: 12px;">
+            <li><span><b>CTO / 工程 VP</b> — 规划 12-24 个月人才结构</span></li>
+            <li><span><b>架构师 / Eng Lead</b> — 重构协作与代码规范</span></li>
+            <li><span><b>产品负责人</b> — 理解能力供给侧的变化</span></li>
+            <li><span><b>HR / 人才发展</b> — 招聘画像与培训路径</span></li>
+          </ul>
+        </div>
+        <div class="glass glow edge-top">
+          <span class="eyebrow">三句话总结</span>
+          <ol class="lcn" style="margin-top: 12px;">
+            <li><span>技能：从「<b>掌握编程细节</b>」到「<b>掌握系统原理</b>」</span></li>
+            <li><span>工作：从「<b>自己写代码</b>」到「<b>指导 AI 写代码</b>」</span></li>
+            <li><span>价值：从「<b>个人贡献</b>」到「<b>放大他人能力</b>」</span></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 — Agenda -->
+  <section class="slide" data-title="目录" data-section="Contents">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">Contents</span>
+        <h2 class="page-h">八个章节，<span class="gradient-text">一条主线</span>。</h2>
+      </div>
+      <div class="rhs">03</div>
+    </div>
+
+    <div class="content grid-2" style="gap: 16px;">
+      <div class="stack-sm">
+        <div class="glass pad-sm" style="display: grid; grid-template-columns: 48px 1fr auto; align-items: center; gap: 16px;">
+          <span style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--accent-2); font-feature-settings: 'tnum';">I</span>
+          <div>
+            <div class="sub-h">发展背景与范式转变</div>
+            <div class="caption" style="margin-top: 2px;">Four stages · root cause · three dimensions</div>
+          </div>
+          <span class="pill">p. 05</span>
+        </div>
+        <div class="glass pad-sm" style="display: grid; grid-template-columns: 48px 1fr auto; align-items: center; gap: 16px;">
+          <span style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--accent-2);">II</span>
+          <div>
+            <div class="sub-h">工具和模型选择指南</div>
+            <div class="caption" style="margin-top: 2px;">Tools tier · models tier · multi-model strategy</div>
+          </div>
+          <span class="pill">p. 09</span>
+        </div>
+        <div class="glass pad-sm" style="display: grid; grid-template-columns: 48px 1fr auto; align-items: center; gap: 16px;">
+          <span style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--accent-2);">III</span>
+          <div>
+            <div class="sub-h">AI 编程最佳实践</div>
+            <div class="caption" style="margin-top: 2px;">Core principle · four key practices</div>
+          </div>
+          <span class="pill">p. 12</span>
+        </div>
+        <div class="glass pad-sm" style="display: grid; grid-template-columns: 48px 1fr auto; align-items: center; gap: 16px;">
+          <span style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--accent-2);">IV</span>
+          <div>
+            <div class="sub-h">常用 Skills 与工作流</div>
+            <div class="caption" style="margin-top: 2px;">Design · Superpowers · testing &amp; ops</div>
+          </div>
+          <span class="pill">p. 18</span>
+        </div>
+      </div>
+
+      <div class="stack-sm">
+        <div class="glass pad-sm" style="display: grid; grid-template-columns: 48px 1fr auto; align-items: center; gap: 16px;">
+          <span style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--accent-2);">V</span>
+          <div>
+            <div class="sub-h">个人能力转变框架</div>
+            <div class="caption" style="margin-top: 2px;">Four pillars · capability scorecard</div>
+          </div>
+          <span class="pill">p. 21</span>
+        </div>
+        <div class="glass pad-sm" style="display: grid; grid-template-columns: 48px 1fr auto; align-items: center; gap: 16px;">
+          <span style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--accent-2);">VI</span>
+          <div>
+            <div class="sub-h">团队协作的新模式</div>
+            <div class="caption" style="margin-top: 2px;">Vertical org · five patterns · roadmap</div>
+          </div>
+          <span class="pill">p. 24</span>
+        </div>
+        <div class="glass pad-sm" style="display: grid; grid-template-columns: 48px 1fr auto; align-items: center; gap: 16px;">
+          <span style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--accent-2);">VII</span>
+          <div>
+            <div class="sub-h">思维转变</div>
+            <div class="caption" style="margin-top: 2px;">From doer to multiplier</div>
+          </div>
+          <span class="pill">p. 29</span>
+        </div>
+        <div class="glass pad-sm" style="display: grid; grid-template-columns: 48px 1fr auto; align-items: center; gap: 16px;">
+          <span style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--accent-2);">VIII</span>
+          <div>
+            <div class="sub-h">常见陷阱与质量保障</div>
+            <div class="caption" style="margin-top: 2px;">Pitfalls · three lines of defense</div>
+          </div>
+          <span class="pill">p. 31</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 — Part I divider -->
+  <section class="slide section-divider" data-title="I · 范式转变" data-section="Part I">
+    <div>
+      <span class="eyebrow">PART · I</span>
+      <p class="caption" style="margin-top: 8px;">Chapter one of eight</p>
+    </div>
+    <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
+      <div class="roman">I</div>
+      <div style="max-width: min(720px, 100%); flex: 1;">
+        <div class="chapter-tag-row">
+          <span class="chapter-tag">范式之变</span>
+          <span class="gold-dash"></span>
+        </div>
+        <h2 class="section-h">
+          从「写好代码」，<br/>
+          到「让 AI <span class="gradient-text">写好代码</span>」。
+        </h2>
+        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 640px;">
+          准确率从 70% 跨到 95%，看似只是 25 个百分点，但它跨越了一条决定性的边界 —— 从「需要被纠错」到「值得被信任」。
+        </p>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div><div class="label">In this section</div><div class="value">四个阶段 · 范式转变 · 三大维度</div></div>
+      <div><div class="label">Key concept</div><div class="value">从 How 到 Why &amp; What</div></div>
+      <div><div class="label">Estimated</div><div class="value">5 分钟</div></div>
+    </div>
+  </section>
+
+  <!-- 05 — 四个阶段 -->
+  <section class="slide" data-title="四个发展阶段" data-section="Part I">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">1.1 · Evolution</span>
+        <h2 class="page-h">AI 编程的<span class="gradient-text">四个阶段</span>。</h2>
+      </div>
+      <div class="rhs">05 · I</div>
+    </div>
+
+    <div class="content">
+      <p class="lede" style="margin-bottom: 8px;">每一次跃迁，都改变了 <span style="color: var(--text);">"人和 AI 之间谁是主驾驶"</span>。</p>
+
+      <div class="timeline">
+        <div class="timeline-col">
+          <span class="stage-badge">STAGE 01</span>
+          <div class="sub-h">自动补全</div>
+          <p class="caption">代码片段预测 · 精度低</p>
+          <p class="body" style="font-size: 13px;">人类<b style="color:var(--text);">全程驾驶</b>，频繁纠正。</p>
+        </div>
+        <div class="timeline-col">
+          <span class="stage-badge">STAGE 02</span>
+          <div class="sub-h">片段实现</div>
+          <p class="caption">单函数 / 类 · 精度提升</p>
+          <p class="body" style="font-size: 13px;">人类<b style="color:var(--text);">驾驶 + 导航</b>，需要验证。</p>
+        </div>
+        <div class="timeline-col">
+          <span class="stage-badge">STAGE 03</span>
+          <div class="sub-h">结伴编程</div>
+          <p class="caption">Claude 3.5 · 准确率 70-85%</p>
+          <p class="body" style="font-size: 13px;">人类<b style="color:var(--text);">领导 + 监督</b>，纠正细节。</p>
+        </div>
+        <div class="timeline-col active">
+          <span class="stage-badge active">STAGE 04 · NOW</span>
+          <div class="sub-h">自主编程</div>
+          <p class="caption">Claude 4.5 / GPT-5.5 · 准确率 <span style="color: var(--accent-2); font-weight: 600;">95%+</span></p>
+          <p class="body" style="font-size: 13px;">人类聚焦<b style="color:var(--text);">业务价值</b>而非技术细节。</p>
+        </div>
+      </div>
+
+      <div class="grid-3" style="margin-top: 12px;">
+        <div class="glass glow edge-top">
+          <span class="eyebrow">关键阈值</span>
+          <div class="stat" style="margin-top: 8px;">
+            <span class="figure">95<span class="unit">%</span></span>
+            <span class="label">准确率 · 决定性边界</span>
+          </div>
+          <p class="body" style="font-size: 13px; margin-top: 4px;">从「需要被纠错」跨越到「值得被信任」。</p>
+        </div>
+        <div class="glass">
+          <span class="eyebrow">人类角色</span>
+          <h3 class="card-h" style="margin-top: 8px;">主驾驶 <span style="color: var(--accent-2);">→</span> 导航员</h3>
+          <p class="body" style="font-size: 13px;">不再写每一行，决定每一行<b style="color:var(--text);">该不该被写</b>。</p>
+        </div>
+        <div class="glass">
+          <span class="eyebrow">价值衡量</span>
+          <h3 class="card-h" style="margin-top: 8px;">代码量 <span style="color: var(--accent-2);">→</span> 判断力</h3>
+          <p class="body" style="font-size: 13px;">产出可由 AI 拉满，<b style="color:var(--text);">方向</b>仍需由人决定。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 — 三大维度 -->
+  <section class="slide" data-title="三大维度转变" data-section="Part I">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">1.2 · Three dimensions</span>
+        <h2 class="page-h">从 <span class="gradient-text">How</span>，到 <span class="gradient-text">Why &amp; What</span>。</h2>
+      </div>
+      <div class="rhs">06 · I</div>
+    </div>
+
+    <div class="content">
+      <div class="pull-quote-wrap" style="margin-bottom: 4px;">
+        <p class="pull-quote">
+          旧：掌握细节 + 代码实现 → 写好代码。<br/>
+          新：掌握原理 + 业务理解 → <span class="gradient-text">指导 AI 写好代码</span>。
+        </p>
+      </div>
+
+      <div class="glass pad-sm" style="padding: 0;">
+        <table class="t">
+          <thead>
+            <tr>
+              <th style="width: 18%;">维度</th>
+              <th style="width: 28%;">旧范式 · 2024</th>
+              <th style="width: 28%;">新范式 · 2025+</th>
+              <th>转变内容</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>技能要求</td><td>编程语言细节 · 语法、API、最佳实践</td><td>系统设计原理 · 业务逻辑 · 算法思想</td><td>从 <code style="background: rgba(255,255,255,0.06); color: var(--text); padding: 1px 6px; border-radius: 4px;">How</code> 到 <code style="background: rgba(34,211,238,0.10); color: var(--accent-2); padding: 1px 6px; border-radius: 4px;">Why &amp; What</code></td></tr>
+            <tr><td>工作流</td><td>AI 辅助 → 人类编码 → 调试</td><td>AI 编码 → 人类验证 → 优化</td><td>人<b style="color:var(--text);">驾驶</b> → 人<b style="color:var(--text);">导航</b></td></tr>
+            <tr><td>价值衡量</td><td>代码质量 · 规范 / 性能 / 可维护</td><td>需求满足度 · 是否解决问题</td><td>技术卓越 → 业务价值</td></tr>
+            <tr><td>职业发展</td><td>掌握技能越多越值钱</td><td>理解业务 · 指导他人越值钱</td><td>个人贡献者 → 乘数效应</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 — Part II divider -->
+  <section class="slide section-divider" data-title="II · 工具与模型" data-section="Part II">
+    <div>
+      <span class="eyebrow">PART · II</span>
+      <p class="caption" style="margin-top: 8px;">Chapter two of eight</p>
+    </div>
+    <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
+      <div class="roman">II</div>
+      <div style="max-width: min(720px, 100%); flex: 1;">
+        <div class="chapter-tag-row">
+          <span class="chapter-tag">工具与模型</span>
+          <span class="gold-dash"></span>
+        </div>
+        <h2 class="section-h">
+          选错的代价，<br/>
+          比<span class="gradient-text">选对</span>更显著。
+        </h2>
+        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 640px;">
+          模型与工具不是技术细节，而是组织能力的底座。这里讨论的是"能力供给侧的选型"。
+        </p>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div><div class="label">In this section</div><div class="value">工具梯队 · 模型梯队 · 多模型策略</div></div>
+      <div><div class="label">Key concept</div><div class="value">按场景分层而非追求单点最强</div></div>
+      <div><div class="label">Estimated</div><div class="value">6 分钟</div></div>
+    </div>
+  </section>
+
+  <!-- 08 — 工具梯队 -->
+  <section class="slide" data-title="工具梯队" data-section="Part II">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">2.1 · Tooling tier</span>
+        <h2 class="page-h">编程工具<span class="gradient-text">梯队</span>。</h2>
+      </div>
+      <div class="rhs">08 · II</div>
+    </div>
+
+    <div class="content grid-2">
+      <div class="stack">
+        <div class="glass glow edge-top">
+          <div class="row" style="justify-content: space-between;">
+            <span class="pill primary">TIER 1 · 强推荐</span>
+            <span class="pill gold">最优</span>
+          </div>
+          <div class="card-h" style="margin-top: 12px;">Claude Code</div>
+          <p class="body strong" style="font-size: 14px;">最佳模型 (Opus 4.6/4.7) · Skills 系统强 · 复杂上下文支持最好 · 对华人用户友好。</p>
+          <div class="pills" style="margin-top: 4px;">
+            <span class="pill success">复杂项目</span>
+            <span class="pill success">多阶段规划</span>
+            <span class="pill success">团队协作</span>
+          </div>
+        </div>
+
+        <div class="glass">
+          <div class="row" style="justify-content: space-between;">
+            <span class="pill primary">TIER 1</span>
+            <span class="pill">轻量级</span>
+          </div>
+          <div class="card-h" style="margin-top: 12px;">Codex</div>
+          <p class="body strong" style="font-size: 14px;">免费 / 廉价 · 快速响应 · 多语言。模型能力略弱，深度上下文不足。</p>
+          <div class="pills" style="margin-top: 4px;">
+            <span class="pill success">简单脚本</span>
+            <span class="pill success">快速原型</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div class="glass">
+          <div class="row" style="justify-content: space-between;">
+            <span class="pill">TIER 2 · 有特色</span>
+            <span class="pill rose">需谨慎</span>
+          </div>
+          <div class="card-h" style="margin-top: 12px;">Cursor</div>
+          <p class="body" style="font-size: 13px;">基于 VSCode 的原生 AI IDE。模型轮换导致一致性不足。<br/>适用：前端快速开发 · 个人项目</p>
+        </div>
+
+        <div class="glass">
+          <div class="row" style="justify-content: space-between;">
+            <span class="pill">TIER 2</span>
+            <span class="pill rose">评估中</span>
+          </div>
+          <div class="card-h" style="margin-top: 12px;">Kiro &amp; 国内工具</div>
+          <p class="body" style="font-size: 13px;">本土生态崛起 · 需评估模型选择 / 账户安全 / 隐私政策。<br/><b style="color: var(--text);">建议：试用，不作主要工具。</b></p>
+        </div>
+
+        <div class="account-card">
+          <div class="eyebrow" style="color: rgba(255,255,255,0.7);">SELECTION HEURISTIC</div>
+          <p class="body" style="color: rgba(255,255,255,0.92); font-size: 14px; margin-top: 8px;">
+            <b style="color: white;">团队 · 规划 · 复杂</b> → Claude Code<br/>
+            <b style="color: white;">简单 · 速度优先</b> → Codex<br/>
+            <b style="color: white;">前端 · 视觉迭代</b> → Cursor
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 — 模型梯队 -->
+  <section class="slide" data-title="模型梯队" data-section="Part II">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">2.2 · Models &amp; strategy</span>
+        <h2 class="page-h">模型梯队 + <span class="gradient-text">多模型策略</span>。</h2>
+      </div>
+      <div class="rhs">09 · II</div>
+    </div>
+
+    <div class="content grid-2">
+      <div class="stack">
+        <div>
+          <span class="eyebrow">第一梯队 · 生产级</span>
+          <div class="glass pad-sm" style="padding: 0; margin-top: 10px;">
+            <table class="t">
+              <thead><tr><th>模型</th><th>优势</th><th>适用</th></tr></thead>
+              <tbody>
+                <tr><td>Opus 4.6</td><td>深度推理 · 200K · 一致性</td><td>复杂系统设计</td></tr>
+                <tr><td>Opus 4.7</td><td>4.6 + 更快速度</td><td>生产标准</td></tr>
+                <tr><td>GPT-5.5</td><td>1-2s 响应 · 推理强</td><td>高频迭代</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <span class="eyebrow">第二梯队 · 有限制</span>
+          <div class="glass pad-sm" style="padding: 0; margin-top: 10px;">
+            <table class="t">
+              <thead><tr><th>模型</th><th>特点</th></tr></thead>
+              <tbody>
+                <tr><td>GLM 5.1</td><td>中文优化 · 成本低 · 英文准确率下降</td></tr>
+                <tr><td>Sonnet 4</td><td>平衡速度 / 成本 · 适合低敏感任务</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass glow-accent edge-top">
+        <span class="eyebrow">Multi-model strategy</span>
+        <h3 class="card-h" style="margin-top: 6px;">推荐配置 · 三档分层调用</h3>
+
+        <div style="margin-top: 16px;">
+          <div style="border-top: 1px solid var(--border); padding-top: 14px; margin-top: 8px;">
+            <div class="row" style="justify-content: space-between;">
+              <div class="sub-h" style="color: var(--accent-2);">高复杂度</div>
+              <span class="pill primary">Opus 4.6</span>
+            </div>
+            <p class="body" style="font-size: 13px; margin-top: 4px;">100–200K 上下文 · $0.5–2 / req<br/>系统设计、核心逻辑、关键审查</p>
+          </div>
+          <div style="border-top: 1px solid var(--border); padding-top: 14px; margin-top: 14px;">
+            <div class="row" style="justify-content: space-between;">
+              <div class="sub-h" style="color: var(--accent-2);">中等复杂度</div>
+              <span class="pill primary">GPT-5.5 · Sonnet 4</span>
+            </div>
+            <p class="body" style="font-size: 13px; margin-top: 4px;">~50K 上下文 · $0.05–0.2 / req<br/>常规迭代、文档、测试</p>
+          </div>
+          <div style="border-top: 1px solid var(--border); padding-top: 14px; margin-top: 14px;">
+            <div class="row" style="justify-content: space-between;">
+              <div class="sub-h" style="color: var(--accent-2);">最终检查</div>
+              <span class="pill primary">Opus 4.7</span>
+            </div>
+            <p class="body" style="font-size: 13px; margin-top: 4px;">防止低层级模型幻觉漏检</p>
+          </div>
+        </div>
+        <p class="caption" style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">成本通常下降，而非上升 —— 因为只有 ≈15% 任务需要顶级模型。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 — Part III divider -->
+  <section class="slide section-divider" data-title="III · 最佳实践" data-section="Part III">
+    <div>
+      <span class="eyebrow">PART · III</span>
+      <p class="caption" style="margin-top: 8px;">Chapter three of eight</p>
+    </div>
+    <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
+      <div class="roman">III</div>
+      <div style="max-width: min(720px, 100%); flex: 1;">
+        <div class="chapter-tag-row">
+          <span class="chapter-tag">最佳实践</span>
+          <span class="gold-dash"></span>
+        </div>
+        <h2 class="section-h">
+          让 AI 用<span class="gradient-text">最低成本</span><br/>
+          理解你。
+        </h2>
+        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 640px;">
+          所有实践都围绕一个目标：让 AI 尽快理解你的需求涉及哪些文件 + 约束条件。
+        </p>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div><div class="label">In this section</div><div class="value">核心原则 + 四大实践</div></div>
+      <div><div class="label">Key concept</div><div class="value">文档先行 · 上下文管理</div></div>
+      <div><div class="label">Estimated</div><div class="value">8 分钟</div></div>
+    </div>
+  </section>
+
+  <!-- 11 — 核心原则 + 四实践 -->
+  <section class="slide" data-title="核心原则" data-section="Part III">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">3.1 — 3.2 · The four practices</span>
+        <h2 class="page-h">一条原则，<span class="gradient-text">四个实践</span>。</h2>
+      </div>
+      <div class="rhs">11 · III</div>
+    </div>
+
+    <div class="content">
+      <div class="pull-quote-wrap">
+        <p class="pull-quote">
+          让 AI <span class="gradient-text">尽快理解</span><br/>
+          你的需求涉及哪些<span class="gradient-text">文件 + 约束</span>。
+        </p>
+      </div>
+
+      <div class="grid-4">
+        <div class="glass">
+          <div class="icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <div class="caption" style="margin-top: 8px; color: var(--accent-2); letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600;">Practice I</div>
+          <h3 class="card-h" style="margin-top: 2px;">构建项目规范</h3>
+          <p class="body" style="font-size: 13px;">为 AI 提供「<b style="color:var(--text);">代码宪法</b>」<br/>CLAUDE.md · STYLE_GUIDE · API_STANDARDS</p>
+        </div>
+        <div class="glass">
+          <div class="icon-box accent">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.5C9 4 2 5.5 2 12s7 8 10 5.5c3 2.5 10 1 10-5.5S15 4 12 6.5z"/></svg>
+          </div>
+          <div class="caption" style="margin-top: 8px; color: var(--accent-2); letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600;">Practice II</div>
+          <h3 class="card-h" style="margin-top: 2px;">构建项目知识</h3>
+          <p class="body" style="font-size: 13px;">让 AI 理解<b style="color:var(--text);">为什么这样做</b><br/>架构选型 · 历史决策 · 业务规则</p>
+        </div>
+        <div class="glass">
+          <div class="icon-box gold">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          </div>
+          <div class="caption" style="margin-top: 8px; color: var(--accent-2); letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600;">Practice III</div>
+          <h3 class="card-h" style="margin-top: 2px;">精准提问</h3>
+          <p class="body" style="font-size: 13px;">帮 AI 定位文件，跳过<b style="color:var(--text);">无效搜索</b><br/>明确路径 · 提供参考 · 写验收</p>
+        </div>
+        <div class="glass">
+          <div class="icon-box violet">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15A9 9 0 1 1 5.64 5.64L23 10"/></svg>
+          </div>
+          <div class="caption" style="margin-top: 8px; color: var(--accent-2); letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600;">Practice IV</div>
+          <h3 class="card-h" style="margin-top: 2px;">会话管理</h3>
+          <p class="body" style="font-size: 13px;">维持上下文质量<br/>避免<b style="color:var(--text);">压缩幻觉</b></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 — 实践 I -->
+  <section class="slide" data-title="实践 I · 规范" data-section="Part III">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">Practice I</span>
+        <h2 class="page-h">项目<span class="gradient-text">规范文档</span> — 给 AI 一部宪法。</h2>
+      </div>
+      <div class="rhs">12 · III</div>
+    </div>
+
+    <div class="content grid-2-3">
+      <div class="stack">
+        <p class="lede" style="font-size: 17px;">目的：确保 AI 生成的代码<span style="color: var(--text);">符合项目风格</span>，而非每次重新猜测。</p>
+        <div class="glass">
+          <span class="eyebrow">必备文档清单</span>
+          <pre class="code" style="margin-top: 10px;">project-root/
+├── <span class="c-key">CLAUDE.md</span>           <span class="c-comment"># AI 编程指南</span>
+├── PROJECT.md          <span class="c-comment"># 项目概览 / 术语</span>
+├── ARCHITECTURE.md     <span class="c-comment"># 系统设计 / 模块</span>
+├── STYLE_GUIDE.md      <span class="c-comment"># 代码风格 / 命名</span>
+├── API_STANDARDS.md    <span class="c-comment"># API 规范</span>
+├── WORKFLOW.md         <span class="c-comment"># 开发流程</span>
+└── .claude/settings.json</pre>
+        </div>
+      </div>
+
+      <div class="glass glow edge-top">
+        <span class="eyebrow">CLAUDE.md 写法 · 示例</span>
+        <pre class="code" style="margin-top: 10px;"><span class="c-key">## 编码标准 · TypeScript</span>
+- 使用 <span class="c-str">strict: true</span>
+- 禁止使用 <span class="c-warn">any</span>
+- 函数必须有 JSDoc 注释
+- 模块导出必须使用 named export
+
+<span class="c-key">## 禁止事项</span>
+<span class="c-rose">×</span> 不要修改 <span class="c-str">.env</span> 文件
+<span class="c-rose">×</span> 不要使用外部 API 密钥
+<span class="c-rose">×</span> 不要修改 <span class="c-str">package.json</span> 依赖版本
+
+<span class="c-key">## 我的偏好</span>
+<span class="c-str">✓</span> 使用 TDD 方法（先写测试）
+<span class="c-str">✓</span> 发现问题立即反馈，不要隐瞒
+<span class="c-str">✓</span> 代码审查给出具体建议</pre>
+        <p class="caption" style="margin-top: 12px;">
+          原则：<b style="color: var(--text);">能写在文档里的不要靠口头说</b>，能用列表的不要用段落 — AI 与人都更友好。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 — 实践 II -->
+  <section class="slide" data-title="实践 II · 知识" data-section="Part III">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">Practice II</span>
+        <h2 class="page-h">项目<span class="gradient-text">知识文档</span> — 让 AI 理解「为什么」。</h2>
+      </div>
+      <div class="rhs">13 · III</div>
+    </div>
+
+    <div class="content grid-3-2">
+      <div class="stack">
+        <p class="lede" style="font-size: 17px;">规范回答<span style="color: var(--text);">「怎么做」</span>；知识文档回答<span style="color: var(--text);">「为什么这样做」</span>。</p>
+
+        <div class="glass">
+          <span class="eyebrow">示例 · 决策文档</span>
+          <pre class="code" style="margin-top: 10px;"><span class="c-key">## 为什么用 Redis 而不是内存缓存？</span>
+
+<span class="c-comment">背景</span>：v1.0 用内存缓存，100K 用户时崩溃
+<span class="c-comment">决策</span>：引入 Redis，支持分布式部署
+<span class="c-comment">约束</span>：
+  - Redis 最多 5GB （成本考虑）
+  - 所有 key 必须有 TTL
+  - 不能缓存密码 / token 等敏感信息
+
+<span class="c-comment">涉及</span>：src/cache/redis-client.ts
+       src/middleware/cache.ts</pre>
+        </div>
+      </div>
+
+      <div class="glass">
+        <span class="eyebrow">应该记录什么</span>
+        <ol class="lcn" style="margin-top: 12px;">
+          <li><span><b>为什么选择这个架构</b><br/><span class="caption">替代方案与权衡</span></span></li>
+          <li><span><b>为什么有这个限制</b><br/><span class="caption">业务、合规、性能约束</span></span></li>
+          <li><span><b>核心业务规则是什么</b><br/><span class="caption">不写在代码里的领域知识</span></span></li>
+          <li><span><b>历史决策和教训</b><br/><span class="caption">已经失败过的方案</span></span></li>
+          <li><span><b>已知的性能瓶颈</b><br/><span class="caption">未优化的部分及原因</span></span></li>
+          <li><span><b>未来的扩展方向</b><br/><span class="caption">下一阶段的设计预留</span></span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14 — 实践 III -->
+  <section class="slide" data-title="实践 III · 提问" data-section="Part III">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">Practice III</span>
+        <h2 class="page-h">提问时帮 AI <span class="gradient-text">定位文件</span>。</h2>
+      </div>
+      <div class="rhs">14 · III</div>
+    </div>
+
+    <div class="content">
+      <div class="compare-row">
+        <div class="glass" style="border-color: rgba(244,63,94,0.3);">
+          <span class="pill rose">不好的提问</span>
+          <pre class="code" style="margin-top: 12px; border-left: 3px solid var(--rose);">"给我加个登录功能"</pre>
+          <p class="body" style="margin-top: 12px; font-size: 13px;">
+            <b style="color: var(--text);">问题：</b>AI 需要搜索 10+ 文件才能理解架构。每多一次搜索 = 多消耗 1-3K tokens + 增加误解风险。
+          </p>
+        </div>
+
+        <div class="compare-arrow">→</div>
+
+        <div class="glass glow edge-top">
+          <span class="pill success">好的提问</span>
+          <pre class="code" style="margin-top: 12px;">在 <span class="c-key">src/auth/</span> 目录中实现登录。
+参考 <span class="c-key">src/auth/register.ts</span> 的结构。
+
+<span class="c-comment">约束：</span>
+- 使用现有的 <span class="c-warn">validateEmail()</span> 函数
+- 返回值遵循 <span class="c-key">src/types/response.ts</span>
+  中的 <span class="c-warn">AuthResponse</span> 接口
+- 添加测试到
+  <span class="c-key">src/auth/__tests__/login.test.ts</span></pre>
+        </div>
+      </div>
+
+      <div class="glass" style="margin-top: 8px;">
+        <span class="eyebrow">提问模板 · Copy-ready</span>
+        <pre class="code" style="margin-top: 10px; background: transparent; border: 0; padding: 0;"><span class="c-key">[任务描述]</span>
+在 [文件位置] 实现 [具体需求]
+
+<span class="c-key">[相关文件参考]</span>
+- 参考现有实现：[file A]
+- 遵循约束：       [file B]
+- 符合接口：       [file C]
+
+<span class="c-key">[验收标准]</span>
+<span class="c-str">✓</span> 所有测试通过     <span class="c-str">✓</span> TypeScript 无错误     <span class="c-str">✓</span> 符合 CLAUDE.md</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 15 — 实践 IV -->
+  <section class="slide" data-title="实践 IV · 会话" data-section="Part III">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">Practice IV</span>
+        <h2 class="page-h">会话管理 — 维持 AI 的<span class="gradient-text">上下文质量</span>。</h2>
+      </div>
+      <div class="rhs">15 · III</div>
+    </div>
+
+    <div class="content grid-2">
+      <div class="stack">
+        <p class="lede" style="font-size: 17px;">压缩 ≠ 丢一点细节；压缩 = <span style="color: var(--rose);">幻觉来源</span>。</p>
+
+        <div class="glass">
+          <span class="eyebrow">三个信号 · 立即重置</span>
+          <div class="glass pad-sm" style="padding: 0; margin-top: 10px; background: transparent; border: 0;">
+            <table class="t">
+              <thead><tr><th>信号</th><th>含义</th><th>行动</th></tr></thead>
+              <tbody>
+                <tr><td>压缩提示</td><td>上下文 80%+</td><td><span class="pill rose">清空</span></td></tr>
+                <tr><td>回复变水</td><td>压缩幻觉</td><td><span class="pill rose">新会话</span></td></tr>
+                <tr><td>反复追问</td><td>失去上下文</td><td><span class="pill rose">重述</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass glow edge-top">
+        <span class="eyebrow">一个会话的生命周期</span>
+        <h3 class="card-h" style="margin-top: 6px;">五阶段管理</h3>
+
+        <ol class="lcn" style="margin-top: 14px;">
+          <li><span><b>准备阶段</b><br/><span class="caption">粘贴 CLAUDE.md + 项目概览 · ~5K tokens</span></span></li>
+          <li><span><b>工作阶段</b><br/><span class="caption">3-5 个具体编程任务 · ~10-25K tokens</span></span></li>
+          <li><span><b>结束阶段</b><br/><span class="caption">总结改动、留下 TODO · ~2K tokens</span></span></li>
+          <li><span><b>清空 &amp; 保存日志</b><br/><span class="caption">不直接清掉，先归档</span></span></li>
+          <li><span><b>新会话开启</b><br/><span class="caption">重新粘贴 CLAUDE.md，带新任务</span></span></li>
+        </ol>
+        <p class="caption" style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">借助 Prompt Cache：首次 10K，后续 0K。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 16 — Part IV divider -->
+  <section class="slide section-divider" data-title="IV · Skills 与工作流" data-section="Part IV">
+    <div>
+      <span class="eyebrow">PART · IV</span>
+      <p class="caption" style="margin-top: 8px;">Chapter four of eight</p>
+    </div>
+    <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
+      <div class="roman">IV</div>
+      <div style="max-width: min(720px, 100%); flex: 1;">
+        <div class="chapter-tag-row">
+          <span class="chapter-tag">Skills 与工作流</span>
+          <span class="gold-dash"></span>
+        </div>
+        <h2 class="section-h">
+          把方法论沉淀为<br/>
+          <span class="gradient-text">可调用的能力</span>。
+        </h2>
+        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 640px;">
+          每个团队都有 30% 的方法论是隐性的。把它们写成 Skill，AI 就能稳定复用。
+        </p>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div><div class="label">In this section</div><div class="value">设计 · 开发 · 测试 · 运维</div></div>
+      <div><div class="label">Key concept</div><div class="value">Superpowers · Karpathy Guidelines</div></div>
+      <div><div class="label">Estimated</div><div class="value">5 分钟</div></div>
+    </div>
+  </section>
+
+  <!-- 17 — Skills -->
+  <section class="slide" data-title="设计 + Skills" data-section="Part IV">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">4.1 — 4.2</span>
+        <h2 class="page-h">设计、编码的<span class="gradient-text">核心 Skills</span>。</h2>
+      </div>
+      <div class="rhs">17 · IV</div>
+    </div>
+
+    <div class="content stack" style="gap: 20px;">
+      <div>
+        <span class="eyebrow">产品设计 / UI · 工具组合</span>
+        <div class="glass pad-sm" style="padding: 0; margin-top: 10px;">
+          <table class="t">
+            <thead><tr><th style="width:22%;">工具</th><th style="width:38%;">用途</th><th>何时使用</th></tr></thead>
+            <tbody>
+              <tr><td>frontend-design</td><td>高质量前端组件设计</td><td>构建新页面或重构 UI</td></tr>
+              <tr><td>stitch</td><td>快速原型可视化</td><td>产品需求讨论 · 设计评审</td></tr>
+              <tr><td>aistudio</td><td>交互设计和动画</td><td>复杂交互场景</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="glass glow edge-top">
+          <span class="eyebrow">SUPERPOWERS 套装</span>
+          <h3 class="card-h" style="margin-top: 6px;">先思考，再编码</h3>
+          <ul class="lc">
+            <li><span><b>writing-plans</b> — 任何 &gt;4h 任务先设计 → 输出阶段 / 文件清单 / 风险</span></li>
+            <li><span><b>test-driven-development</b> — 核心逻辑先写测试，覆盖率 100%</span></li>
+            <li><span><b>systematic-debugging</b> — 科学诊断而非随意改</span></li>
+          </ul>
+        </div>
+        <div class="glass glow-accent edge-top">
+          <span class="eyebrow">KARPATHY GUIDELINES</span>
+          <h3 class="card-h" style="margin-top: 6px;">外科手术式修改</h3>
+          <p class="body" style="font-size: 14px;">代码审查与优化时使用：</p>
+          <ul class="lc">
+            <li><span>避免过度复杂化</span></li>
+            <li><span>明确假设与成功标准</span></li>
+            <li><span>给出<b>具体的</b>修改建议，而非"重构一下"</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 18 — 测试 + 运维 -->
+  <section class="slide" data-title="测试 + 运维" data-section="Part IV">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">4.3 — 4.4</span>
+        <h2 class="page-h">测试策略 · <span class="gradient-text">运维与排查</span>。</h2>
+      </div>
+      <div class="rhs">18 · IV</div>
+    </div>
+
+    <div class="content grid-2">
+      <div class="stack">
+        <span class="eyebrow">测试策略</span>
+        <div class="glass">
+          <div class="row" style="gap: 12px;">
+            <div class="icon-box success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+            <h3 class="card-h">单元测试</h3>
+          </div>
+          <p class="body" style="font-size: 13px; margin-top: 6px;"><b style="color:var(--text);">工具：</b>Jest / pytest / unittest<br/><b style="color:var(--text);">范围：</b>业务逻辑、边界、错误<br/><b style="color:var(--text);">由谁写：</b>AI（TDD skill）</p>
+        </div>
+        <div class="glass">
+          <div class="row" style="gap: 12px;">
+            <div class="icon-box accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+            <h3 class="card-h">界面测试</h3>
+          </div>
+          <p class="body" style="font-size: 13px; margin-top: 6px;"><b style="color:var(--text);">工具：</b>Playwright / Cypress<br/><b style="color:var(--text);">范围：</b>核心业务流程、交互反馈<br/><b style="color:var(--text);">由谁写：</b>AI（webapp-testing）</p>
+        </div>
+        <div class="glass">
+          <div class="row" style="gap: 12px;">
+            <div class="icon-box violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            <h3 class="card-h">集成测试</h3>
+          </div>
+          <p class="body" style="font-size: 13px; margin-top: 6px;"><b style="color:var(--text);">范围：</b>API 协作、数据库操作<br/><b style="color:var(--text);">由谁写：</b>AI 写框架 / 人工验证场景</p>
+        </div>
+      </div>
+
+      <div class="stack">
+        <span class="eyebrow">运维与问题排查</span>
+        <div class="glass glow edge-top">
+          <h3 class="card-h">自动化分析流程</h3>
+          <pre class="code" style="margin-top: 8px;">线上异常 → 收集日志 + 代码
+            ↓
+       Claude Code 分析
+            ↓
+   根因诊断 + 修复建议
+            ↓
+       生成补丁 → 验证</pre>
+        </div>
+        <div class="glass">
+          <h3 class="card-h">关键场景 · 三类</h3>
+          <ul class="lc">
+            <li><span><b>内存泄漏</b> · Java heap dump + 代码 → 诊断</span></li>
+            <li><span><b>性能下降</b> · 慢查询 + DB schema → 优化建议</span></li>
+            <li><span><b>异常栈</b> · 错误日志 + 上下文 → 修复方案</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 19 — Part V divider -->
+  <section class="slide section-divider" data-title="V · 能力转变" data-section="Part V">
+    <div>
+      <span class="eyebrow">PART · V</span>
+      <p class="caption" style="margin-top: 8px;">Chapter five of eight</p>
+    </div>
+    <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
+      <div class="roman">V</div>
+      <div style="max-width: min(720px, 100%); flex: 1;">
+        <div class="chapter-tag-row">
+          <span class="chapter-tag">能力转变</span>
+          <span class="gold-dash"></span>
+        </div>
+        <h2 class="section-h">
+          从掌握细节，<br/>
+          到掌握<span class="gradient-text">原理</span>。
+        </h2>
+        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 640px;">
+          不是不学语言，而是把学习曲线从「语法和 API」迁移到「原理与权衡」。
+        </p>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div><div class="label">In this section</div><div class="value">四大支柱 · 能力评估</div></div>
+      <div><div class="label">Key concept</div><div class="value">OS · 网络 · 系统 · 程序设计</div></div>
+      <div><div class="label">Estimated</div><div class="value">5 分钟</div></div>
+    </div>
+  </section>
+
+  <!-- 20 — 四大支柱 -->
+  <section class="slide" data-title="四大支柱" data-section="Part V">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">5.1 · Four pillars</span>
+        <h2 class="page-h">原理学习的<span class="gradient-text">四大支柱</span>。</h2>
+      </div>
+      <div class="rhs">20 · V</div>
+    </div>
+
+    <div class="content grid-4">
+      <div class="glass">
+        <div class="icon-box lg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <div class="caption" style="margin-top: 12px; color: var(--accent-2); letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600;">PILLAR I</div>
+        <h3 class="card-h" style="margin-top: 2px;">操作系统</h3>
+        <hr style="border: 0; border-top: 1px solid var(--border); margin: 12px 0;" />
+        <ul class="lc dense">
+          <li><span>进程 vs 线程</span></li>
+          <li><span>内存布局</span></li>
+          <li><span>I/O 模型</span></li>
+          <li><span>信号 / 中断</span></li>
+          <li><span>OOM / 死锁原理</span></li>
+        </ul>
+        <p class="caption" style="margin-top: 10px;"><b style="color: var(--text);">路径：</b>OSTEP · strace 实践</p>
+      </div>
+
+      <div class="glass">
+        <div class="icon-box lg accent">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        </div>
+        <div class="caption" style="margin-top: 12px; color: var(--accent-2); letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600;">PILLAR II</div>
+        <h3 class="card-h" style="margin-top: 2px;">网络通信</h3>
+        <hr style="border: 0; border-top: 1px solid var(--border); margin: 12px 0;" />
+        <ul class="lc dense">
+          <li><span>TCP vs UDP 权衡</span></li>
+          <li><span>TLS 工作原理</span></li>
+          <li><span>长 / 短连接</span></li>
+          <li><span>三次握手的目的</span></li>
+          <li><span>网络分区 / 超时</span></li>
+        </ul>
+        <p class="caption" style="margin-top: 10px;"><b style="color: var(--text);">路径：</b>HTTP/2 · 抓包诊断</p>
+      </div>
+
+      <div class="glass">
+        <div class="icon-box lg gold">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </div>
+        <div class="caption" style="margin-top: 12px; color: var(--accent-2); letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600;">PILLAR III</div>
+        <h3 class="card-h" style="margin-top: 2px;">系统设计</h3>
+        <hr style="border: 0; border-top: 1px solid var(--border); margin: 12px 0;" />
+        <ul class="lc dense">
+          <li><span>分层 / 过度分层</span></li>
+          <li><span>CAP · 一致性权衡</span></li>
+          <li><span>缓存 LRU/LFU/TTL</span></li>
+          <li><span>消息队列</span></li>
+          <li><span>分布式事务 Saga</span></li>
+        </ul>
+        <p class="caption" style="margin-top: 10px;"><b style="color: var(--text);">路径：</b>DDIA · 设计 3-5 系统</p>
+      </div>
+
+      <div class="glass">
+        <div class="icon-box lg violet">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <div class="caption" style="margin-top: 12px; color: var(--accent-2); letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600;">PILLAR IV</div>
+        <h3 class="card-h" style="margin-top: 2px;">程序设计</h3>
+        <hr style="border: 0; border-top: 1px solid var(--border); margin: 12px 0;" />
+        <ul class="lc dense">
+          <li><span>OO vs FP 本质</span></li>
+          <li><span>耦合 / 内聚 / DRY</span></li>
+          <li><span>继承 vs 组合</span></li>
+          <li><span>接口设计</span></li>
+          <li><span>分层的真正原因</span></li>
+        </ul>
+        <p class="caption" style="margin-top: 10px;"><b style="color: var(--text);">路径：</b>《设计模式》· 重构</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 21 — 能力评估 -->
+  <section class="slide" data-title="能力评估" data-section="Part V">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">5.2 · Scorecard</span>
+        <h2 class="page-h">旧能力 <span class="gradient-text">下降</span>，新能力 <span class="gradient-text">上升</span>。</h2>
+      </div>
+      <div class="rhs">21 · V</div>
+    </div>
+
+    <div class="content grid-2">
+      <div class="glass">
+        <span class="eyebrow">旧能力 · 优先级下降</span>
+        <div class="glass pad-sm" style="padding: 0; margin-top: 12px; background: transparent; border: 0;">
+          <table class="t">
+            <thead><tr><th style="width: 38%;">能力</th><th>旧 → 新</th><th>衡量</th></tr></thead>
+            <tbody>
+              <tr><td>编程语言语法</td><td>★★★★★ → ★</td><td>AI 写，我读懂</td></tr>
+              <tr><td>框架 API 细节</td><td>★★★★ → ★★</td><td>知道为什么用</td></tr>
+              <tr><td>调试技能</td><td>★★★★ → ★★</td><td>找根源，不手改</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="glass glow edge-top">
+        <span class="eyebrow">新能力 · 必须提升</span>
+        <div class="glass pad-sm" style="padding: 0; margin-top: 12px; background: transparent; border: 0;">
+          <table class="t">
+            <thead><tr><th style="width: 38%;">能力</th><th>优先级</th><th>衡量</th></tr></thead>
+            <tbody>
+              <tr><td>业务理解</td><td><span class="pill primary">★★★★★</span></td><td>1 句话解释商业价值</td></tr>
+              <tr><td>架构决策</td><td><span class="pill primary">★★★★★</span></td><td>能比较 3+ 方案优缺点</td></tr>
+              <tr><td>沟通和文档</td><td><span class="pill accent">★★★★</span></td><td>CLAUDE.md 清晰</td></tr>
+              <tr><td>需求分析</td><td><span class="pill accent">★★★★</span></td><td>给 AI 足够约束</td></tr>
+              <tr><td>验证和审查</td><td><span class="pill">★★★</span></td><td>识别 90% 的 AI 错误</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 22 — Part VI divider -->
+  <section class="slide section-divider" data-title="VI · 团队协作" data-section="Part VI">
+    <div>
+      <span class="eyebrow">PART · VI</span>
+      <p class="caption" style="margin-top: 8px;">Chapter six of eight</p>
+    </div>
+    <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
+      <div class="roman">VI</div>
+      <div style="max-width: min(720px, 100%); flex: 1;">
+        <div class="chapter-tag-row">
+          <span class="chapter-tag">团队协作</span>
+          <span class="gold-dash"></span>
+        </div>
+        <h2 class="section-h">
+          从横向分工，<br/>
+          到<span class="gradient-text">垂直赋能</span>。
+        </h2>
+        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 640px;">
+          不再是 "需求 → 设计 → 开发 → 测试" 的串行接力，而是按"产品交付单元"组织的小队作战。
+        </p>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div><div class="label">In this section</div><div class="value">横向 → 垂直 · 五种分工 · 路线图</div></div>
+      <div><div class="label">Key concept</div><div class="value">所有权清晰 · 并行协作</div></div>
+      <div><div class="label">Estimated</div><div class="value">8 分钟</div></div>
+    </div>
+  </section>
+
+  <!-- 23 — 横向 vs 垂直 -->
+  <section class="slide" data-title="横向 → 垂直" data-section="Part VI">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">6.1 · Org pattern</span>
+        <h2 class="page-h">从<span class="gradient-text">横向</span>分工到<span class="gradient-text">垂直</span>分工。</h2>
+      </div>
+      <div class="rhs">23 · VI</div>
+    </div>
+
+    <div class="content grid-2">
+      <div class="glass">
+        <span class="pill">旧模式 · 2024</span>
+        <h3 class="card-h" style="margin-top: 12px;">横向分工 · 串行依赖</h3>
+        <pre class="code" style="margin-top: 8px; font-size: 11px;">产品 → 设计 → 架构 → 前端 → 后端 → 测试 → 运维
+ 1周    1周    3天    2周    3周    2周    1周
+                                <span class="c-comment">← 后端出问题就回滚</span></pre>
+        <ul class="lc" style="margin-top: 8px;">
+          <li><span>沟通成本高</span></li>
+          <li><span>每个环节等待前置</span></li>
+          <li><span>跨部门 ownership 不清</span></li>
+        </ul>
+      </div>
+
+      <div class="account-card">
+        <span class="pill" style="background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.25); color: white;">新模式 · 2025+</span>
+        <h3 class="card-h" style="color: white; margin-top: 12px;">垂直分工 · 并行协作</h3>
+        <pre class="code" style="margin-top: 8px; font-size: 11px; background: rgba(0,0,0,0.25); border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.92);">      产品 / 设计
+            ↓
+     产品研发小队
+     ├─ 前端 + AI
+     ├─ 后端 + AI
+     ├─ 测试 + AI
+     └─ 架构师（指导）
+            ↓
+        测试 / 运维（按需）</pre>
+        <ul class="lc" style="margin-top: 8px;">
+          <li style="color: rgba(255,255,255,0.92);"><span>所有权清晰</span></li>
+          <li style="color: rgba(255,255,255,0.92);"><span>跨职能并行</span></li>
+          <li style="color: rgba(255,255,255,0.92);"><span>架构师只指导不阻塞</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 24 — 五种垂直分工 -->
+  <section class="slide" data-title="五种分工模式" data-section="Part VI">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">6.2 · Five patterns</span>
+        <h2 class="page-h">五种<span class="gradient-text">垂直分工模式</span>。</h2>
+      </div>
+      <div class="rhs">24 · VI</div>
+    </div>
+
+    <div class="content">
+      <p class="lede" style="margin-bottom: 4px;">按团队规模与业务复杂度选型 — <span style="color: var(--text);">不是越大越好，是越合适越好</span>。</p>
+
+      <div class="glass pad-sm" style="padding: 0;">
+        <table class="t">
+          <thead><tr><th style="width: 28%;">模式</th><th style="width: 14%;">规模</th><th style="width: 28%;">适用场景</th><th>核心特点</th></tr></thead>
+          <tbody>
+            <tr><td>① 独立产品小队</td><td><span class="pill accent">2-4 人</span></td><td>初创公司 · MVP · 微服务单体</td><td>1 产品 + 1 全栈 + AI · 决策快</td></tr>
+            <tr><td>② 产品线分工</td><td><span class="pill accent">6-10 人</span></td><td>多条产品线 · 复杂系统</td><td>每线独立 + 共享平台团队</td></tr>
+            <tr><td>③ 功能分工</td><td><span class="pill accent">8-15 人</span></td><td>单一大型应用 · 功能边界清晰</td><td>按模块所有权（认证 / 支付 / 消息）</td></tr>
+            <tr><td>④ 经验平衡模式</td><td><span class="pill accent">10-20 人</span></td><td>需统一技术标准 · 有资深架构师</td><td>架构组 + 研发组 + 运维组</td></tr>
+            <tr><td>⑤ 轻量指导模式</td><td><span class="pill accent">20+ 人</span></td><td>分散团队 · 强文化与自觉性</td><td>完全信任 · 文档驱动 · 异步沟通</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 25 — 模式 1-2 -->
+  <section class="slide" data-title="模式 ①②" data-section="Part VI">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">6.2.1 — 6.2.2</span>
+        <h2 class="page-h">模式 <span class="gradient-text">①②</span> — 独立小队 与 产品线。</h2>
+      </div>
+      <div class="rhs">25 · VI</div>
+    </div>
+
+    <div class="content grid-2">
+      <div class="glass glow edge-top">
+        <span class="pill primary">模式 ① · 2-4 人</span>
+        <h3 class="card-h" style="margin-top: 12px;">独立产品小队</h3>
+        <p class="caption">初创 · MVP · 微服务单体</p>
+
+        <div style="margin-top: 12px;">
+          <div class="sub-h" style="font-size: 14px; margin-bottom: 6px;">团队构成</div>
+          <ul class="lc dense">
+            <li><span>1 × 产品经理（兼设计）</span></li>
+            <li><span>1 × 全栈开发 + AI</span></li>
+            <li><span>0-1 × 测试工程师</span></li>
+          </ul>
+        </div>
+
+        <div style="margin-top: 14px;">
+          <div class="sub-h" style="font-size: 14px; margin-bottom: 6px;">沟通节奏</div>
+          <pre class="code" style="font-size: 11px;">周一  需求评审 + AC 定义
+周二-四 开发 + AI 编码
+周五  验收 + Release</pre>
+        </div>
+
+        <div class="glass pad-sm" style="margin-top: 14px;">
+          <span class="eyebrow">预期效率</span>
+          <p class="body" style="font-size: 14px; margin-top: 4px;">2 周功能压缩到 <b class="gradient-text" style="font-weight: 700;">3-4 天</b> · 缺陷率下降 <b class="gradient-text" style="font-weight: 700;">40-60%</b></p>
+        </div>
+      </div>
+
+      <div class="glass glow-accent edge-top">
+        <span class="pill accent">模式 ② · 6-10 人</span>
+        <h3 class="card-h" style="margin-top: 12px;">产品线分工</h3>
+        <p class="caption">多产品线 · 复杂系统</p>
+
+        <div style="margin-top: 12px;">
+          <div class="sub-h" style="font-size: 14px; margin-bottom: 6px;">关键设计</div>
+          <ul class="lc dense">
+            <li><span>每条产品线独立：代码 / DB / 部署</span></li>
+            <li><span>平台团队提供：共享库 / 中间件 / 部署</span></li>
+            <li><span>跨线通过：API + 事件</span></li>
+          </ul>
+        </div>
+
+        <div style="margin-top: 14px;">
+          <div class="sub-h" style="font-size: 14px; margin-bottom: 6px;">协作节奏</div>
+          <ul class="lc dense">
+            <li><span><b>月度规划</b> · 各线 PM + 平台架构师</span></li>
+            <li><span><b>周会</b> · 线内同步</span></li>
+            <li><span><b>设计评审</b> · 按需，符合平台规范</span></li>
+          </ul>
+        </div>
+
+        <div class="glass pad-sm" style="margin-top: 14px;">
+          <span class="eyebrow">关键约束</span>
+          <p class="body" style="font-size: 13px; margin-top: 4px;">没有共享代码库 → <b style="color: var(--text);">复用通过抽象的库</b>而非粘贴。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 26 — 模式 3-5 + AI 角色 -->
+  <section class="slide" data-title="模式 ③④⑤" data-section="Part VI">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">6.2.3 — 6.3</span>
+        <h2 class="page-h">模式 <span class="gradient-text">③④⑤</span> · AI 角色重新定位。</h2>
+      </div>
+      <div class="rhs">26 · VI</div>
+    </div>
+
+    <div class="content grid-3" style="gap: 16px;">
+      <div class="glass">
+        <span class="pill primary">③ · 8-15 人</span>
+        <h3 class="card-h" style="margin-top: 12px;">功能分工</h3>
+        <ul class="lc dense" style="margin-top: 6px;">
+          <li><span>认证 / 支付 / 消息独立模块</span></li>
+          <li><span>跨模块 API + 事件通信</span></li>
+          <li><span>每模块独立 DB · CQRS</span></li>
+        </ul>
+      </div>
+
+      <div class="glass">
+        <span class="pill primary">④ · 10-20 人</span>
+        <h3 class="card-h" style="margin-top: 12px;">经验平衡</h3>
+        <ul class="lc dense" style="margin-top: 6px;">
+          <li><span>架构组 — 决策与审查（不写码）</span></li>
+          <li><span>研发组 — 8-15 人按优先级</span></li>
+          <li><span>运维组 — 独立处理可用性</span></li>
+        </ul>
+      </div>
+
+      <div class="glass">
+        <span class="pill primary">⑤ · 20+ 人</span>
+        <h3 class="card-h" style="margin-top: 12px;">轻量指导</h3>
+        <ul class="lc dense" style="margin-top: 6px;">
+          <li><span>完全信任 · 无 review 瓶颈</span></li>
+          <li><span>CI/CD 强制约束</span></li>
+          <li><span>需：3+ 年经验 + 异步文化</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="glass glow edge-top" style="margin-top: 16px;">
+      <span class="eyebrow">6.3 · AI ROLE</span>
+      <h3 class="card-h" style="margin-top: 6px;">协作中的 AI 角色定位 — 从「做什么」到「让 AI 做什么」</h3>
+      <div class="glass pad-sm" style="padding: 0; margin-top: 12px; background: transparent; border: 0;">
+        <table class="t">
+          <thead><tr><th style="width:14%;">角色</th><th style="width:30%;">旧模式</th><th style="width:30%;">新模式</th><th>如何协作</th></tr></thead>
+          <tbody>
+            <tr><td>产品经理</td><td>写 PRD，扔给开发</td><td>定义 AC，验收 + 反馈</td><td>AI 帮理解需求，检查遗漏</td></tr>
+            <tr><td>架构师</td><td>设计 → 让团队执行</td><td>做决策，审查架构</td><td>AI 跟随决策执行，建议优化</td></tr>
+            <tr><td>前端 / 后端</td><td>自己写代码</td><td>指导 AI，验证 + 优化</td><td>AI 是编码者，人是导航员</td></tr>
+            <tr><td>测试</td><td>手工测试</td><td>设计用例，自动化运行</td><td>AI 生成 test case，执行</td></tr>
+            <tr><td>运维</td><td>部署 + 应急</td><td>设计基础设施，应急响应</td><td>AI 辅助诊断 / 自动化修复</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 27 — 路线图 -->
+  <section class="slide" data-title="实施路线图" data-section="Part VI">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">6.4 · Roadmap</span>
+        <h2 class="page-h">12 个月<span class="gradient-text">实施路线图</span>。</h2>
+      </div>
+      <div class="rhs">27 · VI</div>
+    </div>
+
+    <div class="content grid-4" style="gap: 16px;">
+      <div class="glass">
+        <div class="stage-badge">PHASE 01</div>
+        <h3 class="card-h" style="margin-top: 12px;">建立文档规范</h3>
+        <p class="caption">第 1 个月</p>
+        <ul class="lc dense" style="margin-top: 6px;">
+          <li><span>编写 CLAUDE.md / PROJECT.md</span></li>
+          <li><span>建立 Code Review 规范</span></li>
+          <li><span>选定默认模型（Opus 4.6）</span></li>
+          <li><span>团队培训 · 45 分钟</span></li>
+        </ul>
+      </div>
+
+      <div class="glass">
+        <div class="stage-badge">PHASE 02</div>
+        <h3 class="card-h" style="margin-top: 12px;">试点小功能</h3>
+        <p class="caption">第 2-3 个月</p>
+        <ul class="lc dense" style="margin-top: 6px;">
+          <li><span>选 1 个 2-3 周功能</span></li>
+          <li><span>用新流程完成</span></li>
+          <li><span>记录时间 / 质量 / 成本</span></li>
+          <li><span>团队反馈会议</span></li>
+        </ul>
+      </div>
+
+      <div class="glass">
+        <div class="stage-badge">PHASE 03</div>
+        <h3 class="card-h" style="margin-top: 12px;">扩大规模</h3>
+        <p class="caption">第 4-6 个月</p>
+        <ul class="lc dense" style="margin-top: 6px;">
+          <li><span>30-50% 功能用新模式</span></li>
+          <li><span>优化工作流</span></li>
+          <li><span>调整分工模式</span></li>
+          <li><span>建立最佳实践库</span></li>
+        </ul>
+      </div>
+
+      <div class="glass glow edge-top">
+        <div class="stage-badge active">PHASE 04</div>
+        <h3 class="card-h" style="margin-top: 12px;">完全转变</h3>
+        <p class="caption">第 7-12 个月</p>
+        <ul class="lc dense" style="margin-top: 6px;">
+          <li><span>大部分功能用新模式</span></li>
+          <li><span>持续优化</span></li>
+          <li><span>准备下一阶段</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 28 — Part VII divider -->
+  <section class="slide section-divider" data-title="VII · 思维转变" data-section="Part VII">
+    <div>
+      <span class="eyebrow">PART · VII</span>
+      <p class="caption" style="margin-top: 8px;">Chapter seven of eight</p>
+    </div>
+    <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
+      <div class="roman">VII</div>
+      <div style="max-width: min(720px, 100%); flex: 1;">
+        <div class="chapter-tag-row">
+          <span class="chapter-tag">思维转变</span>
+          <span class="gold-dash"></span>
+        </div>
+        <h2 class="section-h">
+          从执行者，<br/>
+          到<span class="gradient-text">放大器</span>。
+        </h2>
+        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 640px;">
+          如果 AI 能写代码，程序员的价值在哪里？答案是 — 思考、协调、放大他人。
+        </p>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div><div class="label">In this section</div><div class="value">三个维度 · 评估清单</div></div>
+      <div><div class="label">Key concept</div><div class="value">乘数效应 · 系统建设</div></div>
+      <div><div class="label">Estimated</div><div class="value">3 分钟</div></div>
+    </div>
+  </section>
+
+  <!-- 29 — 三个维度 -->
+  <section class="slide" data-title="执行者 → 管理者" data-section="Part VII">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">7.1 · Three shifts</span>
+        <h2 class="page-h">执行者 → <span class="gradient-text">管理者</span>，三个维度。</h2>
+      </div>
+      <div class="rhs">29 · VII</div>
+    </div>
+
+    <div class="content grid-3" style="gap: 20px;">
+      <div class="glass">
+        <span class="eyebrow">维度 I</span>
+        <h3 class="card-h" style="margin-top: 6px;">从「做」到「想」</h3>
+        <div style="margin-top: 10px;">
+          <div style="border-left: 2px solid var(--border-strong); padding-left: 12px;">
+            <div class="caption">执行者</div>
+            <p class="body" style="font-size: 13px; color: var(--text-dim);">"这个需求我用 2 周完成，方案是…"</p>
+          </div>
+          <div style="border-left: 2px solid var(--accent-2); padding-left: 12px; margin-top: 8px;">
+            <div class="caption" style="color: var(--accent-2);">管理者</div>
+            <p class="body" style="font-size: 13px; color: var(--text-dim);">"这个需求的本质是什么？有没有更简单的方案？长期扩展性如何？"</p>
+          </div>
+        </div>
+        <p class="caption" style="margin-top: 10px;"><b style="color:var(--text);">实践：</b>每周写 DESIGN DOC · 编码前问 5 个为什么</p>
+      </div>
+
+      <div class="glass">
+        <span class="eyebrow">维度 II</span>
+        <h3 class="card-h" style="margin-top: 6px;">从「贡献」到「放大」</h3>
+        <pre class="code" style="margin-top: 10px; font-size: 11px;"><span class="c-comment">执行者</span>
+1 人 / 月 → 5,000 行代码
+
+<span class="c-comment">管理者</span>
+通过规范 + 文档，3 人 / 月 →
+20,000 行 <span class="c-str">正确的</span>代码
+
+<span class="c-key">乘数效应 = 4×</span></pre>
+        <p class="caption" style="margin-top: 10px;"><b style="color:var(--text);">实践：</b>编写高质量 CLAUDE.md · 建设性 review</p>
+      </div>
+
+      <div class="glass">
+        <span class="eyebrow">维度 III</span>
+        <h3 class="card-h" style="margin-top: 6px;">从「修 bug」到「建系统」</h3>
+        <div style="margin-top: 10px;">
+          <div style="border-left: 2px solid var(--border-strong); padding-left: 12px;">
+            <div class="caption">执行者</div>
+            <p class="body" style="font-size: 13px; color: var(--text-dim);">"我修复了这个 bug"</p>
+          </div>
+          <div style="border-left: 2px solid var(--accent-2); padding-left: 12px; margin-top: 8px;">
+            <div class="caption" style="color: var(--accent-2);">管理者</div>
+            <p class="body" style="font-size: 13px; color: var(--text-dim);">"为什么出现？是需求？测试？架构？如何建立系统防止下次？"</p>
+          </div>
+        </div>
+        <p class="caption" style="margin-top: 10px;"><b style="color:var(--text);">实践：</b>建立 lint 规范 · 复盘不为追责而为改进</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 30 — Part VIII divider -->
+  <section class="slide section-divider" data-title="VIII · 陷阱与质量" data-section="Part VIII">
+    <div>
+      <span class="eyebrow">PART · VIII</span>
+      <p class="caption" style="margin-top: 8px;">Chapter eight of eight · Final</p>
+    </div>
+    <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
+      <div class="roman">VIII</div>
+      <div style="max-width: min(720px, 100%); flex: 1;">
+        <div class="chapter-tag-row">
+          <span class="chapter-tag">陷阱与质量</span>
+          <span class="gold-dash"></span>
+        </div>
+        <h2 class="section-h">
+          失败的方式，<br/>
+          比<span class="gradient-text">成功的多</span>。
+        </h2>
+        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 640px;">
+          AI 编程的常见失败不来自模型，而来自<span style="color: var(--text);">流程缺失</span>。
+        </p>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div><div class="label">In this section</div><div class="value">七个陷阱 · 三层防线</div></div>
+      <div><div class="label">Key concept</div><div class="value">质量内建 · 流程兜底</div></div>
+      <div><div class="label">Estimated</div><div class="value">4 分钟</div></div>
+    </div>
+  </section>
+
+  <!-- 31 — 陷阱 + 防线 -->
+  <section class="slide" data-title="陷阱 · 质量防线" data-section="Part VIII">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">8.1 — 8.2</span>
+        <h2 class="page-h">七个<span class="gradient-text">陷阱</span>，三层<span class="gradient-text">防线</span>。</h2>
+      </div>
+      <div class="rhs">31 · VIII</div>
+    </div>
+
+    <div class="content grid-3-2">
+      <div>
+        <span class="eyebrow">七个陷阱 · 与解药</span>
+        <div class="glass pad-sm" style="padding: 0; margin-top: 12px;">
+          <table class="t">
+            <thead><tr><th style="width: 26%;">陷阱</th><th style="width: 30%;">表现</th><th>解药</th></tr></thead>
+            <tbody>
+              <tr><td>文档不足</td><td>AI 常问"这个文件干嘛"</td><td>1 周写 CLAUDE.md / PROJECT.md</td></tr>
+              <tr><td>需求不清</td><td>开发出错误功能</td><td>评审多 15 分钟澄清 AC</td></tr>
+              <tr><td>模型选错</td><td>花 $100 不如 Sonnet</td><td>改 Opus 4.6 · 通常更便宜</td></tr>
+              <tr><td>会话失控</td><td>幻觉、重复自己</td><td>每会话 ≤ 5 任务即清空</td></tr>
+              <tr><td>没有验证</td><td>上线才发现问题</td><td>测试 + 审查 + 验收 checklist</td></tr>
+              <tr><td>全靠 AI</td><td>团队不懂系统怎么运行</td><td>强制定期读码 / 改 bug</td></tr>
+              <tr><td>分工不清</td><td>多人改同文件冲突多</td><td>明确每模块所有者</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="account-card">
+        <div class="eyebrow" style="color: rgba(255,255,255,0.75);">QUALITY · 三层防线</div>
+        <h3 class="card-h" style="color: white; margin-top: 6px;">Defense in depth</h3>
+
+        <div style="border-top: 1px solid rgba(255,255,255,0.15); padding-top: 14px; margin-top: 16px;">
+          <div class="sub-h" style="color: rgba(255,255,255,0.95); font-size: 14px;">Layer 1 · AI 编码约束</div>
+          <ul class="lc dense" style="margin-top: 4px;">
+            <li style="color: rgba(255,255,255,0.85);"><span>强制 TDD</span></li>
+            <li style="color: rgba(255,255,255,0.85);"><span>lint 自动检查</span></li>
+            <li style="color: rgba(255,255,255,0.85);"><span>风格规范（CLAUDE.md）</span></li>
+          </ul>
+        </div>
+
+        <div style="border-top: 1px solid rgba(255,255,255,0.15); padding-top: 14px; margin-top: 12px;">
+          <div class="sub-h" style="color: rgba(255,255,255,0.95); font-size: 14px;">Layer 2 · 人工审查</div>
+          <ul class="lc dense" style="margin-top: 4px;">
+            <li style="color: rgba(255,255,255,0.85);"><span>5-10 分钟代码评论</span></li>
+            <li style="color: rgba(255,255,255,0.85);"><span>大功能架构检查</span></li>
+            <li style="color: rgba(255,255,255,0.85);"><span>产品 AC 验收</span></li>
+          </ul>
+        </div>
+
+        <div style="border-top: 1px solid rgba(255,255,255,0.15); padding-top: 14px; margin-top: 12px;">
+          <div class="sub-h" style="color: rgba(255,255,255,0.95); font-size: 14px;">Layer 3 · 自动测试 + 监控</div>
+          <ul class="lc dense" style="margin-top: 4px;">
+            <li style="color: rgba(255,255,255,0.85);"><span>单测覆盖 &gt; 80%</span></li>
+            <li style="color: rgba(255,255,255,0.85);"><span>核心 E2E + 集成</span></li>
+            <li style="color: rgba(255,255,255,0.85);"><span>线上告警 + 自动回滚</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 32 — 总结 -->
+  <section class="slide" data-title="总结" data-section="Closing">
+    <div class="slide-head">
+      <div class="lhs">
+        <span class="eyebrow">In closing</span>
+        <h2 class="page-h">三句话<span class="gradient-text">带走</span>。</h2>
+      </div>
+      <div class="rhs">32</div>
+    </div>
+
+    <div class="content stack" style="gap: 24px; justify-content: center;">
+      <div class="grid-3" style="gap: 20px;">
+        <div class="glass glow edge-top">
+          <span class="eyebrow">技能转变</span>
+          <h3 class="card-h" style="margin-top: 8px;">掌握细节 → 掌握原理</h3>
+          <hr style="border: 0; border-top: 1px solid var(--border); margin: 12px 0;" />
+          <p class="body" style="font-size: 14px;">不再追求每种语言、每个框架的细节，而是理解共通的<b style="color:var(--text);">系统原理</b>。</p>
+        </div>
+        <div class="glass glow-accent edge-top">
+          <span class="eyebrow">工作转变</span>
+          <h3 class="card-h" style="margin-top: 8px;">自己写码 → 指导 AI 写码</h3>
+          <hr style="border: 0; border-top: 1px solid var(--border); margin: 12px 0;" />
+          <p class="body" style="font-size: 14px;">人类<b style="color:var(--text);">设计需求、定义边界、验证结果</b>；AI 负责生产。</p>
+        </div>
+        <div class="glass glow edge-top">
+          <span class="eyebrow">价值转变</span>
+          <h3 class="card-h" style="margin-top: 8px;">个人贡献 → 放大他人</h3>
+          <hr style="border: 0; border-top: 1px solid var(--border); margin: 12px 0;" />
+          <p class="body" style="font-size: 14px;">写一份让 3 个人都受益的<b style="color:var(--text);">文档与规范</b>，胜过多写 5000 行代码。</p>
+        </div>
+      </div>
+
+      <div class="pull-quote-wrap" style="margin-top: 8px;">
+        <p class="pull-quote" style="max-width: 60ch;">
+          这不是技术升级，<br/>而是<span class="gradient-text">组织能力的</span>重塑。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 33 — Thank you -->
+  <section class="slide" data-title="致谢与下一步" data-section="Thank you">
+    <div class="content" style="justify-content: space-between;">
+
+      <div>
+        <span class="eyebrow">Thank you</span>
+      </div>
+
+      <div>
+        <h1 class="display-h" style="line-height: 1;">
+          Thank<br/>
+          <span class="gradient-text">you.</span>
+        </h1>
+        <p class="lede" style="margin-top: 24px; font-size: 20px;">
+          欢迎与我们进一步交流 — <span style="color: var(--text);">关于范式、协作、人才结构</span>。
+        </p>
+        <div class="row" style="margin-top: 28px;">
+          <button class="btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            预约 1:1 深谈
+          </button>
+          <button class="btn-secondary">下载 PDF</button>
+        </div>
+      </div>
+
+      <div class="grid-3" style="gap: 20px; border-top: 1px solid var(--border); padding-top: 20px;">
+        <div class="glass">
+          <span class="eyebrow">立即行动 · 今天</span>
+          <ul class="lc dense" style="margin-top: 8px;">
+            <li><span>写一份 CLAUDE.md（30 分钟）</span></li>
+            <li><span>选 1 个中等任务，用新流程</span></li>
+            <li><span>记录时间 / 质量 / 成本对比</span></li>
+          </ul>
+        </div>
+        <div class="glass">
+          <span class="eyebrow">本周</span>
+          <ul class="lc dense" style="margin-top: 8px;">
+            <li><span>完善 PROJECT.md / 知识文档</span></li>
+            <li><span>确定默认模型和工具</span></li>
+            <li><span>建立 code review 规范</span></li>
+            <li><span>团队培训和分享</span></li>
+          </ul>
+        </div>
+        <div class="glass glow edge-top">
+          <span class="eyebrow">下一份简报 · 预告</span>
+          <ul class="lc dense" style="margin-top: 8px;">
+            <li><span>《AI-native 团队的招聘画像》</span></li>
+            <li><span>《研发组织在 AI 时代的 KPI 重构》</span></li>
+            <li><span>《自动化测试与部署的下一阶段》</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Bottom chrome -->
+<footer class="chrome-bottom" aria-hidden="true">
+  <span class="section-label" id="sectionLabel">Cover</span>
+  <span class="pager"><span class="cur" id="curPage">01</span><span class="sep">/</span><span id="totPage">33</span></span>
+</footer>
+
+<!-- Nav -->
+<nav class="nav-arrows" aria-label="幻灯片导航">
+  <button id="prevBtn" aria-label="上一页">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <button id="nextBtn" aria-label="下一页">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+</nav>
+
+<!-- Overview -->
+<div class="overview-mask" id="overviewMask">
+  <div class="ov-panel">
+    <div class="ov-head">
+      <div>
+        <span class="eyebrow">Overview</span>
+        <h2 class="page-h" style="margin-top: 6px;">All slides</h2>
+      </div>
+      <button onclick="closeOverview()" style="background: var(--bg-glass-2); border: 1px solid var(--border-strong); color: var(--text); padding: 8px 16px; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; border-radius: 8px;">ESC · CLOSE</button>
+    </div>
+    <div class="ov-grid" id="overviewGrid"></div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const total = slides.length;
+    const progress = document.getElementById('progressBar');
+    const curPage = document.getElementById('curPage');
+    const totPage = document.getElementById('totPage');
+    const sectionLabel = document.getElementById('sectionLabel');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const overviewMask = document.getElementById('overviewMask');
+    const overviewGrid = document.getElementById('overviewGrid');
+    let idx = 0;
+
+    totPage.textContent = String(total).padStart(2, '0');
+    const pad = (n) => String(n).padStart(2, '0');
+
+    function show(i) {
+      i = Math.max(0, Math.min(total - 1, i));
+      slides[idx].classList.remove('active');
+      slides[i].classList.add('active');
+      idx = i;
+      curPage.textContent = pad(i + 1);
+      progress.style.width = ((i + 1) / total) * 100 + '%';
+      sectionLabel.textContent = slides[i].dataset.section || '';
+      prevBtn.disabled = i === 0;
+      nextBtn.disabled = i === total - 1;
+      try { history.replaceState(null, '', '#' + (i + 1)); } catch (e) {}
+    }
+    function next() { show(idx + 1); }
+    function prev() { show(idx - 1); }
+
+    document.addEventListener('keydown', (e) => {
+      if (overviewMask.classList.contains('show')) {
+        if (e.key === 'Escape') closeOverview();
+        return;
+      }
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+      else if (e.key === 'Home') { show(0); }
+      else if (e.key === 'End') { show(total - 1); }
+      else if (e.key === 'f' || e.key === 'F') { toggleFs(); }
+      else if (e.key === 'o' || e.key === 'O') { openOverview(); }
+      else if (e.key === 'Escape') { closeOverview(); }
+    });
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+
+    function toggleFs() {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+      else document.exitFullscreen?.();
+    }
+
+    // Touch
+    let tx = null;
+    document.addEventListener('touchstart', (e) => { tx = e.touches[0].clientX; }, { passive: true });
+    document.addEventListener('touchend', (e) => {
+      if (tx == null) return;
+      const dx = e.changedTouches[0].clientX - tx;
+      if (Math.abs(dx) > 50) { dx < 0 ? next() : prev(); }
+      tx = null;
+    });
+
+    // Wheel (debounced)
+    let wheelLock = false;
+    document.addEventListener('wheel', (e) => {
+      if (wheelLock) return;
+      if (Math.abs(e.deltaY) < 30 && Math.abs(e.deltaX) < 30) return;
+      wheelLock = true;
+      setTimeout(() => wheelLock = false, 800);
+      if (e.deltaY > 0 || e.deltaX > 0) next(); else prev();
+    }, { passive: true });
+
+    // Overview
+    function buildOverview() {
+      overviewGrid.innerHTML = slides.map((s, i) => {
+        const t = s.dataset.title || ('Slide ' + (i + 1));
+        return `<div class="ov-card ${i === idx ? 'current' : ''}" data-i="${i}">
+                  <div class="ov-num">${pad(i + 1)} / ${pad(total)}</div>
+                  <div class="ov-title">${t}</div>
+                </div>`;
+      }).join('');
+      overviewGrid.querySelectorAll('.ov-card').forEach(el => {
+        el.addEventListener('click', () => {
+          show(parseInt(el.dataset.i, 10));
+          closeOverview();
+        });
+      });
+    }
+    function openOverview() { buildOverview(); overviewMask.classList.add('show'); }
+    function closeOverview() { overviewMask.classList.remove('show'); }
+    window.closeOverview = closeOverview;
+
+    // Hash routing
+    const hash = parseInt((location.hash || '#1').slice(1), 10);
+    if (!isNaN(hash) && hash >= 1 && hash <= total) show(hash - 1);
+    else show(0);
+  })();
+</script>
+
+</body>
+</html>
