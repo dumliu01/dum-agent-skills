@@ -113,13 +113,13 @@ cp ~/.claude/skills/dum_ppt/assets/templates/fintech-dark.html outputs/<topic>.h
   </div>
   <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
     <div class="roman">I</div>
-    <div style="max-width: min(720px, 100%); flex: 1;">
+    <div style="max-width: min(880px, 100%); flex: 1;">  <!-- 必须 880，不要回退到 720（见陷阱 #10） -->
       <div class="chapter-tag-row">
         <span class="chapter-tag">范式之变</span>
         <span class="gold-dash"></span>
       </div>
       <h2 class="section-h">
-        主标题第一行，<br/>
+        主标题第一行，<br/>                    <!-- ≤ 14 个中文字符/行（见陷阱 #10） -->
         主标题<span class="gradient-text">关键词</span>第二行。
       </h2>
       <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 640px;">
@@ -210,6 +210,7 @@ cp ~/.claude/skills/dum_ppt/assets/templates/fintech-dark.html outputs/<topic>.h
 7. **gradient-text 用得稀** — 一句话最多 1-2 处关键词，到处都是反而失焦
 8. **带 `::before` 的列表（`ol.lcn` 等）不要手动塞占位 `<div></div>`** — CSS `::before` 已经是 grid 第一列（编号 badge），手动占位会把真正的内容挤到下一行第 1 列（36px 宽），中文会被压成一字一行。`<li>` 直接放一个内容 div 即可
 9. **封面/Thanks 的短标题（≤6 字，如「谢谢大家」「Thank you」）不用 `<br/>` 强行拆行** — `display-h` 字号已经够大，4 个字拆成 2+2 看起来「字数太少」很奇怪。直接一行 + 加 `white-space: nowrap` 防小屏意外换行
+10. **章节分隔页 `.section-h` 每行 ≤ 14 个中文字符**（更严格 ≤ 12）— **算术**：默认 `--t-section` 是 4.4vw，1440 屏 = 63px；中文一字 ≈ 1em；容器 880px ÷ 63px ≈ **14 字/行**。超过这个数浏览器会在你的 `<br/>` 之前自动换行。模板已默认应用 scoped CSS `.section-divider .section-h { font-size: clamp(30px, 3.6vw, 54px) }`（→ 1440 屏 52px，约 17 字/行）+ 容器 `min(880px, 100%)`。**不要回退**到 720px。文案确实超长时（如要列 3-4 个并列词），<u>改写</u>比放宽更可靠
 
 ## Pre-Delivery Checklist
 
@@ -219,6 +220,7 @@ cp ~/.claude/skills/dum_ppt/assets/templates/fintech-dark.html outputs/<topic>.h
 - [ ] 章节分隔页用 chapter-tag + gold-dash，**不是** "章节名 ——" 挤进 section-h
 - [ ] 中文标题：line-height ≥ 1.2、letter-spacing 不为负
 - [ ] 所有 `max-width: Nch` 限制都改为像素或 `min(720px, 100%)`
+- [ ] 章节分隔页 `.section-h` **每行 ≤ 14 个中文字符**；容器是 `min(880px, 100%)`（不是 720px）；scoped CSS `.section-divider .section-h { font-size: clamp(30px, 3.6vw, 54px) }` 在位
 - [ ] 所有 button 里的 SVG 有 `flex-shrink:0` + 固定 width/height
 - [ ] 所有 button 有 `white-space: nowrap`
 - [ ] `ol.lcn` / 任何 grid + `::before` 的列表里 `<li>` **只有一个**内容子元素（不要手动加占位 div）
@@ -249,6 +251,8 @@ cp ~/.claude/skills/dum_ppt/assets/templates/fintech-dark.html outputs/<topic>.h
 | 长 markdown 改完 PPT 章节顺序混乱 | 1:1 复制章节没合并 | 先规划 slide list 给用户看，再写 HTML |
 | `ol.lcn` 列表内容一字一行 | `<li>` 里手动加了空 `<div></div>` 占位，把内容挤到下一行 36px 列 | 删空 div，`<li>` 只放一个内容 div；`::before` 已经是第一列 |
 | 封面 / Thanks 短标题字数显得太少 | `<br/>` 把 4 字标题拆成 2+2 行 | 去 `<br/>` + `white-space: nowrap` 防小屏换行 |
+| 章节分隔页主标题在 `<br/>` 之前就自动换行了 | 容器 720px + 字号 4.4vw → 1440 屏每行只能放 11 个中文字符 | 容器改 `min(880px, 100%)` + 加 scoped CSS `.section-divider .section-h { font-size: clamp(30px, 3.6vw, 54px); line-height: 1.28 }`；模板已默认这样写 |
+| 章节分隔页主标题挤但容器和字号都已经设对 | 文案本身 ≥ 15 个中文字符 | 重写文案 ≤ 14 字/行；3-4 个并列词改成 2+2 或合并；地名/公司名连串（如「OpenAI / LangChain / HashiCorp」）改写为「一线团队」 |
 
 ## 与 ui-ux-pro-max 的关系
 

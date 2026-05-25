@@ -259,6 +259,16 @@
   /* English-only headings can use tighter tracking */
   .section-h:lang(en), .display-h:lang(en) { letter-spacing: -0.025em; line-height: 1.05; }
 
+  /* Chapter divider headings — smaller font so 12-16 char Chinese lines fit.
+     Default --t-section is 4.4vw (≈63px @ 1440 viewport); paired with the
+     720px text container that only gives ~11 Chinese chars/line, which is
+     too tight for typical Chinese section titles. This scoped override gives
+     ~17 chars/line at the same viewport. */
+  .section-divider .section-h {
+    font-size: clamp(30px, 3.6vw, 54px);
+    line-height: 1.28;
+  }
+
   .page-h {
     font-family: 'Space Grotesk', sans-serif;
     font-size: var(--t-page);
@@ -1127,7 +1137,7 @@
     </div>
     <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
       <div class="roman">I</div>
-      <div style="max-width: min(720px, 100%); flex: 1;">
+      <div style="max-width: min(880px, 100%); flex: 1;">
         <div class="chapter-tag-row">
           <span class="chapter-tag">范式之变</span>
           <span class="gold-dash"></span>
@@ -1258,7 +1268,7 @@
     </div>
     <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
       <div class="roman">II</div>
-      <div style="max-width: min(720px, 100%); flex: 1;">
+      <div style="max-width: min(880px, 100%); flex: 1;">
         <div class="chapter-tag-row">
           <span class="chapter-tag">工具与模型</span>
           <span class="gold-dash"></span>
@@ -1430,7 +1440,7 @@
     </div>
     <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
       <div class="roman">III</div>
-      <div style="max-width: min(720px, 100%); flex: 1;">
+      <div style="max-width: min(880px, 100%); flex: 1;">
         <div class="chapter-tag-row">
           <span class="chapter-tag">最佳实践</span>
           <span class="gold-dash"></span>
@@ -1705,7 +1715,7 @@
     </div>
     <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
       <div class="roman">IV</div>
-      <div style="max-width: min(720px, 100%); flex: 1;">
+      <div style="max-width: min(880px, 100%); flex: 1;">
         <div class="chapter-tag-row">
           <span class="chapter-tag">Skills 与工作流</span>
           <span class="gold-dash"></span>
@@ -1843,7 +1853,7 @@
     </div>
     <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
       <div class="roman">V</div>
-      <div style="max-width: min(720px, 100%); flex: 1;">
+      <div style="max-width: min(880px, 100%); flex: 1;">
         <div class="chapter-tag-row">
           <span class="chapter-tag">能力转变</span>
           <span class="gold-dash"></span>
@@ -1996,7 +2006,7 @@
     </div>
     <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
       <div class="roman">VI</div>
-      <div style="max-width: min(720px, 100%); flex: 1;">
+      <div style="max-width: min(880px, 100%); flex: 1;">
         <div class="chapter-tag-row">
           <span class="chapter-tag">团队协作</span>
           <span class="gold-dash"></span>
@@ -2287,7 +2297,7 @@
     </div>
     <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
       <div class="roman">VII</div>
-      <div style="max-width: min(720px, 100%); flex: 1;">
+      <div style="max-width: min(880px, 100%); flex: 1;">
         <div class="chapter-tag-row">
           <span class="chapter-tag">思维转变</span>
           <span class="gold-dash"></span>
@@ -2375,7 +2385,7 @@
     </div>
     <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
       <div class="roman">VIII</div>
-      <div style="max-width: min(720px, 100%); flex: 1;">
+      <div style="max-width: min(880px, 100%); flex: 1;">
         <div class="chapter-tag-row">
           <span class="chapter-tag">陷阱与质量</span>
           <span class="gold-dash"></span>
