@@ -1,0 +1,39 @@
+{
+  "name": "dum-agent-skills",
+  "version": "0.1.0",
+  "description": "个人技能库：PPT 生成、技术方案设计、知识库文档体系、设计文档对账、会话总结。",
+  "author": {
+    "name": "dum",
+    "email": "dumliu01@gmail.com",
+    "url": "https://github.com/dumliu01"
+  },
+  "homepage": "https://github.com/dumliu01/dum-agent-skills",
+  "repository": "https://github.com/dumliu01/dum-agent-skills",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "documentation",
+    "knowledge-base",
+    "architecture",
+    "solution-design",
+    "ppt"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Dum Agent Skills",
+    "shortDescription": "文档体系 / 方案设计 / PPT 等工程文档技能",
+    "longDescription": "搭建并维护项目知识库文档体系（docs/ taxonomy + CLAUDE.md 入口 + 架构文档 + 自动文档索引）、输出结构化技术方案、把设计文档与代码现状对账、把会话改动总结进修改记录，以及把 Markdown 转成可全屏播放的单 HTML PPT。",
+    "developerName": "dum",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "帮我给这个项目搭建知识库文档体系",
+      "出个技术方案"
+    ],
+    "websiteURL": "https://github.com/dumliu01/dum-agent-skills"
+  }
+}
