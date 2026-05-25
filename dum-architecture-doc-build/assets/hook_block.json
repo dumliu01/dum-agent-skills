@@ -1,5 +1,5 @@
 {
-  "_comment": "复制 'hooks' 段到 <project_root>/.claude/settings.local.json。如果该文件不存在，先创建包含 'permissions.allow: []' 的最小骨架再合并；如果存在但没有 'hooks' 字段，直接添加；如果已有 'hooks' 字段，把这里的 PostToolUse 项 merge 到 hooks.PostToolUse 数组里。每个服务对应一个 update_architecture_<service>.py command；另外加一个项目级的 update_doc_map.py（文档地图，只需一个）。全部并列在同一个 hooks 数组里。",
+  "_comment": "复制 'hooks' 段到 <project_root>/.claude/settings.local.json。如果该文件不存在，先创建包含 'permissions.allow: []' 的最小骨架再合并；如果存在但没有 'hooks' 字段，直接添加；如果已有 'hooks' 字段，把这里的 PostToolUse 项 merge 到 hooks.PostToolUse 数组里。每个子项目对应一个 update_architecture_<service>.py command；另外加一个项目级的 update_docs_index.py（文档索引，只需一个）。全部并列在同一个 hooks 数组里。注意：scaffold_docs_structure.py 是一次性脚手架，不进 hook。",
 
   "hooks": {
     "PostToolUse": [
@@ -18,7 +18,7 @@
           },
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/update_doc_map.py\"",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/update_docs_index.py\"",
             "timeout": 10
           }
         ]
@@ -29,9 +29,10 @@
   "_permissions_allowlist_to_add": [
     "Bash(python3 \"$CLAUDE_PROJECT_DIR/scripts/update_architecture_backend.py\":*)",
     "Bash(python3 \"$CLAUDE_PROJECT_DIR/scripts/update_architecture_frontend.py\":*)",
-    "Bash(python3 \"$CLAUDE_PROJECT_DIR/scripts/update_doc_map.py\":*)",
+    "Bash(python3 \"$CLAUDE_PROJECT_DIR/scripts/update_docs_index.py\":*)",
     "Bash(python3 scripts/update_architecture_backend.py:*)",
     "Bash(python3 scripts/update_architecture_frontend.py:*)",
-    "Bash(python3 scripts/update_doc_map.py:*)"
+    "Bash(python3 scripts/update_docs_index.py:*)",
+    "Bash(python3 scripts/scaffold_docs_structure.py:*)"
   ]
 }

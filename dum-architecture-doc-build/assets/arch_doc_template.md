@@ -1,8 +1,8 @@
 # {{Service Name}} — 程序架构文档
 
-> 📐 本文档为 Claude Code 开发时的架构参考，与 `CLAUDE.md` 互补。
-> `CLAUDE.md` 侧重 **开发规范**，本文档侧重 **系统结构**。
-> 📚 知识库总索引（含**全项目文档地图**：哪些文档在哪些目录）：[`./README.md`](./README.md)
+> 📐 本文档侧重**系统结构**，与 `CLAUDE.md`（开发规范）互补。
+> 🤖 项目总入口：[`../../CLAUDE.md`](../../CLAUDE.md) ｜ 本子项目入口：[`../../{{service}}/CLAUDE.md`](../../{{service}}/CLAUDE.md)（如有）
+> 📚 全项目文档索引（自动维护）：[`../reference/docs-index.md`](../reference/docs-index.md)
 > 其它服务的架构文档：[`./{{other_service}}.md`](./{{other_service}}.md)（如有）
 
 ---

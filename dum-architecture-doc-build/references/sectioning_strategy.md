@@ -107,35 +107,33 @@ Stage history 文档不在则跳过本节，整节删除（不要留空 placehol
 
 ---
 
-# 文档地图 / 知识库索引（docs/architecture/README.md）
+# 文档索引 docs/reference/docs-index.md
 
-骨架见 `assets/arch_index_template.md`。这页回答的是「**项目里有哪些文档、分别在哪些目录**」，跟架构文档回答「代码结构」互补。三块内容：
+骨架由 `scaffold_docs_structure.py` 生成，自动区由 `update_docs_index.py` 维护。它回答「**项目里有哪些文档、分别属于哪个分类**」，跟架构文档回答「代码结构」互补。
 
-## ① 架构文档链接表（人工）
+## 自动区怎么来的（你不用手写）
 
-一行一个服务，链到对应 `*.md`，加一句话。多服务才需要；单服务直接省掉这页，把 DOC-MAP 标记嵌进唯一那份架构文档。
+`update_docs_index.py` 按 `CATEGORIES` 顺序扫 `docs/` 各分类目录，**按分类分节**渲染，每节列该类文档（解析 `YYYYMMDD-标题.md` 文件名 → 日期，按日期倒序排），空分类标 `（暂无）`。你只要保证：
 
-## ② 必读导航（人工）
+- **描述能被提取到**：每份文档有 frontmatter `title`/`description`，或至少一个一级 `#` 标题。否则索引里拿文件名当标题。
+- **命名带日期**（该带的类）：product-design / tech-design / report / modify_history / deffered / superpowers 用 `YYYYMMDD-[标题].md`，否则排到"无日期"末尾、丢失时间排序。
+- **分类对齐**：`scaffold_docs_structure.py` 和 `update_docs_index.py` 的 `CATEGORIES` 必须一致；改一个就改另一个。
 
-**只挑 onboarding 必读的 3-8 个**，按阅读顺序排。每条 = 文档名 + 链接 + 一句话「为什么要读它」。
+## 自动区之外的人工内容
 
-典型必读集：
+`docs-index.md` 自动区只是「全量清单」。「先读什么」的策展（onboarding 必读 3-8 个）放在**根 `CLAUDE.md` 的「文档索引」节**，不要塞进 docs-index.md 的自动区（会被覆盖）。
 
-- **开发规范** `CLAUDE.md` — 写代码前的硬规矩
-- **方案设计目录** `方案设计/` — 每个功能一份（dum-solution-design 产出，命名 `<YYYYMMDD>-<功能名>.md`）
-- **Stage 演进史** — 项目怎么一路演化到现在
-- **ADR / 决策记录** — 为什么这么选型
+## 文档归类速查
 
-不要在这里手抄全量文档列表（那是 ③ 自动区干的事）；这里只做「先看什么」的策展。
-
-## ③ 文档地图（自动区，DOC-MAP marker）
-
-`scripts/update_doc_map.py` 自动渲染全项目文档树。你不用手写这块，但要保证：
-
-- **描述能被提取到**：每份文档有 frontmatter `title`/`description`，或至少一个一级 `#` 标题。否则地图里只剩路径没有说明。
-- **噪音被排除**：`node_modules` / `.git` / dotdir 默认已排；`third_party/`、`examples/`、依赖 vendored 的 README 要手动加进脚本的 `EXCLUDE_DIRS` 或把 `DOC_SCAN_DIRS` 收窄成白名单。
-- **范围合理**：默认扫全项目 `["."]`。如果项目文档很集中（都在 `docs/` + `方案设计/`），收窄白名单让地图更干净。
-
-## 单服务项目怎么办
-
-不值得单开索引页时：把 ② 的必读导航 + ③ 的 DOC-MAP marker 直接放进唯一那份架构文档（放在 §1 概述之后、§2 目录结构之前都行）。`update_doc_map.py` 的 `DOC_MAP_MD_REL` 指向这份文档即可。`AUTO-GENERATED`（源码）和 `DOC-MAP`（文档）两对 marker 在同一文件里共存，互不干扰。
+| 你手上的文档 | 放进 |
+|---|---|
+| 需求 / 产品设计 | `docs/product-design/` |
+| 技术方案（dum-solution-design 产出） | `docs/tech-design/` |
+| 编码 / 提交 / 测试规范 | `docs/specification/`（不带日期） |
+| 阶段总结 / 改动记录 | `docs/modify_history/` |
+| 决定推迟、不能丢的待办 | `docs/deffered/` |
+| 性能/调研/复盘报告 | `docs/report/` |
+| 部署手册 | `docs/manual_deployment/` |
+| 用户使用手册 | `docs/manual_userguides/` |
+| superpowers 的 plan / spec | `docs/superpowers/plans/` `…/specs/` |
+| 外部参考资料 | `docs/reference/` |

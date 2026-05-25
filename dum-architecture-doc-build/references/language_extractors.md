@@ -1,8 +1,9 @@
 # 描述提取器 — 按语言对照
 
 > 本页讲的是**源码清单脚本** `update_architecture_manifest.py` 的提取器（从代码文件取描述）。
-> **文档地图脚本** `update_doc_map.py` 用的是另一个内置提取器 `extract_doc_title`（从 `.md` 取描述：
-> frontmatter `title`/`description` → 首个 `#` 标题 → 首行非空正文），不在本页范围，一般不用改。
+> **文档索引脚本** `update_docs_index.py` 用的是另一个内置提取器 `extract_doc_title`（从 `.md` 取描述：
+> frontmatter `title`/`description` → 首个 `#` 标题 → 首行非空正文）+ 解析 `YYYYMMDD-标题.md` 文件名取日期，
+> 不在本页范围，一般不用改。
 
 骨架脚本 `scripts/update_architecture_manifest.py` 内置 3 个：
 
