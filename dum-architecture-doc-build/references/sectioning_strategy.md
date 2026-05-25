@@ -104,3 +104,38 @@ ASCII art 或 Mermaid，看用户偏好。**只画"高层架构层"**：
 不要写"全部完成"或"持续迭代"这种废话。引用权威 stage history 文档，列最近 1-3 个 stage 名 + tag + 一句话内容；下一步候选列 2-4 个。
 
 Stage history 文档不在则跳过本节，整节删除（不要留空 placeholder）。
+
+---
+
+# 文档地图 / 知识库索引（docs/architecture/README.md）
+
+骨架见 `assets/arch_index_template.md`。这页回答的是「**项目里有哪些文档、分别在哪些目录**」，跟架构文档回答「代码结构」互补。三块内容：
+
+## ① 架构文档链接表（人工）
+
+一行一个服务，链到对应 `*.md`，加一句话。多服务才需要；单服务直接省掉这页，把 DOC-MAP 标记嵌进唯一那份架构文档。
+
+## ② 必读导航（人工）
+
+**只挑 onboarding 必读的 3-8 个**，按阅读顺序排。每条 = 文档名 + 链接 + 一句话「为什么要读它」。
+
+典型必读集：
+
+- **开发规范** `CLAUDE.md` — 写代码前的硬规矩
+- **方案设计目录** `方案设计/` — 每个功能一份（dum-solution-design 产出，命名 `<YYYYMMDD>-<功能名>.md`）
+- **Stage 演进史** — 项目怎么一路演化到现在
+- **ADR / 决策记录** — 为什么这么选型
+
+不要在这里手抄全量文档列表（那是 ③ 自动区干的事）；这里只做「先看什么」的策展。
+
+## ③ 文档地图（自动区，DOC-MAP marker）
+
+`scripts/update_doc_map.py` 自动渲染全项目文档树。你不用手写这块，但要保证：
+
+- **描述能被提取到**：每份文档有 frontmatter `title`/`description`，或至少一个一级 `#` 标题。否则地图里只剩路径没有说明。
+- **噪音被排除**：`node_modules` / `.git` / dotdir 默认已排；`third_party/`、`examples/`、依赖 vendored 的 README 要手动加进脚本的 `EXCLUDE_DIRS` 或把 `DOC_SCAN_DIRS` 收窄成白名单。
+- **范围合理**：默认扫全项目 `["."]`。如果项目文档很集中（都在 `docs/` + `方案设计/`），收窄白名单让地图更干净。
+
+## 单服务项目怎么办
+
+不值得单开索引页时：把 ② 的必读导航 + ③ 的 DOC-MAP marker 直接放进唯一那份架构文档（放在 §1 概述之后、§2 目录结构之前都行）。`update_doc_map.py` 的 `DOC_MAP_MD_REL` 指向这份文档即可。`AUTO-GENERATED`（源码）和 `DOC-MAP`（文档）两对 marker 在同一文件里共存，互不干扰。
