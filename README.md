@@ -14,6 +14,8 @@
 | [`dum-session-summary`](skills/dum-session-summary/) | 把会话改动总结进 `docs/modify_history/`，生成交接文档 |
 | [`dum-ppt`](skills/dum-ppt/) | 把 Markdown 转成单 HTML、可全屏播放的演示文档 |
 
+> 变更历史见 [`CHANGELOG.md`](CHANGELOG.md)。
+
 ## 安装
 
 不同 agent 安装方式不同；多个一起用就各装一次。
