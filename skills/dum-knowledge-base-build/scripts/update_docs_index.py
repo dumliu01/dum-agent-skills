@@ -2,7 +2,7 @@
 """文档索引自动更新脚本（dum-knowledge-base-build skill 模板）。
 
 按约定的文档体系扫描 `docs/` 下各分类目录，渲染出**按分类分节**的文档索引，
-写进 `docs/reference/docs-index.md` 的 DOCS-INDEX 区。是 `update_architecture_*.py`
+写进 `docs/docs-index.md` 的 DOCS-INDEX 区。是 `update_architecture_*.py`
 （源码清单）的姊妹脚本——那个回答「代码在哪」，这个回答「文档在哪」。
 
 设计：
@@ -31,7 +31,7 @@ from pathlib import Path
 # ============================================================================
 
 # 1) 索引文件位置 + docs 根（相对项目根）
-DOCS_INDEX_MD_REL = "docs/reference/docs-index.md"
+DOCS_INDEX_MD_REL = "docs/docs-index.md"
 DOCS_ROOT_REL = "docs"
 
 # 2) 分类顺序与中文标题 —— 必须与 scaffold_docs_structure.py 的 CATEGORIES 对齐。

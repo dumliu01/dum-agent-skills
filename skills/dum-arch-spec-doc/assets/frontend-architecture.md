@@ -1,7 +1,7 @@
 # {{服务名}} — 程序架构文档
 
 > 📐 本文档侧重**系统结构**（描述性）。开发规范见 [`../specification/{{service}}-规范.md`](../specification/{{service}}-规范.md)。
-> 🤖 项目入口：[`../../CLAUDE.md`](../../CLAUDE.md) ｜ 文档索引：[`../reference/docs-index.md`](../reference/docs-index.md)（如有）
+> 🤖 项目入口：[`../../CLAUDE.md`](../../CLAUDE.md) ｜ 文档索引：[`../docs-index.md`](../docs-index.md)（如有）
 
 ---
 

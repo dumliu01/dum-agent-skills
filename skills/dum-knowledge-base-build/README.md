@@ -10,16 +10,17 @@
 <project>/
 ├── CLAUDE.md                  # agent 总入口（项目概述 + 子项目 + 文档索引）
 ├── docs/
+│   ├── docs-index.md          # 分类文档索引（自动维护，docs/ 总入口）
 │   ├── architecture/          # 各子项目架构文档（含 AUTO-GENERATED 源码树）
 │   ├── specification/         # 编程/工程规范
 │   ├── product-design/ tech-design/ superpowers/
 │   ├── modify_history/ deffered/ report/
 │   ├── manual_deployment/ manual_userguides/
-│   └── reference/             # 含 docs-index.md（自动维护）
+│   └── reference/             # 参考资料 / 外部链接
 └── <service>/CLAUDE.md        # 各子项目入口
 ```
 
-外加两个**自动更新的区域**（PostToolUse hook 驱动）：各服务源码目录清单写进对应架构文档；分类文档索引写进 `docs/reference/docs-index.md`。
+外加两个**自动更新的区域**（PostToolUse hook 驱动）：各服务源码目录清单写进对应架构文档；分类文档索引写进 `docs/docs-index.md`。
 
 ## 何时触发
 

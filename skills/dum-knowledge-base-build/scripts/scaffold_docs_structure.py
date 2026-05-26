@@ -2,7 +2,7 @@
 """一次性脚手架：建立项目知识库的标准 docs/ 结构（dum-knowledge-base-build skill）。
 
 按约定的文档体系创建 docs/ 下全部子目录，每个目录放一份 README.md 说明用途和
-文件命名规范；并生成 docs/reference/docs-index.md 的骨架（带 DOCS-INDEX marker，
+文件命名规范；并生成 docs/docs-index.md 的骨架（带 DOCS-INDEX marker，
 之后由 update_docs_index.py 自动维护内容）。
 
 特性：
@@ -55,8 +55,9 @@ CATEGORIES: list[tuple[str, str, str]] = [
     ("report", "分析报告",
      "分析报告：性能分析、调研、复盘、数据分析等。\n" + NAMING),
     ("reference", "参考资料",
-     "参考资料与外部链接收集。\n"
-     "`docs-index.md` 是全项目文档索引，由 `scripts/update_docs_index.py` 自动维护。"),
+     "参考资料与外部链接收集（dashboard 链接、外部文档指针、ADR 参考等）。\n"
+     "注：全项目文档索引 `docs-index.md` 在 `docs/` 根目录下（不在本目录），\n"
+     "由 `scripts/update_docs_index.py` 自动维护。"),
 ]
 
 # superpowers 的子目录
@@ -67,7 +68,7 @@ SUBDIRS: dict[str, list[tuple[str, str]]] = {
     ],
 }
 
-DOCS_INDEX_REL = "docs/reference/docs-index.md"
+DOCS_INDEX_REL = "docs/docs-index.md"
 INDEX_START = "<!-- DOCS-INDEX:START -->"
 INDEX_END = "<!-- DOCS-INDEX:END -->"
 

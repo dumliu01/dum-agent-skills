@@ -74,7 +74,7 @@ description: 给单个服务/子项目按语言生成两份分离的文档——
 ### 第 4 步：交叉引用 + 入口
 
 - 两份文档头部互链：架构文档指向 `../specification/<service>-规范.md`，规范文档指向 `../architecture/<service>.md`。
-- 都链到项目入口 `CLAUDE.md` 和（若有）`docs/reference/docs-index.md`。
+- 都链到项目入口 `CLAUDE.md` 和（若有）`docs/docs-index.md`。
 - 若 dum-knowledge-base-build 的 docs-index hook 在跑，新文件会被自动收录；没有就手动在索引里加两行。
 
 ### 第 5 步：出口检查

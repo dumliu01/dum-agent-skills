@@ -1,7 +1,7 @@
 # {{服务名}} — 程序架构文档
 
 > 📐 本文档侧重**系统结构**（描述性）。开发规范见 [`../specification/{{service}}-规范.md`](../specification/{{service}}-规范.md)。
-> 🤖 项目入口：[`../../CLAUDE.md`](../../CLAUDE.md) ｜ 文档索引：[`../reference/docs-index.md`](../reference/docs-index.md)（如有）
+> 🤖 项目入口：[`../../CLAUDE.md`](../../CLAUDE.md) ｜ 文档索引：[`../docs-index.md`](../docs-index.md)（如有）
 >
 > ⚙️ 这是**不绑语言的通用骨架**。加新语言时复制本文件改名为 `<lang>-architecture.md`，
 > 按该语言习惯补它特有的分层/运行模型，并在 `references/language-cheatsheet.md` 登记。

@@ -1,6 +1,6 @@
 ---
 name: dum-knowledge-base-build
-description: 按标准文档体系给项目搭建/维护"知识库"：脚手架 docs/ 全套分类目录（architecture / specification / product-design / tech-design / superpowers / modify_history / deffered / manual_deployment / manual_userguides / report / reference）+ 根与各子项目 CLAUDE.md 入口文档 + 各子项目程序架构文档；并接 PostToolUse hook 自动维护两块——各服务源码目录清单、`docs/reference/docs-index.md` 分类文档索引。触发场景：用户说"整理架构文档" / "生成架构说明" / "搭建知识库" / "知识库文档" / "文档结构" / "文档体系" / "文档索引" / "docs-index" / "CLAUDE.md 入口" / "前端和后端架构文档" / "文件变化后文档自动更新" / "auto-update arch doc" 等。约定输出位置：根 `CLAUDE.md`、`docs/architecture/[service].md`、`docs/reference/docs-index.md`、各子项目 `<service>/CLAUDE.md`。
+description: 按标准文档体系给项目搭建/维护"知识库"：脚手架 docs/ 全套分类目录（architecture / specification / product-design / tech-design / superpowers / modify_history / deffered / manual_deployment / manual_userguides / report / reference）+ 根与各子项目 CLAUDE.md 入口文档 + 各子项目程序架构文档；并接 PostToolUse hook 自动维护两块——各服务源码目录清单、`docs/docs-index.md` 分类文档索引。触发场景：用户说"整理架构文档" / "生成架构说明" / "搭建知识库" / "知识库文档" / "文档结构" / "文档体系" / "文档索引" / "docs-index" / "CLAUDE.md 入口" / "前端和后端架构文档" / "文件变化后文档自动更新" / "auto-update arch doc" 等。约定输出位置：根 `CLAUDE.md`、`docs/architecture/[service].md`、`docs/docs-index.md`、各子项目 `<service>/CLAUDE.md`。
 ---
 
 # Dum Knowledge Base Build
@@ -13,6 +13,7 @@ description: 按标准文档体系给项目搭建/维护"知识库"：脚手架 
 <project_root>/
 ├── CLAUDE.md                  # 🤖 agent 总入口：项目概述 + 子项目列表 + 文档索引 + 核心文档
 ├── docs/
+│   ├── docs-index.md          # 🤖 分类文档索引（自动维护，DOCS-INDEX marker，docs/ 总入口）
 │   ├── architecture/          # 各子项目核心架构文档 <service>.md（含源码目录清单，自动维护）
 │   ├── specification/         # 编程 / 工程规范
 │   ├── product-design/        # 产品（需求）设计      （YYYYMMDD-[标题].md，可按模块分子目录）
@@ -23,7 +24,7 @@ description: 按标准文档体系给项目搭建/维护"知识库"：脚手架 
 │   ├── manual_deployment/     # 部署文档
 │   ├── manual_userguides/     # 用户手册
 │   ├── report/                # 分析报告              （YYYYMMDD-[标题].md）
-│   └── reference/             # 参考资料 + docs-index.md（自动维护的文档索引）
+│   └── reference/             # 参考资料 / 外部链接（不放 docs-index）
 └── <service>/CLAUDE.md        # 🤖 各子项目入口：核心信息 + 关键文档（架构 / 规范）
 ```
 
@@ -32,7 +33,7 @@ description: 按标准文档体系给项目搭建/维护"知识库"：脚手架 
 | 内容 | 回答的问题 | 脚本 | 写到哪 | 标记 |
 |---|---|---|---|---|
 | **源码目录清单** | 「**代码**有哪些、在哪些目录」 | `update_architecture_<service>.py`（一服务一份） | `docs/architecture/<service>.md` §2 | `<!-- AUTO-GENERATED -->` |
-| **分类文档索引** | 「**文档**有哪些、在哪些目录」 | `update_docs_index.py`（一项目一份） | `docs/reference/docs-index.md` | `<!-- DOCS-INDEX -->` |
+| **分类文档索引** | 「**文档**有哪些、在哪些目录」 | `update_docs_index.py`（一项目一份） | `docs/docs-index.md` | `<!-- DOCS-INDEX -->` |
 
 外加一个**一次性脚手架** `scaffold_docs_structure.py`（不进 hook）：建 docs/ 全套目录 + 每目录 README + docs-index.md 骨架，幂等、不覆盖已有。
 
@@ -68,7 +69,7 @@ description: 按标准文档体系给项目搭建/维护"知识库"：脚手架 
 python3 scripts/scaffold_docs_structure.py
 ```
 
-它建好 docs/ 全部分类目录 + 每个目录的 `README.md`（写明用途和 `YYYYMMDD-[标题].md` 命名）+ `docs/reference/docs-index.md` 骨架（含 DOCS-INDEX marker）。**幂等**：已存在的不动。
+它建好 docs/ 全部分类目录 + 每个目录的 `README.md`（写明用途和 `YYYYMMDD-[标题].md` 命名）+ `docs/docs-index.md` 骨架（含 DOCS-INDEX marker）。**幂等**：已存在的不动。
 如果项目的分类需求和默认 taxonomy 不同，先改脚本顶部的 `CATEGORIES` 再跑（同时改 `update_docs_index.py` 的 `CATEGORIES` 保持一致）。
 
 ### 第 2 步：写 CLAUDE.md 入口（根 + 各子项目）
@@ -92,14 +93,14 @@ python3 scripts/scaffold_docs_structure.py
 
 **(a) 源码目录清单**（一服务一份）：复制 [`scripts/update_architecture_manifest.py`](scripts/update_architecture_manifest.py) 为 `scripts/update_architecture_<service>.py`，改顶部"项目配置"段：`ARCHITECTURE_MD_REL`（指向 `docs/architecture/<service>.md`）、`SCAN_SUBDIRS`、`INCLUDE_EXTENSIONS`、`EXTRACTOR`（语言相关，见 [`references/language_extractors.md`](references/language_extractors.md)）、`ROOT_LABEL`、`STRIP_SCAN_PREFIX`。
 
-**(b) 分类文档索引**（一项目一份）：复制 [`scripts/update_docs_index.py`](scripts/update_docs_index.py)，一般不用改（默认就扫 `docs/` 全套分类写到 `docs/reference/docs-index.md`）。只有当第 1 步改过 taxonomy 时，才同步它的 `CATEGORIES`。
+**(b) 分类文档索引**（一项目一份）：复制 [`scripts/update_docs_index.py`](scripts/update_docs_index.py)，一般不用改（默认就扫 `docs/` 全套分类写到 `docs/docs-index.md`）。只有当第 1 步改过 taxonomy 时，才同步它的 `CATEGORIES`。
 
 **手动各跑一次验证**：首次输出 `Updated ... (N ...)`，再跑静默 (no diff)。
 
 ### 第 5 步：插入 / 确认 marker
 
 - **源码清单**：打开 `docs/architecture/<service>.md` 的 §2，把占位 fence 换成 `<!-- AUTO-GENERATED:START -->` … `<!-- AUTO-GENERATED:END -->` 一对（中间放 ```\n(pending first run)\n``` ）。
-- **文档索引**：scaffold 已在 `docs/reference/docs-index.md` 里放好 `<!-- DOCS-INDEX:START/END -->`，确认即可。
+- **文档索引**：scaffold 已在 `docs/docs-index.md` 里放好 `<!-- DOCS-INDEX:START/END -->`，确认即可。
 
 然后各跑一次对应脚本，自动填好。
 
@@ -150,7 +151,7 @@ commit message 模板见 [`references/commit_template.md`](references/commit_tem
 
 - [`scripts/scaffold_docs_structure.py`](scripts/scaffold_docs_structure.py) — 一次性脚手架：建 docs/ 全套分类目录 + README + docs-index.md 骨架（幂等、不覆盖）
 - [`scripts/update_architecture_manifest.py`](scripts/update_architecture_manifest.py) — 源码目录清单脚本骨架（一服务一份），复制后改"项目配置"段
-- [`scripts/update_docs_index.py`](scripts/update_docs_index.py) — 分类文档索引脚本（一项目一份），扫 docs/ 各分类写到 docs/reference/docs-index.md
+- [`scripts/update_docs_index.py`](scripts/update_docs_index.py) — 分类文档索引脚本（一项目一份），扫 docs/ 各分类写到 docs/docs-index.md
 - [`assets/claude_md_root_template.md`](assets/claude_md_root_template.md) — 根 CLAUDE.md 模板（项目概述 / 子项目 / 文档索引 / 结构约定）
 - [`assets/claude_md_subproject_template.md`](assets/claude_md_subproject_template.md) — 子项目 CLAUDE.md 模板
 - [`assets/arch_doc_template.md`](assets/arch_doc_template.md) — 各子项目架构文档 11 节骨架（含 AUTO-GENERATED marker 占位）
@@ -165,7 +166,7 @@ commit message 模板见 [`references/commit_template.md`](references/commit_tem
 1. ✅ `docs/` 全套分类目录存在，每个有 README.md（跑过 scaffold）
 2. ✅ 根 `CLAUDE.md` 存在且非占位（含子项目列表 + 文档索引指针）；各子项目 `<service>/CLAUDE.md` 存在
 3. ✅ `docs/architecture/<service>.md` 存在且非占位草稿，`<!-- AUTO-GENERATED:START -->` 后有真实源码树
-4. ✅ `docs/reference/docs-index.md` 的 `<!-- DOCS-INDEX:START -->` 后有按分类分节的真实文档列表（不是 `(pending first run)`）
+4. ✅ `docs/docs-index.md` 的 `<!-- DOCS-INDEX:START -->` 后有按分类分节的真实文档列表（不是 `(pending first run)`）
 5. ✅ `update_architecture_<service>.py` 和 `update_docs_index.py` 都手动跑两次，第二次静默
 6. ✅ `.claude/settings.local.json` 的 `hooks.PostToolUse` 含每个服务的脚本 + 一个 `update_docs_index.py`
 7. ✅ 端到端测试：加源码文件 + 加文档文件 → 两处时间戳各自变 → 删文件 → 手跑脚本 → 两处清干净

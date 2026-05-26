@@ -18,7 +18,7 @@
 
 ## 文档索引
 
-📚 **完整文档清单（自动维护）**：[`docs/reference/docs-index.md`](docs/reference/docs-index.md)
+📚 **完整文档清单（自动维护）**：[`docs/docs-index.md`](docs/docs-index.md)
 
 核心文档：
 
@@ -32,6 +32,7 @@
 
 ```
 docs/
+├── docs-index.md      # 🤖 分类文档索引（自动维护，DOCS-INDEX marker，docs/ 总入口）
 ├── architecture/      # 各子项目核心架构文档
 ├── specification/     # 编程 / 工程规范
 ├── product-design/    # 产品（需求）设计      （YYYYMMDD-[标题].md）
@@ -42,7 +43,7 @@ docs/
 ├── manual_deployment/ # 部署文档
 ├── manual_userguides/ # 用户手册
 ├── report/            # 分析报告              （YYYYMMDD-[标题].md）
-└── reference/         # 参考资料 + docs-index.md（自动维护的文档索引）
+└── reference/         # 参考资料 / 外部链接（不放 docs-index）
 ```
 
 各目录用途详见其 `README.md`。
@@ -50,5 +51,5 @@ docs/
 ## 关键约定
 
 1. **新文档落位**：按上表分类放进对应 `docs/` 子目录，文件名遵守 `YYYYMMDD-[标题].md`。
-2. **文档索引自动维护**：`docs/reference/docs-index.md` 由 hook 自动刷新，**别手动编辑它的自动区**。
+2. **文档索引自动维护**：`docs/docs-index.md` 由 hook 自动刷新，**别手动编辑它的自动区**。
 3. {{项目特有的硬规矩，如分支策略 / 提交规范，可指向 docs/specification/}}

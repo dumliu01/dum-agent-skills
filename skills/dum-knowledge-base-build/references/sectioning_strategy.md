@@ -107,7 +107,7 @@ Stage history 文档不在则跳过本节，整节删除（不要留空 placehol
 
 ---
 
-# 文档索引 docs/reference/docs-index.md
+# 文档索引 docs/docs-index.md
 
 骨架由 `scaffold_docs_structure.py` 生成，自动区由 `update_docs_index.py` 维护。它回答「**项目里有哪些文档、分别属于哪个分类**」，跟架构文档回答「代码结构」互补。
 
