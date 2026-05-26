@@ -1,9 +1,9 @@
 ---
-name: dum-architecture-doc-build
+name: dum-knowledge-base-build
 description: 按标准文档体系给项目搭建/维护"知识库"：脚手架 docs/ 全套分类目录（architecture / specification / product-design / tech-design / superpowers / modify_history / deffered / manual_deployment / manual_userguides / report / reference）+ 根与各子项目 CLAUDE.md 入口文档 + 各子项目程序架构文档；并接 PostToolUse hook 自动维护两块——各服务源码目录清单、`docs/reference/docs-index.md` 分类文档索引。触发场景：用户说"整理架构文档" / "生成架构说明" / "搭建知识库" / "知识库文档" / "文档结构" / "文档体系" / "文档索引" / "docs-index" / "CLAUDE.md 入口" / "前端和后端架构文档" / "文件变化后文档自动更新" / "auto-update arch doc" 等。约定输出位置：根 `CLAUDE.md`、`docs/architecture/[service].md`、`docs/reference/docs-index.md`、各子项目 `<service>/CLAUDE.md`。
 ---
 
-# Dum Architecture Doc Build
+# Dum Knowledge Base Build
 
 ## Overview
 

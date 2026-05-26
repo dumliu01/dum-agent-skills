@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""文档索引自动更新脚本（dum-architecture-doc-build skill 模板）。
+"""文档索引自动更新脚本（dum-knowledge-base-build skill 模板）。
 
 按约定的文档体系扫描 `docs/` 下各分类目录，渲染出**按分类分节**的文档索引，
 写进 `docs/reference/docs-index.md` 的 DOCS-INDEX 区。是 `update_architecture_*.py`

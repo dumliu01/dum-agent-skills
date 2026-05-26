@@ -7,7 +7,8 @@
 
 | 技能 | 一句话 |
 |---|---|
-| [`dum-architecture-doc-build`](skills/dum-architecture-doc-build/) | 给项目搭建/维护标准化知识库文档体系（`docs/` 分类目录 + `CLAUDE.md` 入口 + 架构文档 + 自动文档索引），并接 hook 自动更新 |
+| [`dum-knowledge-base-build`](skills/dum-knowledge-base-build/) | 给项目搭建/维护标准化知识库文档体系（`docs/` 分类目录 + `CLAUDE.md` 入口 + 架构文档 + 自动文档索引），并接 hook 自动更新 |
+| [`dum-arch-spec-doc`](skills/dum-arch-spec-doc/) | 给单个服务按语言（前端/Go/Python）生成**分离的两份**文档：程序架构文档（`docs/architecture/`）+ 开发规范文档（`docs/specification/`） |
 | [`dum-solution-design`](skills/dum-solution-design/) | 出结构化技术方案：架构/时序/关键逻辑/接口/遗留 五段，文档与代码分离 |
 | [`dum-doc-reconcile`](skills/dum-doc-reconcile/) | 按修改记录（兼查 git）把设计文档跟代码现状对账修正 |
 | [`dum-session-summary`](skills/dum-session-summary/) | 把会话改动总结进 `docs/modify_history/`，生成交接文档 |
@@ -66,7 +67,8 @@ gemini extensions install https://github.com/dumliu01/dum-agent-skills
 ```
 .
 ├── skills/                     # ← 所有技能（唯一真源，各 agent 共享）
-│   ├── dum-architecture-doc-build/
+│   ├── dum-knowledge-base-build/
+│   ├── dum-arch-spec-doc/
 │   ├── dum-solution-design/
 │   ├── dum-doc-reconcile/
 │   ├── dum-session-summary/

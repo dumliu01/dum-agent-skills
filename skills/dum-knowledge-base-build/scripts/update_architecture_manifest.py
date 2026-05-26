@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""通用架构文档目录清单自动更新脚本（dum-architecture-doc-build skill 模板）。
+"""通用架构文档目录清单自动更新脚本（dum-knowledge-base-build skill 模板）。
 
 复制本文件到目标项目（建议路径：`<project>/scripts/update_architecture_<service>.py`），
 然后修改 §"项目配置" 段。

@@ -42,7 +42,7 @@ description: Use when the user asks to 总结/记录本次会话的修改 into d
 
 ### 4. 落盘
 
-按下方"命名与位置约定"存盘；`docs/modify_history/` 不存在就创建。索引无需手动维护——`docs/README.md` 的知识库脚本会自动收录（见 [scripts/docs/update_docs_kb.py](../../dum-architecture-doc-build/SKILL.md) 的扫描机制）。
+按下方"命名与位置约定"存盘；`docs/modify_history/` 不存在就创建。索引无需手动维护——`docs/README.md` 的知识库脚本会自动收录（见 [scripts/docs/update_docs_kb.py](../../dum-knowledge-base-build/SKILL.md) 的扫描机制）。
 
 ## 文档结构模板（7 节，固定顺序）
 

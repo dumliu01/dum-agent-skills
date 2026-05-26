@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""一次性脚手架：建立项目知识库的标准 docs/ 结构（dum-architecture-doc-build skill）。
+"""一次性脚手架：建立项目知识库的标准 docs/ 结构（dum-knowledge-base-build skill）。
 
 按约定的文档体系创建 docs/ 下全部子目录，每个目录放一份 README.md 说明用途和
 文件命名规范；并生成 docs/reference/docs-index.md 的骨架（带 DOCS-INDEX marker，
