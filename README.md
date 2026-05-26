@@ -5,14 +5,17 @@
 
 ## 技能一览
 
-| 技能 | 一句话 |
-|---|---|
-| [`dum-knowledge-base-build`](skills/dum-knowledge-base-build/) | 给项目搭建/维护标准化知识库文档体系（`docs/` 分类目录 + `CLAUDE.md` 入口 + 架构文档 + 自动文档索引），并接 hook 自动更新 |
-| [`dum-arch-spec-doc`](skills/dum-arch-spec-doc/) | 给单个服务按语言（前端/Go/Python）生成**分离的两份**文档：程序架构文档（`docs/architecture/`）+ 开发规范文档（`docs/specification/`） |
-| [`dum-solution-design`](skills/dum-solution-design/) | 出结构化技术方案：架构/时序/关键逻辑/接口/遗留 五段，文档与代码分离 |
-| [`dum-doc-reconcile`](skills/dum-doc-reconcile/) | 按修改记录（兼查 git）把设计文档跟代码现状对账修正 |
-| [`dum-session-summary`](skills/dum-session-summary/) | 把会话改动总结进 `docs/modify_history/`，生成交接文档 |
-| [`dum-ppt`](skills/dum-ppt/) | 把 Markdown 转成单 HTML、可全屏播放的演示文档 |
+下表每个技能名指向它的**介绍文档**（人类视角的概览、何时用、产出什么、与其它技能怎么衔接）；
+完整工作流、模板与出口判断在各自目录的 `SKILL.md`（agent 视角的执行指令）。
+
+| 技能 | 一句话 | 完整工作流 |
+|---|---|---|
+| [`dum-knowledge-base-build`](skills/dum-knowledge-base-build/README.md) | 给项目搭建/维护标准化知识库文档体系（`docs/` 分类目录 + `CLAUDE.md` 入口 + 架构文档 + 自动文档索引），并接 hook 自动更新 | [SKILL.md](skills/dum-knowledge-base-build/SKILL.md) |
+| [`dum-arch-spec-doc`](skills/dum-arch-spec-doc/README.md) | 给单个服务按语言（前端/Go/Python）生成**分离的两份**文档：程序架构文档（`docs/architecture/`）+ 开发规范文档（`docs/specification/`） | [SKILL.md](skills/dum-arch-spec-doc/SKILL.md) |
+| [`dum-solution-design`](skills/dum-solution-design/README.md) | 出结构化技术方案：架构/时序/关键逻辑/接口/遗留 五段，文档与代码分离 | [SKILL.md](skills/dum-solution-design/SKILL.md) |
+| [`dum-doc-reconcile`](skills/dum-doc-reconcile/README.md) | 按修改记录（兼查 git）把设计文档跟代码现状对账修正 | [SKILL.md](skills/dum-doc-reconcile/SKILL.md) |
+| [`dum-session-summary`](skills/dum-session-summary/README.md) | 把会话改动总结进 `docs/modify_history/`，生成交接文档 | [SKILL.md](skills/dum-session-summary/SKILL.md) |
+| [`dum-ppt`](skills/dum-ppt/README.md) | 把 Markdown 转成单 HTML、可全屏播放的演示文档 | [SKILL.md](skills/dum-ppt/SKILL.md) |
 
 > 变更历史见 [`CHANGELOG.md`](CHANGELOG.md)。
 
