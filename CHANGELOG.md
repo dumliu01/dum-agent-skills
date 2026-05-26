@@ -2,6 +2,21 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [1.1.2] - 2026-05-26
+
+### Changed
+- **`dum-arch-spec-doc` 日志规范模板补完**：原 `go-specification.md` §6 与
+  `frontend-specification.md` §10 只有寥寥几行（"用统一 logger / 禁止裸打印"），生成的
+  规范文档不够实操。参考 termcat_server / termcat_client 实际约定，按多维度展开：
+  - **Go**（5 个子节）：Logger 使用 · 级别(DEBUG/INFO/ERROR + `LOG_LEVEL`) ·
+    格式与结构化字段(固定单行格式 + `WithFields`) · 文件与按日轮转(`LOG_DIR` /
+    `LOG_RETAIN_DAYS` / `<svc>-YYYY-MM-DD.log`) · 敏感信息脱敏(含 IP 尾段脱敏)
+  - **前端**（6 个子节）：Logger 使用(两种调用形式) · 级别(DEBUG/INFO/WARN/ERROR) ·
+    事件键命名(`<domain>.<entity>.<action>`) · 模块常量(`LOG_MODULE` 枚举) ·
+    文件存储与轮转(按 OS 路径 + 10MB/5 文件) · 敏感信息脱敏(HTTP 拦截器剥离 + 命令脱敏)
+  - 全部祈使句 + ✅/❌ 例子，项目特定值保留 `{{...}}` 占位。
+  - Python 模板未动（无对应参考），日后按需补齐。
+
 ## [1.1.1] - 2026-05-26
 
 ### Fixed

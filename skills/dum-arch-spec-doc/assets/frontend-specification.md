@@ -115,9 +115,62 @@ const ws = new WebSocket(url);
 
 ## 10. 日志规范
 
-- {{用统一 logger，禁止裸 `console.log` 进生产}}。
-- {{级别：{{debug/info/warn/error 各用于什么}}}}。
-- {{禁止打印 token / 密码 / 凭证等敏感信息}}。
+### 10.1 Logger 使用
+
+- **必须**使用统一 logger（{{`@/utils/logger` / `@/base/logger`}}），**禁止**在生产代码裸 `console.log` / `console.error`。
+- 两种调用形式二选一：
+  - **直接调用**：`logger.<level>(module, eventKey, message, context?)`
+  - **模块作用域**（推荐）：`const log = logger.withFields({ module: LOG_MODULE.SSH })`，后续 `log.info(eventKey, message, context?)`
+
+```typescript
+// ✅ Good — 模块作用域
+const log = logger.withFields({ module: LOG_MODULE.SSH });
+log.info('ssh.connection.established', 'SSH connected', { hostId, latencyMs });
+
+// ✅ Good — 直接调用
+logger.info(LOG_MODULE.SSH, 'ssh.connection.established', 'SSH connected', { hostId });
+
+// ❌ Bad
+console.log('SSH connected', hostId);
+```
+
+### 10.2 日志级别
+
+| 级别 | 用途 |
+|------|------|
+| {{`DEBUG`}} | {{开发调试，按模块开关；生产默认关闭}} |
+| {{`INFO`}}  | {{用户可感知事件：连接、操作、导航、登录/登出}} |
+| {{`WARN`}}  | {{降级与可恢复异常：同步失败、缓存过期、重试}} |
+| {{`ERROR`}} | {{需上报或定位的错误；**必须**带错误码或原始 error 对象}} |
+
+- **禁止**用 INFO 打高频事件（终端输出、流式 chunk、监控采样、动画帧），改 DEBUG 或不打。
+
+### 10.3 事件键（eventKey）命名
+
+- 事件键**必须**采用 `<domain>.<entity>.<action>` 三段式小写点分（如 {{`ssh.connection.established`}}、{{`ai.task.completed`}}、{{`payment.order.created`}}）。
+- 同一类事件**必须**复用同一事件键，便于按键聚合检索；**禁止**把动态值（hostId、orderId）拼进事件键。
+
+### 10.4 模块常量（module 字段）
+
+- module 参数 / `withFields.module` **必须**从 {{`LOG_MODULE`}} 常量取值，**禁止**写裸字符串。
+- 当前枚举：{{`TERMINAL` / `SSH` / `HTTP` / `AI` / `FILE` / `AUTH` / `UI` / `MAIN` / `SFTP` / `APP`}}。
+- 新增模块**必须**先扩 `LOG_MODULE`，再使用。
+
+### 10.5 日志文件存储与轮转
+
+- 文件位置（{{Electron `app.getPath('logs')`}}）：
+  - **macOS**：{{`~/Library/Logs/<AppName>/`}}（dev：`<AppName>-Dev/`）
+  - **Windows**：{{`%APPDATA%/<AppName>/logs/`}}
+  - **Linux**：{{`~/.config/<AppName>/logs/`}}
+- 轮转策略：当前 {{`<app>.log`}}；历史 {{`<app>.1.log` ~ `<app>.4.log`}}。
+- 单文件达 {{10 MB}} 自动轮转，最多保留 {{5}} 个文件。
+- **禁止**绕过 logger 直接 `fs.appendFile` / `fs.writeFile` 写日志路径——会让轮转策略失效。
+
+### 10.6 敏感信息脱敏
+
+- **禁止**打印明文 token / password / 私钥 / 加密 key / 支付凭证 / 完整邮箱。
+- HTTP 拦截器若打印请求/响应体，**必须**剥离 `Authorization` header 与 body 中的 `password` / `token` / `secret` / `apiKey` 等字段（替换为 `***`）。
+- 用户输入（命令、Prompt）若可能含密码，**应该**做关键词识别后脱敏再打。
 
 ---
 

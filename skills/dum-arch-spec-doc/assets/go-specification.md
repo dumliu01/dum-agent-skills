@@ -83,12 +83,60 @@ func NewClient(cfg Config) (*Client, error) { ... }
 
 ## 6. 日志规范
 
-- {{统一用 `pkg/logging`，禁止裸 `fmt.Println`}}。
-- {{级别：{{DEBUG/INFO/ERROR 各用于什么}}；级别由 `LOG_LEVEL` 控制}}。
-- {{用结构化字段 `WithFields`，关键路径带 request_id 等上下文}}。
-- {{禁止打印 token / 密码 / 凭证明文}}。
+### 6.1 Logger 使用
 
-格式约定示例：`[YYYY-MM-DD HH:MM:SS] [LEVEL] key=val | message`
+- **必须**使用统一 logger（{{`pkg/logging`}}），**禁止**裸 `fmt.Println` / 标准库 `log.Println` 打业务日志。
+- **必须**在 `main` 启动时先调用 {{`logging.InitLogger(level, dir, retainDays)`}}，再做后续依赖装配。
+- **应该**用模块级实例承载固定字段：`log := logger.WithFields(logging.Logfield{"module": "ssh"})`。
+
+```go
+// ✅ Good — 模块作用域 + 结构化字段
+log := logger.WithFields(logging.Logfield{"module": "ssh", "host_id": hostID})
+log.Infof("ssh.session.opened", "session ready for user=%s", userID)
+
+// ❌ Bad
+fmt.Println("session ready")              // 裸打印
+log.Printf("ok")                          // 标准库 log，无级别、无字段
+```
+
+### 6.2 日志级别
+
+| 级别 | 值 | 用途 |
+|------|----|------|
+| {{DEBUG}} | {{0}} | {{开发调试；按模块开关，生产默认关闭}} |
+| {{INFO}}  | {{1}} | {{用户可感知的关键事件：连接建立、订单生成、会话关闭}} |
+| {{ERROR}} | {{2}} | {{需要人介入的错误；必须带错误码或 `%w` 包装的原始 err}} |
+
+- 级别由 {{`LOG_LEVEL` 环境变量}}控制（{{`SetLogLevelFromString`}}）；**禁止**在业务代码里调用 `SetLogLevel` 硬改。
+- **禁止**用 INFO 打印高频循环事件（>10 次/秒），改用 DEBUG 或采样。
+
+### 6.3 日志格式与结构化字段
+
+- 单行格式固定：`[YYYY-MM-DD HH:MM:SS] [LEVEL] key=val key2=val2 | message`
+- **必须**用 {{`WithFields(Logfield{...})`}} 注入结构化字段，**禁止**把 `key=val` 拼进 message。
+- 调用位置（`file:line` + `funcName`）由 logger {{自动注入}}，**禁止**手动拼到 message。
+- 请求路径与跨服务调用**必须**带 {{`request_id` / `user_id` / `session_id`}} 等可追踪上下文字段。
+
+```go
+// ✅ 字段走 WithFields
+log.WithFields(logging.Logfield{"request_id": rid}).Infof("ssh.connect", "dialed %s", addr)
+
+// ❌ 字段塞进 message，破坏聚合检索
+log.Infof("ssh.connect", "request_id=%s dialed %s", rid, addr)
+```
+
+### 6.4 日志文件与按日轮转
+
+- 配置 {{`LOG_DIR`}} 后 logger 同时写 stdout 与文件（{{`io.MultiWriter`}}）；未配置则仅 stdout。
+- 文件命名固定：当天 {{`<service>.log`}}（追加写入），按日轮转后改名为 {{`<service>-YYYY-MM-DD.log`}}。
+- {{`LOG_RETAIN_DAYS`}} 控制保留天数（默认 {{30}}；`<=0` 表示永不删除）。
+- 轮转由 logger 内部协程负责（{{`dailyRotateLoop` → `rotateLogFile` → `cleanExpiredLogs`}}）。**禁止**绕过 logger 直接 `os.OpenFile` 写日志路径——会让轮转与清理失效。
+
+### 6.5 敏感信息脱敏
+
+- **禁止**打印明文 token / password / 私钥 / 加密 key / 凭证 / 完整邮箱。
+- 中间件/包装层若需打印请求体，**必须**对敏感字段（`password` / `token` / `secret` / `apiKey` / `authorization` 等）替换为 `***`。
+- 客户端 IP 在访问日志里**必须**做{{尾段脱敏}}（如 `192.168.*.*`）。
 
 ---
 

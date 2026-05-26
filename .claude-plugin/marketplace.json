@@ -9,7 +9,7 @@
     {
       "name": "dum-agent-skills",
       "description": "个人技能库：PPT 生成、技术方案设计、知识库文档体系、设计文档对账、会话总结",
-      "version": "1.1.1",
+      "version": "1.1.2",
       "source": "./",
       "author": {
         "name": "dum",
