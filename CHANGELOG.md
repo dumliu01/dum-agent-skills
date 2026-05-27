@@ -2,6 +2,20 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [1.1.3] - 2026-05-27
+
+### Changed
+- **`dum-session-summary` 不再触发任何文档对账动作**：原工作流第 2 步会主动 grep
+  `docs/方案设计/`、`docs/guides/` 等推导"受影响的设计文档（待校对）"并给修改建议，
+  现明确删除——本技能只负责把会话改动如实记进 `docs/modify_history/`，不修任何设计
+  文档、也不发起 reconcile。模板从 7 节缩到 6 节（去掉「受影响的设计文档（待校对）」
+  一节）；Overview 加边界声明；出口判断新增"`docs/architecture/`、`docs/方案设计/`
+  下没有任何文件被本次会话总结修改"校验。
+- **`dum-doc-reconcile` 对齐新契约**：原依赖 modify_history 里现成的"待校对清单"，
+  改为以「改动清单 + 关键决策」+ 同范围 `git diff` 为输入，**自己 grep
+  `docs/architecture/` 与 `docs/方案设计/`** 推断哪些文档需要校对。核心原则、Phase 1
+  取数步骤、关键逻辑、常见错误一并同步。
+
 ## [1.1.2] - 2026-05-26
 
 ### Changed
