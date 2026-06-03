@@ -14,7 +14,7 @@ description: Use when the user asks to 总结/记录本次会话的修改 into d
 
 **核心原则：以 git 为客观事实骨架，用会话上下文补"为什么"。** git 知道**改了什么**；只有会话记得**为什么这么改、试过什么被否决**——后者正是这篇文档最大的价值，也是 git 永远拿不到的。
 
-**边界（重要）**：本技能**不触发任何文档修复/对账动作**。即使发现某份设计文档明显已过时，也只在「改动清单/关键决策」里如实陈述事实，不去开"待校对清单"、不给修改建议、不修改任何 `docs/architecture/` `docs/方案设计/` 下的文件。
+**边界（重要）**：本技能**不触发任何文档修复/对账动作**。即使发现某份设计文档明显已过时，也只在「改动清单/关键决策」里如实陈述事实，不去开"待校对清单"、不给修改建议、不修改任何 `docs/architecture/` `docs/tech-design/` 下的文件。
 
 ## 触发判断
 
@@ -29,7 +29,7 @@ description: Use when the user asks to 总结/记录本次会话的修改 into d
 - **git 客观面**：取本次会话的 commit（`git log` 自会话起点；起点不确定就问用户，或用"上一篇 modify_history 之后"的提交）+ 未提交改动（`git status` / `git diff --stat`）。这是"改动清单"的事实来源。
 - **会话主观面**：从对话里捞出 git 看不到的东西——**关键决策、被否决的备选方案、踩过的坑、未完成项、验证方式**。捞不全就回看本会话再补，不要编。
 
-> **明确不做**：不要 grep `docs/architecture/`、`docs/方案设计/`、`docs/guides/`、`docs/product/` 去搜"哪份设计文档被这次改动带偏"，也不要列出"待校对设计文档"或给"建议怎么改"。这是 [`dum-doc-reconcile`](../dum-doc-reconcile/) 被显式触发时才做的事，**本技能完全不碰**。
+> **明确不做**：不要 grep `docs/architecture/`、`docs/tech-design/`、`docs/guides/`、`docs/product/` 去搜"哪份设计文档被这次改动带偏"，也不要列出"待校对设计文档"或给"建议怎么改"。这是 [`dum-doc-reconcile`](../dum-doc-reconcile/) 被显式触发时才做的事，**本技能完全不碰**。
 
 ### 2. 写文档：套用下方 6 节模板
 
@@ -39,7 +39,7 @@ description: Use when the user asks to 总结/记录本次会话的修改 into d
 
 按下方"命名与位置约定"存盘；`docs/modify_history/` 不存在就创建。索引无需手动维护——`docs/README.md` 的知识库脚本会自动收录（见 [scripts/docs/update_docs_kb.py](../../dum-knowledge-base-build/SKILL.md) 的扫描机制）。
 
-落盘后**到此结束**：不要顺手去修 `docs/architecture/` 或 `docs/方案设计/`、不要发起 `dum-doc-reconcile`、不要主动建议用户"现在去对账文档"。等用户后续显式调用 `dum-doc-reconcile` 时，那个技能会读这篇 modify_history 来工作。
+落盘后**到此结束**：不要顺手去修 `docs/architecture/` 或 `docs/tech-design/`、不要发起 `dum-doc-reconcile`、不要主动建议用户"现在去对账文档"。等用户后续显式调用 `dum-doc-reconcile` 时，那个技能会读这篇 modify_history 来工作。
 
 ## 文档结构模板（6 节，固定顺序）
 
@@ -87,7 +87,7 @@ description: Use when the user asks to 总结/记录本次会话的修改 into d
 |---|---|---|
 | 只列"改了什么"，不写"为什么/否决了什么" | 退化成 git log，下次会重走弯路 | 必填"关键决策与理由"，含被否决方案 |
 | 顺手 grep `docs/` 找过时设计文档、列"待校对清单"、给"建议怎么改" | 越界做了 `dum-doc-reconcile` 的活，且容易在用户没要求时改动设计文档 | 删掉这类内容；只把改动如实记下来，对账留给后续 reconcile 技能 |
-| 落盘后顺手去修 `docs/architecture/` 或 `docs/方案设计/` | 同上，越界且没经用户许可 | 落盘即结束；用户后续要对账时再单独触发 `dum-doc-reconcile` |
+| 落盘后顺手去修 `docs/architecture/` 或 `docs/tech-design/` | 同上，越界且没经用户许可 | 落盘即结束；用户后续要对账时再单独触发 `dum-doc-reconcile` |
 | 无"如何续接"或写得太泛 | 用途①失效，新会话接不上 | 写到"改哪个文件、跑什么命令"的颗粒度 |
 | 文件名/日期格式各篇不一 | 难以排序与定期回看 | 严格 `YYYY-MM-DD-<标题>.md` |
 | 凭印象写文件清单 | 记错/漏记改动 | 以 `git diff --stat` 为准 |
@@ -99,6 +99,6 @@ description: Use when the user asks to 总结/记录本次会话的修改 into d
 - ✅ "改动清单"与 `git diff --stat` 一致；附了本次 commit。
 - ✅ "关键决策"含被否决方案。
 - ✅ "如何续接"具体到文件/命令颗粒度。
-- ✅ `docs/architecture/`、`docs/方案设计/` 下**没有任何文件**因本次"会话总结"被修改；也没替用户去触发 `dum-doc-reconcile`。
+- ✅ `docs/architecture/`、`docs/tech-design/` 下**没有任何文件**因本次"会话总结"被修改；也没替用户去触发 `dum-doc-reconcile`。
 
 漏任一项就还没完成。

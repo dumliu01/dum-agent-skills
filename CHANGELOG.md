@@ -2,6 +2,18 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [1.1.4] - 2026-06-03
+
+### Changed
+- **`dum-solution-design` 方案文档落点改为 `docs/tech-design/`**：原约定放项目根的
+  `方案设计/`，现统一落进 `dum-knowledge-base-build` 搭好的 `docs/tech-design/`。
+  SKILL.md 的文件位置、目录树、Workflow、Quick Reference、常见错误、Red Flags 及
+  description 一并同步；README 交付表与衔接说明同步。
+- **姊妹技能对齐新落点**：`dum-doc-reconcile`（对账目标）、`dum-session-summary`
+  （边界声明里的"不修改的目录"）、`dum-knowledge-base-build`（衔接说明、方案文档
+  强制位置示例）中所有 `docs/方案设计/` / `方案设计/` 引用改为 `docs/tech-design/`，
+  保证"出方案 → 记录 → 对账"链路指向同一目录。
+
 ## [1.1.3] - 2026-05-27
 
 ### Changed

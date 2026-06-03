@@ -1,6 +1,6 @@
 # dum-doc-reconcile
 
-> 按**时间范围**把 `docs/architecture/` 与 `docs/方案设计/` 跟代码现状对账修正——**报告先行**，确认后才改。
+> 按**时间范围**把 `docs/architecture/` 与 `docs/tech-design/` 跟代码现状对账修正——**报告先行**，确认后才改。
 
 ## 它做什么
 
@@ -10,7 +10,7 @@
 
 | Phase | 做什么 |
 |---|---|
-| 1 · 取数 | 解析时间范围；扫 modify_history 范围内的"改动清单 + 关键决策"+ 同范围 git diff；**自己 grep `docs/architecture/` 与 `docs/方案设计/`** 推断待校对清单 |
+| 1 · 取数 | 解析时间范围；扫 modify_history 范围内的"改动清单 + 关键决策"+ 同范围 git diff；**自己 grep `docs/architecture/` 与 `docs/tech-design/`** 推断待校对清单 |
 | 2 · 漂移报告 | 逐文档列【事实性·可直接改】/【需判断·要拍板】/【已核对·无漂移】——**输出后停下** |
 | 3 · 应用 | 按确认结果改文档；**不碰** AUTO-GENERATED 区；保 5 模块结构；遗留问题标"已解决" 不删历史 |
 | 4 · 水印 | 给改过/核对过的文档打/更新校对水印（H1 下唯一一行） |
@@ -28,7 +28,7 @@
 | | |
 |---|---|
 | 漂移报告 | 按文档+章节列出"现述/应为/依据/类别"的表格（在对话里给用户审） |
-| 修正后的文档 | 仅 `docs/architecture/*` 与 `docs/方案设计/*` 两个目录内 |
+| 修正后的文档 | 仅 `docs/architecture/*` 与 `docs/tech-design/*` 两个目录内 |
 | 校对水印 | `> 🗓️ 文档校对：已对齐至 YYYY-MM-DD（依据 modify_history + git 至 <hash>）— dum-doc-reconcile` |
 
 ## 跟其它技能怎么衔接

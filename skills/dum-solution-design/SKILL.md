@@ -1,6 +1,6 @@
 ---
 name: dum-solution-design
-description: Use when user asks "出个技术方案" / "方案设计" / "做个方案" / "帮忙实现 XX 功能" / "设计一下 XX" with requirements or reference image; or when about to design a non-trivial feature that needs to be documented before implementation. Enforces 5-module structure (架构/时序/关键逻辑/接口/遗留) + doc-code separation + 方案设计/ output convention.
+description: Use when user asks "出个技术方案" / "方案设计" / "做个方案" / "帮忙实现 XX 功能" / "设计一下 XX" with requirements or reference image; or when about to design a non-trivial feature that needs to be documented before implementation. Enforces 5-module structure (架构/时序/关键逻辑/接口/遗留) + doc-code separation + docs/tech-design/ output convention.
 ---
 
 # dum-solution-design（个人技术方案设计规范）
@@ -33,14 +33,15 @@ description: Use when user asks "出个技术方案" / "方案设计" / "做个�
 
 ### 文件位置（强制）
 
-所有方案文档放到项目根目录下的 `方案设计/` 目录（**不是** `docs/` 或 `docs/product/` 或其他位置）。如果项目没有这个目录，先创建。
+所有方案文档放到项目的 `docs/tech-design/` 目录（**不是**项目根的 `方案设计/`、也**不是** `docs/` 根 或 `docs/product/`）。如果项目没有这个目录，先创建。
 
 ```
 项目根/
-└── 方案设计/
-    ├── 20260425-FundamentalAnalyst.md
-    ├── 20260425-FundamentalAnalyst-代码实现.md   # 可选
-    └── ...
+└── docs/
+    └── tech-design/
+        ├── 20260425-FundamentalAnalyst.md
+        ├── 20260425-FundamentalAnalyst-代码实现.md   # 可选
+        └── ...
 ```
 
 ### 文件命名（强制）
@@ -154,7 +155,7 @@ description: Use when user asks "出个技术方案" / "方案设计" / "做个�
 3. 评估是否需要 -代码实现 文档（按上面条件）
    - 需要 → 写代码实现文档
    - 不需要 → 跳过
-4. 文档保存到 方案设计/ 目录
+4. 文档保存到 docs/tech-design/ 目录
 5. 让用户审，反馈修改
 6. 通过后 → 进入实施阶段（用 superpowers:writing-plans 出 plan）
 ```
@@ -163,7 +164,7 @@ description: Use when user asks "出个技术方案" / "方案设计" / "做个�
 
 | 项 | 规则 |
 |---|---|
-| 输出位置 | `方案设计/`（项目根） |
+| 输出位置 | `docs/tech-design/` |
 | 主文档命名 | `YYYYMMDD-方案名称.md` |
 | 代码文档命名 | `YYYYMMDD-方案名称-代码实现.md`（可选） |
 | 必含模块数 | 5（架构 / 时序 / 关键逻辑 / 接口 / 遗留） |
@@ -176,7 +177,7 @@ description: Use when user asks "出个技术方案" / "方案设计" / "做个�
 
 | 错误 | 后果 | 修正 |
 |---|---|---|
-| 文档放到 `docs/` 或 `docs/product/` | 项目结构污染 / 与其他项目设计文档混淆 | 严格放 `方案设计/` |
+| 文档放到 `docs/` 根、`docs/product/` 或项目根 `方案设计/` | 落点不一致 / 下游 `dum-doc-reconcile` 找不到 | 严格放 `docs/tech-design/` |
 | 文件名加 "方案设计" 后缀 | 与本 skill 约定不符 | 用 `YYYYMMDD-方案名称.md`，不加后缀 |
 | 主文档夹杂代码实现 | 文档和代码绑定 / 重构后过时 | 代码挪 -代码实现.md |
 | 漏掉"遗留问题"模块 | 后续不知道为什么没做 | 即使无遗留也要写 "本方案无遗留问题"  |
@@ -190,7 +191,7 @@ description: Use when user asks "出个技术方案" / "方案设计" / "做个�
 
 - 写了第一个 `def` / `class` / `function`（除签名 + 类型）→ 移到 -代码实现.md
 - 文件名带 `方案设计` 后缀 → 改名
-- 文件位置不在 `方案设计/` → 移动
+- 文件位置不在 `docs/tech-design/` → 移动
 - 模块数 < 5 → 补全（无内容标记 "无相关问题/接口"）
 - 时序图缺失 → 补一个 happy path
 - 用 ASCII art 画图替代 → 默认用 Mermaid，需要时再用 `superpowers:uml`（PlantUML）

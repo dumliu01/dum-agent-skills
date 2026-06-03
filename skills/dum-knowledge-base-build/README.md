@@ -42,7 +42,7 @@
 ## 跟其它技能怎么衔接
 
 - 它搭骨架 + 装 hook；**填实单个服务的「架构 + 规范」两份文档**交给 [`dum-arch-spec-doc`](../dum-arch-spec-doc/)
-- `dum-session-summary` 写进 `docs/modify_history/`、`dum-doc-reconcile` 据此对账 `docs/architecture/` 与 `docs/方案设计/`、`dum-solution-design` 出方案到 `docs/tech-design/`——**这三个技能的产出都落进本技能搭好的目录**
+- `dum-session-summary` 写进 `docs/modify_history/`、`dum-doc-reconcile` 据此对账 `docs/architecture/` 与 `docs/tech-design/`、`dum-solution-design` 出方案到 `docs/tech-design/`——**这三个技能的产出都落进本技能搭好的目录**
 
 ## 完整工作流
 

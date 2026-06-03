@@ -7,11 +7,11 @@ description: Use when the user wants to 校对/修正/更新 docs/architecture �
 
 ## Overview
 
-按**时间范围**，用 `docs/modify_history/` 的记录（**兼查 git**）把 `docs/architecture/` 与 `docs/方案设计/` 两个目录的设计文档**校回与现状一致**。它是 [`dum-session-summary`](../dum-session-summary/) 的下游：前者每次会话只如实记录"改了什么、为什么这么改、否决了什么"，**不替本技能去推断哪份设计文档过时**；本技能被显式触发时，再据这些记录 + git diff 自行推断哪些设计文档要校对、然后修正。
+按**时间范围**，用 `docs/modify_history/` 的记录（**兼查 git**）把 `docs/architecture/` 与 `docs/tech-design/` 两个目录的设计文档**校回与现状一致**。它是 [`dum-session-summary`](../dum-session-summary/) 的下游：前者每次会话只如实记录"改了什么、为什么这么改、否决了什么"，**不替本技能去推断哪份设计文档过时**；本技能被显式触发时，再据这些记录 + git diff 自行推断哪些设计文档要校对、然后修正。
 
 **核心原则（四条，缺一不可）：**
 1. **报告先行** —— 先产出"漂移报告"，**停下等用户确认**，再动文档。设计文档是精雕内容，未经确认的重写会抹掉有意的细节。
-2. **modify_history 是事实记录，本技能负责推断" 哪些设计文档可能过时"** —— 不要指望 modify_history 里有现成的"待校对清单"；以各篇的「改动清单 + 关键决策与理由」为主线，叠加同范围 `git diff`，自己 grep `docs/architecture/` 与 `docs/方案设计/` 推断哪些文档可能被带偏。
+2. **modify_history 是事实记录，本技能负责推断" 哪些设计文档可能过时"** —— 不要指望 modify_history 里有现成的"待校对清单"；以各篇的「改动清单 + 关键决策与理由」为主线，叠加同范围 `git diff`，自己 grep `docs/architecture/` 与 `docs/tech-design/` 推断哪些文档可能被带偏。
 3. **只改语义 prose，不碰自动区** —— `architecture/*.md` 里 `<!-- AUTO-GENERATED -->` 目录树由脚本维护，绝不手改。
 4. **改完打校对水印** —— 让下次回看一眼看出每篇校到哪了。
 
@@ -27,7 +27,7 @@ description: Use when the user wants to 校对/修正/更新 docs/architecture �
 1. 解析时间范围为绝对日期（"最近两周"等相对说法先换算成 `YYYY-MM-DD`）。
 2. 收集 `docs/modify_history/` 中**日期落在范围内**的记录；逐篇抽取「改动清单」+「关键决策与理由」+「如何续接」三节作为事实输入。modify_history 不再提供"受影响设计文档"现成清单——别去找。
 3. **git 兼查**：`git log --since=<start> --until=<end>`（或范围内 commit）取 diff，作为兜底事实源补漏没被 modify_history 覆盖的改动。
-4. **推断待校对清单**：把第 2、3 步得到的模块名/功能名/文件路径作为关键词，grep `docs/architecture/*.md` 与 `docs/方案设计/*.md`，挑出**描述了这些模块/功能、内容可能已不符**的文档。去重；**只保留这两个目录内**的文档（其它目录即使匹配也不在本技能范围）。
+4. **推断待校对清单**：把第 2、3 步得到的模块名/功能名/文件路径作为关键词，grep `docs/architecture/*.md` 与 `docs/tech-design/*.md`，挑出**描述了这些模块/功能、内容可能已不符**的文档。去重；**只保留这两个目录内**的文档（其它目录即使匹配也不在本技能范围）。
 
 ### Phase 2 · 漂移报告（报告先行）→ 停
 对待校对清单里每个文档：读它，逐条比对"文档现述 vs 当前事实"，按下方模板列出漂移点，区分【事实性·可直接改】与【需判断·要你拍板】；无漂移的也列"已核对·无漂移"。
@@ -60,7 +60,7 @@ description: Use when the user wants to 校对/修正/更新 docs/architecture �
 
 来源：modify_history N 篇（列文件名）；git 兼查 commit 范围 <a>..<b>。
 
-## docs/方案设计/20260419-Stage1bOnlineDataSources.md
+## docs/tech-design/20260419-Stage1bOnlineDataSources.md
 | # | 位置(节) | 现述（过时） | 应为 | 依据 | 类别 |
 |---|---|---|---|---|---|
 | 1 | 关键逻辑 | quote_service 直连 ClickHouse 无缓存 | 缓存优先、miss 回源 | 2026-05-12 记录 / 9aa11bc | 事实性·可直接改 |
@@ -73,7 +73,7 @@ description: Use when the user wants to 校对/修正/更新 docs/architecture �
 | - | AUTO 区 | 树过时(05-10) | 不手改 → 提示重跑生成脚本 | — | 提示 |
 
 ## 已核对·无漂移
-- docs/方案设计/20260420-Stage3IBBroker.md（范围内改动未触及）
+- docs/tech-design/20260420-Stage3IBBroker.md（范围内改动未触及）
 
 > 请确认/挑选要应用的项；确认后我再改文档并打校对水印。
 ```

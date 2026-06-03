@@ -27,16 +27,16 @@
 
 | | |
 |---|---|
-| 输出位置 | 项目根的 `方案设计/`（**不是** `docs/`） |
-| 主文档 | `方案设计/YYYYMMDD-方案名称.md`（5 模块齐全） |
-| 代码实现（可选） | `方案设计/YYYYMMDD-方案名称-代码实现.md`，仅当包含非平凡算法或难写对的骨架时 |
+| 输出位置 | `docs/tech-design/`（**不是**项目根 `方案设计/`、也不是 `docs/` 根） |
+| 主文档 | `docs/tech-design/YYYYMMDD-方案名称.md`（5 模块齐全） |
+| 代码实现（可选） | `docs/tech-design/YYYYMMDD-方案名称-代码实现.md`，仅当包含非平凡算法或难写对的骨架时 |
 | 绘图工具 | **默认 Mermaid**（直接写 ```mermaid 代码块）；不够用再回退 `superpowers:uml` |
 
 ## 跟其它技能怎么衔接
 
 - 上游可衔接 `superpowers:brainstorming`（想法未明时先 brainstorm）
 - 下游接 `superpowers:writing-plans`（方案审核通过后落成可执行 plan）
-- 方案产出归 [`dum-knowledge-base-build`](../dum-knowledge-base-build/) 搭的 `docs/tech-design/` 也可（取决于项目约定，但本技能默认 `方案设计/`）
+- 方案产出落进 [`dum-knowledge-base-build`](../dum-knowledge-base-build/) 搭的 `docs/tech-design/`（本技能默认落点），下游 `dum-doc-reconcile` 据此对账
 
 ## 完整工作流
 

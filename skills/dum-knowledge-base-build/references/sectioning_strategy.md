@@ -94,7 +94,7 @@ ASCII art 或 Mermaid，看用户偏好。**只画"高层架构层"**：
 - **棘轮阈值**：`golden_thresholds.yaml` 仅 bump up 不下调
 - **本地 merge + tag 工作流**：单人项目从 Stage X 起不开 PR
 - **Stage 演进史权威源**：`docs/资料/stage-history.md`
-- **方案文档强制位置**：`方案设计/<YYYYMMDD>-<功能名>.md`
+- **方案文档强制位置**：`docs/tech-design/<YYYYMMDD>-<功能名>.md`
 - **全局命名/编码约定**：snake_case for files, PascalCase for classes 等
 
 每条 1 句话规则 + 1 句话原因，不展开。展开放方案文档或单独 ADR。
