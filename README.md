@@ -17,7 +17,7 @@
 | [`dum-session-summary`](skills/dum-session-summary/README.md) | 把会话改动总结进 `docs/modify_history/`，生成交接文档 | [SKILL.md](skills/dum-session-summary/SKILL.md) |
 | [`dum-ppt`](skills/dum-ppt/README.md) | 把 Markdown 转成单 HTML、可全屏播放的演示文档 | [SKILL.md](skills/dum-ppt/SKILL.md) |
 
-> 变更历史见 [`CHANGELOG.md`](CHANGELOG.md)。
+> 当前版本 **v1.1.4**；变更历史见 [`CHANGELOG.md`](CHANGELOG.md)。
 
 ## 安装
 
@@ -66,6 +66,39 @@ gemini extensions install https://github.com/dumliu01/dum-agent-skills
 ### Cursor
 
 把本仓库作为 Cursor 插件引入（读取 `.cursor-plugin/plugin.json`，`skills` 指向 `./skills/`）。
+
+## 更新
+
+发布新版本后，各 agent 把已装的本插件升到最新的办法：
+
+### Claude Code
+
+```bash
+# 刷新市场元数据，拉到最新版本信息
+/plugin marketplace update dum-skills
+# 更新已装插件
+/plugin update dum-agent-skills@dum-skills
+```
+
+> 本地路径装法（`/plugin marketplace add <本地目录>`）只需在该目录 `git pull`，重启 Claude Code 即生效。
+
+### Codex CLI
+
+在 clone 下来的仓库目录里拉取最新：
+
+```bash
+cd dum-agent-skills && git pull
+```
+
+### Gemini CLI
+
+```bash
+gemini extensions update dum-agent-skills
+```
+
+### Cursor
+
+在引入的仓库目录 `git pull` 后，重新加载 / 重启 Cursor 即生效。
 
 ## 仓库结构
 
