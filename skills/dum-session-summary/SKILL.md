@@ -70,10 +70,18 @@ description: Use when the user asks to 总结/记录本次会话的修改 into d
 
 ## 命名与位置约定
 
-- 路径：`docs/modify_history/YYYY-MM-DD-<标题>.md`
+- 路径：`docs/modify_history/YYYY-MM-DD-<标题>.md`；**平铺 ≥ 20 篇后**按年归档到 `docs/modify_history/<YYYY>/YYYY-MM-DD-<标题>.md`（年份取标题前 4 位）。
 - 日期：`YYYY-MM-DD`（用户当前日期，非凭空）。
 - 标题：简短描述性短语；空格换 `-`，去掉 `/ \ : * ? " < > |` 等非法字符；可中文。
 - 同日多篇：追加 `-2`、`-3`。
+
+**按量自动分子目录**：落盘前数 `docs/modify_history/` 根下平铺 `.md` 数（不含 README、不含年子目录）：
+
+| 状态 | 动作 |
+|---|---|
+| 已有年子目录 | 直接写入当年目录 `docs/modify_history/<当年>/` |
+| 平铺 < 20 | 平铺写入根目录 |
+| 平铺 ≥ 20（首次触发） | 按每篇前 4 位年份 `git mv` 归档到 `<YYYY>/`，**announce 分了哪些年、各几篇**（机械、可逆，无需逐项确认）→ 新文档写入当年目录 |
 
 ## 关键逻辑 / 难点
 
@@ -100,5 +108,6 @@ description: Use when the user asks to 总结/记录本次会话的修改 into d
 - ✅ "关键决策"含被否决方案。
 - ✅ "如何续接"具体到文件/命令颗粒度。
 - ✅ `docs/architecture/`、`docs/tech-design/` 下**没有任何文件**因本次"会话总结"被修改；也没替用户去触发 `dum-doc-reconcile`。
+- ✅ 若 modify_history 平铺已 ≥ 20 篇：已按年归档（`<YYYY>/`）并 announce；新文档落在当年目录。
 
 漏任一项就还没完成。
