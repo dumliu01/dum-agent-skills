@@ -58,6 +58,12 @@ EXCLUDE_FILES: set[str] = {"README.md", "docs-index.md"}
 # 5) 排除目录
 EXCLUDE_DIRS: set[str] = {"node_modules", "__pycache__", ".git"}
 
+# 6) 平铺超过多少篇就提示分子目录（不含 README）
+SUBDIR_THRESHOLDS: dict[str, int] = {
+    "tech-design": 20,
+    "modify_history": 20,
+}
+
 # ============================================================================
 # 以下不需要改
 # ============================================================================
@@ -159,8 +165,28 @@ def collect_category(dirname: str) -> list[tuple[str | None, str, str]]:
     return dated + undated
 
 
+def flat_count(dirname: str) -> int:
+    """该分类根目录下直接平铺（不递归子目录）的文档数，排除 EXCLUDE_FILES。"""
+    base = DOCS_ROOT / dirname
+    if not base.exists():
+        return 0
+    return sum(
+        1 for p in base.iterdir()
+        if p.is_file() and p.suffix in DOC_EXTENSIONS and p.name not in EXCLUDE_FILES
+    )
+
+
 def build_index_text() -> str:
     blocks: list[str] = []
+    for dirname, threshold in SUBDIR_THRESHOLDS.items():
+        n = flat_count(dirname)
+        if n >= threshold:
+            blocks.append(
+                f"> ⚠️ `{dirname}` 平铺已 {n} 篇，超过阈值 {threshold}，建议分子目录"
+                f"（tech-design 按模块 / modify_history 按年）。"
+            )
+    if blocks:
+        blocks.append("")
     for dirname, title in CATEGORIES:
         entries = collect_category(dirname)
         count = f"（{len(entries)} 篇）" if entries else ""
