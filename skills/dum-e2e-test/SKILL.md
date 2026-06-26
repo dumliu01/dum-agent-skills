@@ -169,7 +169,7 @@ v1 范围：Web/Electron（Playwright）与 Flutter（integration_test 白盒）
 
 **落点**：`tests/e2e/<feature>/`
 
-**参考骨架**：`assets/playwright-adapter-skeleton.ts`
+**参考骨架**：`assets/playwright-adapter-skeleton.ts`（Web/Electron）/ `assets/flutter-adapter-skeleton.dart`（Flutter）
 
 **适配器参考**：`references/platform-adapters.md`
 

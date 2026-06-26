@@ -319,11 +319,8 @@ class FlutterAdapter {
     final session = _requireSession();
 
     // Widget 树字符串描述（用于结构化分析，类比 Playwright 的 outerHTML）
+    // 简化版：用 rootElement 的 toStringDeep 描述树结构；落地可换更结构化的遍历
     final treeBuffer = StringBuffer();
-    _tester.binding.rootElement?.debugFillProperties(
-      DiagnosticPropertiesBuilder(),
-    );
-    // 简化版：用 find.byType(Widget) 的 description 描述树结构
     treeBuffer.writeln('=== Widget Tree Snapshot ===');
     treeBuffer.writeln(_tester.binding.rootElement.toString());
 
@@ -771,6 +768,7 @@ void runDemoIntegrationTest() {
     late FlutterAdapter adapter;
     late ApiGateway apiGateway;
     SeedHandle? seedHandle;
+    FlutterSession? session; // launch() 的返回值，传给 teardown（避免访问私有字段）
 
     setUp(() {
       // ApiGateway 是 Flutter 适配器的默认数据网关（HTTP，不依赖直连 DB）
@@ -779,9 +777,9 @@ void runDemoIntegrationTest() {
 
     tearDown(() async {
       // teardown：精确回滚 seed 数据，防止污染其他用例
-      if (seedHandle != null) {
+      if (seedHandle != null && session != null) {
         await adapter.teardown(
-          adapter._session!, // 实际项目中可将 session 存为局部变量传入
+          session!, // launch() 返回的 session，局部变量传入（不碰私有字段）
           gateway: apiGateway,
           seedHandle: seedHandle,
         );
@@ -810,7 +808,7 @@ void runDemoIntegrationTest() {
         );
 
         // ── 起测应用 ────────────────────────────────────────────────
-        await adapter.launch(LaunchTarget(apiBase: apiBase));
+        session = await adapter.launch(LaunchTarget(apiBase: apiBase));
         // 注：launch() 内会调用 app.main() + pumpAndSettle()
         //     落地时确保 app.main() 已替换为被测应用入口
 
