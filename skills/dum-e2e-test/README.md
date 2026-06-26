@@ -41,7 +41,7 @@
 - ✅ "验证订单创建后数据库是否正确写入"
 - ✅ "我改了状态机逻辑，想用用例跑一遍确认"
 - ✅ 需要同时产生用例文档 + 脚本 + 报告（而不只是手写脚本）
-- ❌ 遇到 bug 需先定位根因 → 先用 [`superpowers:systematic-debugging`](../../.claude/commands/systematic-debugging.md)（本技能定责只出方案，不做 debug）
+- ❌ 遇到 bug 需先定位根因 → 先用 `superpowers:systematic-debugging`（本技能定责只出方案，不做 debug）
 - ❌ 纯单元测试 / 无 UI 的接口测试 → 直接写 unit/integration test，无需本技能
 - ❌ 一次性脚本，不需要用例文档 → 直接写 Playwright 脚本手跑
 - ❌ 移动端（Flutter/Android/iOS）——v1 未支持，占位适配器会抛 `not-implemented`
@@ -58,7 +58,7 @@
 
 ## 跟其它技能怎么衔接
 
-- **[`webapp-testing`](../webapp-testing/)**：阶段 ③ 实测时复用——`webapp-testing` 提供真实 Playwright/Electron 执行能力，本技能在其上加用例派生 + 三段定责方法论。
+- **`webapp-testing`**：阶段 ③ 实测时复用——`webapp-testing` 提供真实 Playwright/Electron 执行能力，本技能在其上加用例派生 + 三段定责方法论。
 - **[`dum-solution-design`](../dum-solution-design/)**：技术方案是权威阶梯第二层，`docs/tech-design/` 是用例期望的主要来源；通常先出方案，实现后再用本技能做 e2e 验收。
 - **[`dum-doc-reconcile`](../dum-doc-reconcile/)**：`verdict=escalate`（两层权威互相矛盾）时转交——对账后更新权威文档，再重新派生受影响用例。
 - **[`dum-session-summary`](../dum-session-summary/)**：用例/脚本/代码修复落地后，用本技能记录本次会话改动到 `docs/modify_history/`，方便下次续接。
