@@ -36,9 +36,9 @@ docs/
 ├── architecture/      # 各子项目核心架构文档
 ├── specification/     # 编程 / 工程规范
 ├── product-design/    # 产品（需求）设计      （YYYYMMDD-[标题].md）
-├── tech-design/       # 技术方案设计          （YYYYMMDD-[标题].md）
+├── tech-design/       # 技术方案设计          （平铺≥20 按模块分 <模块>/）
 ├── superpowers/       # superpowers 产出（plans/ specs/）
-├── modify_history/    # 阶段总结 / 修改记录    （YYYYMMDD-[修改摘要].md）
+├── modify_history/    # 阶段总结 / 修改记录    （平铺≥20 按年分 <YYYY>/）
 ├── deffered/          # 待办 / 暂缓事项        （YYYYMMDD-[摘要].md）
 ├── manual_deployment/ # 部署文档
 ├── manual_userguides/ # 用户手册

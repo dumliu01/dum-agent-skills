@@ -17,9 +17,9 @@ description: 按标准文档体系给项目搭建/维护"知识库"：脚手架 
 │   ├── architecture/          # 各子项目核心架构文档 <service>.md（含源码目录清单，自动维护）
 │   ├── specification/         # 编程 / 工程规范
 │   ├── product-design/        # 产品（需求）设计      （YYYYMMDD-[标题].md，可按模块分子目录）
-│   ├── tech-design/           # 技术方案设计          （YYYYMMDD-[标题].md，对接 dum-solution-design）
+│   ├── tech-design/           # 技术方案设计          （YYYYMMDD-[标题].md；平铺≥20 按模块分 <模块>/，见 dum-solution-design）
 │   ├── superpowers/           # superpowers 产出（plans/ + specs/）
-│   ├── modify_history/        # 阶段总结 / 修改记录    （YYYYMMDD-[修改摘要].md）
+│   ├── modify_history/        # 阶段总结 / 修改记录    （平铺≥20 按年分 <YYYY>/，见 dum-session-summary）
 │   ├── deffered/              # 待办 / 暂缓事项        （YYYYMMDD-[摘要].md）
 │   ├── manual_deployment/     # 部署文档
 │   ├── manual_userguides/     # 用户手册
@@ -146,6 +146,7 @@ commit message 模板见 [`references/commit_template.md`](references/commit_tem
 | 把 `scaffold_docs_structure.py` 也塞进 hook | 每次 Write 都跑脚手架（无害但多余） | 脚手架只手动跑一次 |
 | 架构文档没有 AUTO-GENERATED / 索引没有 DOCS-INDEX marker | 脚本 print warning 后 exit 0，永不更新 | 第 5 步先确认两对 marker 都在 |
 | 手动编辑了 docs-index.md 的自动区 | 下次 hook 覆盖你的改动 | 自动区只读；要加说明写在 marker 外面 |
+| tech-design/modify_history 平铺到几十篇仍单层 | 难查、AI 难定位模块 | 交给 dum-solution-design / dum-session-summary 的「平铺≥20 自动分子目录」机制；索引脚本会在 docs-index 顶部出提示横幅 |
 
 ## Skill 内的资源
 
