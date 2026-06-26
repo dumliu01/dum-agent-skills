@@ -38,13 +38,21 @@ CATEGORIES: list[tuple[str, str, str]] = [
     ("product-design", "产品设计",
      "产品（需求）设计文档。可按子项目或模块再分子目录。\n" + NAMING),
     ("tech-design", "技术方案",
-     "技术方案设计文档。可按子项目或模块再分子目录。\n"
-     "dum-solution-design skill 的方案产出落到这里。\n" + NAMING),
+     "技术方案设计文档，dum-solution-design skill 的产出落到这里。\n\n"
+     "**组织约定**：平铺文档超过 **20** 篇时，按**功能模块**分子目录："
+     "`docs/tech-design/<模块>/YYYYMMDD-方案名.md`；不属任何模块的零散方案放 `_misc/`。\n\n"
+     "**模块清单**（新增模块时在此登记一行，落盘前先查此表复用已有模块、防同义词目录）：\n\n"
+     "| 模块 | 目录 | 一句话职责 |\n"
+     "|---|---|---|\n"
+     "| _（示例）auth_ | `auth/` | 登录鉴权相关方案 |\n\n"
+     + NAMING),
     ("superpowers", "Superpowers 产出",
      "superpowers 工作流产生的技术与执行文档。子目录：`plans/`（实施计划）、`specs/`（规格）。\n" + NAMING),
     ("modify_history", "修改记录",
-     "阶段总结与修改记录（每个里程碑/阶段一份）。\n"
-     "文件命名：`YYYYMMDD-[修改摘要].md`。"),
+     "阶段总结与修改记录（每个里程碑/阶段一份），dum-session-summary skill 的产出落到这里。\n\n"
+     "**组织约定**：平铺文档超过 **20** 篇时，按**年**分子目录："
+     "`docs/modify_history/<YYYY>/YYYY-MM-DD-标题.md`（年份取文件名前 4 位）。\n\n"
+     "文件命名：`YYYY-MM-DD-[修改摘要].md`。"),
     ("deffered", "待办",
      "待办 / 暂缓事项文档（记录决定推迟、但不能丢的工作）。\n"
      "文件命名：`YYYYMMDD-[摘要].md`。"),
