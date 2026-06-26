@@ -2,6 +2,22 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [1.1.7] - 2026-06-26
+
+### Added
+- **`dum-e2e-test` 增加 Flutter 端适配**：Flutter 从占位升级为 v1 **做实**，主驱动
+  `integration_test` + WidgetTester（白盒·进程内）——`locate` 走 Finder（`ValueKey`/
+  `Semantics`）、`readDisplay` 直接读 widget 属性做展示预言机，最贴合"界面数据展示"校验。
+  新增参考骨架 `assets/flutter-adapter-skeleton.dart`（实现统一 8 方法契约 + `ApiGateway`
+  走后门造数）。**数据层差异**：integration_test 跑在设备/模拟器上难直连测试库，故 Flutter
+  持久化校验以 **API 黑盒为主**，DB 白盒兜底需宿主侧 runner（`flutter_driver`/
+  `appium-flutter-driver`），不在本进程内适配器范围；三层校验的①交互②展示仍完整。
+  `references/platform-adapters.md`、`SKILL.md`、README 同步把 Flutter 移出占位（仅
+  Android/iOS 仍 `not-implemented`）。
+
+### Changed
+- 各 manifest 与 `package.json` 版本 `1.1.6` → `1.1.7`。
+
 ## [1.1.6] - 2026-06-26
 
 ### Added

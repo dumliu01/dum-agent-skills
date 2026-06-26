@@ -44,14 +44,14 @@
 - ❌ 遇到 bug 需先定位根因 → 先用 `superpowers:systematic-debugging`（本技能定责只出方案，不做 debug）
 - ❌ 纯单元测试 / 无 UI 的接口测试 → 直接写 unit/integration test，无需本技能
 - ❌ 一次性脚本，不需要用例文档 → 直接写 Playwright 脚本手跑
-- ❌ 移动端（Flutter/Android/iOS）——v1 未支持，占位适配器会抛 `not-implemented`
+- ❌ Android/iOS 原生壳——v1 未支持这两端，占位适配器会抛 `not-implemented`（Web/Electron/Flutter 已支持）
 
 ## 它交付什么
 
 | 产物 | 落点 | 格式 |
 |---|---|---|
 | 测试用例 | `docs/test-cases/<feature>.md` | Markdown，按 `assets/test-case-template.md` 结构 |
-| e2e 脚本 | `tests/e2e/<feature>/` | TypeScript（Playwright spec），参考 `assets/playwright-adapter-skeleton.ts` |
+| e2e 脚本 | `tests/e2e/<feature>/` | TypeScript（Web/Electron · Playwright，参考 `assets/playwright-adapter-skeleton.ts`）/ Dart（Flutter · integration_test，参考 `assets/flutter-adapter-skeleton.dart`） |
 | 证据包 | `tests/e2e/.artifacts/<run>/TC-<feature>-<序号>/` | 截图 + DOM 快照 + console.log + network.json + trace.zip |
 | 测试报告 | `docs/test-report/YYYYMMDD-<feature>.md` | Markdown，按 `assets/test-report-template.md` 结构，含定责字段与修复提案 |
 | 环境清单 | 项目根 或 `docs/test-cases/` 同级 | YAML，按 `assets/env-manifest-template.yaml` 结构 |
@@ -73,15 +73,16 @@
 
 - `references/triage-decision-tree.md` — 三段定责决策树：稳定性闸 → 环境类闸 → 语义定责 → 展示×持久化交叉表定 layer
 - `references/oracle-and-data.md` — 三层校验预言机实现：Arrange 走后门 / Act 走前门、展示值 DOM 提取规则、持久化网关接口
-- `references/platform-adapters.md` — 统一驱动契约与平台适配器登记（Web/Electron 已实现，Flutter/Android/iOS 占位）
+- `references/platform-adapters.md` — 统一驱动契约与平台适配器登记（Web/Electron/Flutter 已实现，Android/iOS 占位）
 
 **assets/**（可用模板）：
 
 - `assets/test-case-template.md` — 用例文件模板（`TC-<feature>-<序号>` 结构，含 provenance / 三层 expected 字段）
 - `assets/test-report-template.md` — 测试报告模板（顶部汇总 + 每条定责字段 + proposal）
-- `assets/playwright-adapter-skeleton.ts` — Playwright 适配器骨架（按统一驱动契约：launch / locate / act / readDisplay / assert / collectEvidence / teardown）
+- `assets/playwright-adapter-skeleton.ts` — Web/Electron 的 Playwright 适配器骨架（按统一驱动契约：launch / locate / act / readDisplay / assert / collectEvidence / teardown）
+- `assets/flutter-adapter-skeleton.dart` — Flutter 的 integration_test 适配器骨架（同一契约 + ApiGateway 走后门造数；DB 白盒在设备上受限，持久化以 API 黑盒为主）
 - `assets/env-manifest-template.yaml` — 环境清单模板（bring_up / test_db / seed / reset_hook / mocks / isolation 档位）
 
 ---
 
-> **v1 平台范围**：Web 与 Electron 已做实（Playwright 驱动）；Flutter / Android / iOS 以统一驱动契约占位，v1 不可执行，运行会抛 `not-implemented`。
+> **v1 平台范围**：Web 与 Electron（Playwright 驱动）、Flutter（integration_test 白盒）已做实；Android / iOS 以统一驱动契约占位，v1 不可执行，运行会抛 `not-implemented`。Flutter 的持久化校验以 API 黑盒为主（设备难直连测试库，DB 白盒需宿主侧 runner）。
