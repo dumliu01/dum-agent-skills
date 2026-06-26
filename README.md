@@ -16,8 +16,9 @@
 | [`dum-doc-reconcile`](skills/dum-doc-reconcile/README.md) | 按修改记录（兼查 git）把设计文档跟代码现状对账修正 | [SKILL.md](skills/dum-doc-reconcile/SKILL.md) |
 | [`dum-session-summary`](skills/dum-session-summary/README.md) | 把会话改动总结进 `docs/modify_history/`，生成交接文档 | [SKILL.md](skills/dum-session-summary/SKILL.md) |
 | [`dum-ppt`](skills/dum-ppt/README.md) | 把 Markdown 转成单 HTML、可全屏播放的演示文档 | [SKILL.md](skills/dum-ppt/SKILL.md) |
+| [`dum-e2e-test`](skills/dum-e2e-test/README.md) | 给带后端的前端/客户端做端到端测试：文档派生用例 → Playwright 脚本 → agent 实测 → 三层校验 → 三段定责 → 仅出修复方案（Web/Electron 实，移动端占位） | [SKILL.md](skills/dum-e2e-test/SKILL.md) |
 
-> 当前版本 **v1.1.4**；变更历史见 [`CHANGELOG.md`](CHANGELOG.md)。
+> 当前版本 **v1.1.6**；变更历史见 [`CHANGELOG.md`](CHANGELOG.md)。
 
 ## 安装
 
@@ -110,7 +111,8 @@ gemini extensions update dum-agent-skills
 │   ├── dum-solution-design/
 │   ├── dum-doc-reconcile/
 │   ├── dum-session-summary/
-│   └── dum-ppt/
+│   ├── dum-ppt/
+│   └── dum-e2e-test/
 ├── .claude-plugin/             # Claude Code：plugin.json + marketplace.json
 ├── .codex-plugin/plugin.json   # Codex
 ├── .cursor-plugin/plugin.json  # Cursor

@@ -16,10 +16,12 @@
 | **dum-doc-reconcile** | 按时间范围依据 `docs/modify_history`（兼查 git）把 architecture/方案设计文档跟代码现状对账修正。触发："校对/修正设计文档"/"文档对账" | `skills/dum-doc-reconcile/SKILL.md` |
 | **dum-session-summary** | 把本次会话的改动总结进 `docs/modify_history/`，生成交接/续接文档（记录多了自动按年分子目录）。触发："把这次会话的修改总结成文档"/"记录修改历史" | `skills/dum-session-summary/SKILL.md` |
 | **dum-ppt** | 把 Markdown 转成单 HTML、可全屏播放的专业演示文档。触发："做 PPT"/"演示文稿"/"把这份文档做成 PPT" | `skills/dum-ppt/SKILL.md` |
+| **dum-e2e-test** | 给带后端的前端/客户端做端到端测试：按权威阶梯从文档派生用例→生成 Playwright 脚本→agent 实测→三层校验(交互/界面数据/持久化)→失败三段定责(脚本/用例/代码)→仅出修复方案。触发："做端到端测试"/"e2e"/"UI 自动化测试"/"验证XX数据是否正确" | `skills/dum-e2e-test/SKILL.md` |
 
 这几个技能相互衔接：`dum-solution-design` 出方案 → 实现 → `dum-session-summary` 记录改动 →
 `dum-doc-reconcile` 据此对账文档；`dum-knowledge-base-build` 提供承载这一切的 `docs/` 文档体系，
 `dum-arch-spec-doc` 在它建好的 `docs/architecture/` 与 `docs/specification/` 里逐个服务填实架构与规范两份文档。
+`dum-e2e-test` 消费 `dum-solution-design` 的技术方案与需求/架构文档派生用例，复用 `webapp-testing` 实测，定责出的文档冲突回流 `dum-doc-reconcile`、修复后用 `dum-session-summary` 记账。
 
 ## 跨 agent 工具名对照
 

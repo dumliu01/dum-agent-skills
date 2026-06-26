@@ -2,6 +2,17 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [1.1.6] - 2026-06-26
+
+### Added
+- **新增 `dum-e2e-test` 技能**：带后端的前端/客户端端到端测试闭环——按权威阶梯
+  (需求>技术方案>代码>用例)从文档派生带溯源的用例 → 生成 Playwright 脚本 → agent
+  实测 → 三层校验(交互/界面数据展示/持久化，API 黑盒优先 DB 白盒兜底) → 失败三段
+  定责(脚本/用例/代码，并以展示×持久化交叉表分前端/后端) → 仅出修复方案待确认。
+  v1：Web/Electron 用 Playwright 做实，Flutter/Android/iOS 留统一驱动契约占位。
+  含 SKILL.md + 3 references(定责树/三层校验数据/各端适配) + 4 assets(用例/环境清单/
+  报告模板 + Playwright 参考骨架)。
+
 ## [1.1.4] - 2026-06-03
 
 ### Changed

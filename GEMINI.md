@@ -12,3 +12,4 @@
 | **dum-doc-reconcile** | "校对/修正设计文档"，让 docs/architecture 与方案设计文档跟代码现状对齐 | `skills/dum-doc-reconcile/SKILL.md` |
 | **dum-session-summary** | "把这次会话的修改总结成文档"/生成交接文档/记录修改历史到 docs/modify_history | `skills/dum-session-summary/SKILL.md` |
 | **dum-ppt** | "做 PPT/演示文稿"，把 Markdown 转成单 HTML、可全屏播放的演示文档 | `skills/dum-ppt/SKILL.md` |
+| **dum-e2e-test** | 给带后端的前端/客户端做端到端测试，文档派生用例→脚本→实测→三段定责→仅出方案；"做端到端测试"/"e2e"/"UI 自动化" | `skills/dum-e2e-test/SKILL.md` |
