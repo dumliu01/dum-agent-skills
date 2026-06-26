@@ -27,7 +27,7 @@ description: Use when the user wants to 校对/修正/更新 docs/architecture �
 1. 解析时间范围为绝对日期（"最近两周"等相对说法先换算成 `YYYY-MM-DD`）。
 2. 收集 `docs/modify_history/` 中**日期落在范围内**的记录；逐篇抽取「改动清单」+「关键决策与理由」+「如何续接」三节作为事实输入。modify_history 不再提供"受影响设计文档"现成清单——别去找。
 3. **git 兼查**：`git log --since=<start> --until=<end>`（或范围内 commit）取 diff，作为兜底事实源补漏没被 modify_history 覆盖的改动。
-4. **推断待校对清单**：把第 2、3 步得到的模块名/功能名/文件路径作为关键词，grep `docs/architecture/*.md` 与 `docs/tech-design/*.md`，挑出**描述了这些模块/功能、内容可能已不符**的文档。去重；**只保留这两个目录内**的文档（其它目录即使匹配也不在本技能范围）。
+4. **推断待校对清单**：把第 2、3 步得到的模块名/功能名/文件路径作为关键词，**递归** grep `docs/architecture/**/*.md` 与 `docs/tech-design/**/*.md`（用 `grep -r` 或等价递归，**务必含子目录**——tech-design 可能已按模块分 `<模块>/`），挑出**描述了这些模块/功能、内容可能已不符**的文档。去重；**只保留这两个目录内**的文档（其它目录即使匹配也不在本技能范围）。若用户只点名某个模块，可把 tech-design 范围收窄到 `docs/tech-design/<模块>/`。
 
 ### Phase 2 · 漂移报告（报告先行）→ 停
 对待校对清单里每个文档：读它，逐条比对"文档现述 vs 当前事实"，按下方模板列出漂移点，区分【事实性·可直接改】与【需判断·要你拍板】；无漂移的也列"已核对·无漂移"。
@@ -85,6 +85,7 @@ description: Use when the user wants to 校对/修正/更新 docs/architecture �
 - **git 兼查的意义**：modify_history 可能漏记一些改动；git diff 是兜底事实源——凡触及设计文档所述模块/路径的 commit，都要回看对应文档是否需改。
 - **报告先行是硬性 gate**：Phase 2 必须先交报告。直接改 = 违反本技能（见红旗）。
 - **AUTO 区与 prose 分界**：architecture 文档"目录树"归脚本，"模块语义/技术栈/流程"归人——本技能只动后者。
+- **递归扫子目录**：tech-design 平铺超阈值后会按模块分 `<模块>/` 子目录，扫描务必递归（`grep -r` / `**/*.md`），否则子目录里的方案文档会被整批漏掉——这是结构化后最容易踩的盲区。
 
 ## 红旗 —— 出现即停，回到正轨
 
@@ -104,6 +105,7 @@ description: Use when the user wants to 校对/修正/更新 docs/architecture �
 | 不打/不更新水印 | 下次回看重复劳动、不知校到哪 | H1 下唯一一行水印，原地替换 |
 | 删掉"遗留问题"历史 | 丢失设计沿革 | 标 `(已解决 日期)` + 补新权衡 |
 | 校对范围外的目录 | 越权改动 | 只限 architecture 与 方案设计 |
+| 用单层 `docs/tech-design/*.md` 扫描 | 漏掉已按模块分子目录的方案，漂移无人校 | 改递归 `grep -r` / `**/*.md` |
 
 ## 出口判断
 
