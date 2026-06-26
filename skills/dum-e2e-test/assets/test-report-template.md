@@ -12,7 +12,7 @@
 **运行时间**: YYYY-MM-DD HH:MM  
 **脚本目录**: `tests/e2e/<feature>/`  
 **证据包目录**: `tests/e2e/.artifacts/<run-id>/`  
-**环境清单**: `docs/test-cases/<feature>/env-manifest.yaml`（或项目根）
+**环境清单**: 项目根 或 `docs/test-cases/` 同级（如 `env-manifest.yaml`）
 
 | 类别 | 数量 | 备注 |
 |---|---|---|
