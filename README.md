@@ -18,7 +18,7 @@
 | [`dum-ppt`](skills/dum-ppt/README.md) | 把 Markdown 转成单 HTML、可全屏播放的演示文档 | [SKILL.md](skills/dum-ppt/SKILL.md) |
 | [`dum-e2e-test`](skills/dum-e2e-test/README.md) | 给带后端的前端/客户端做端到端测试：文档派生用例 → 脚本 → agent 实测 → 三层校验 → 三段定责 → 仅出修复方案（Web/Electron/Flutter 实，Android/iOS 占位） | [SKILL.md](skills/dum-e2e-test/SKILL.md) |
 
-> 当前版本 **v1.1.8**；变更历史见 [`CHANGELOG.md`](CHANGELOG.md)。
+> 当前版本 **v1.1.9**；变更历史见 [`CHANGELOG.md`](CHANGELOG.md)。
 
 ## 安装
 

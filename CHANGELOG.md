@@ -2,6 +2,16 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [1.1.9] - 2026-07-02
+
+### Changed
+- **`dum-ppt` fintech-dark 章节分隔页标题改为按宽度自动换行**：去掉 8 个分隔页标题
+  （`.section-divider .section-h`）里手写的强制 `<br/>`，标题合并为单行源码（连接处
+  紧贴、不在中文间留空格），改由容器宽度自然折行；配套给 `.section-divider .section-h`
+  加 `text-wrap: balance`，多行时两行长度尽量均衡。承接 1.1.8 的加宽，宽屏下标题可排成
+  一行、窄屏自动折成两行，不再写死断点。
+- 各 manifest 与 `package.json` 版本 `1.1.8` → `1.1.9`。
+
 ## [1.1.8] - 2026-07-02
 
 ### Fixed
