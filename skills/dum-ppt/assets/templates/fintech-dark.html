@@ -260,10 +260,10 @@
   .section-h:lang(en), .display-h:lang(en) { letter-spacing: -0.025em; line-height: 1.05; }
 
   /* Chapter divider headings — smaller font so 12-16 char Chinese lines fit.
-     Default --t-section is 4.4vw (≈63px @ 1440 viewport); paired with the
-     720px text container that only gives ~11 Chinese chars/line, which is
-     too tight for typical Chinese section titles. This scoped override gives
-     ~17 chars/line at the same viewport. */
+     Default --t-section is 4.4vw (≈63px @ 1440 viewport). This scoped override
+     keeps the title compact; paired with the widened text container below
+     (max-width: min(1200px, 100%), see the divider markup) it gives ~20 Chinese
+     chars/line on wide screens so titles don't wrap too early. */
   .section-divider .section-h {
     font-size: clamp(30px, 3.6vw, 54px);
     line-height: 1.28;
@@ -1137,7 +1137,7 @@
     </div>
     <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
       <div class="roman">I</div>
-      <div style="max-width: min(880px, 100%); flex: 1;">
+      <div style="max-width: min(1200px, 100%); flex: 1;">
         <div class="chapter-tag-row">
           <span class="chapter-tag">范式之变</span>
           <span class="gold-dash"></span>
@@ -1146,7 +1146,7 @@
           从「写好代码」，<br/>
           到「让 AI <span class="gradient-text">写好代码</span>」。
         </h2>
-        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 640px;">
+        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 900px;">
           准确率从 70% 跨到 95%，看似只是 25 个百分点，但它跨越了一条决定性的边界 —— 从「需要被纠错」到「值得被信任」。
         </p>
       </div>
@@ -1268,7 +1268,7 @@
     </div>
     <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
       <div class="roman">II</div>
-      <div style="max-width: min(880px, 100%); flex: 1;">
+      <div style="max-width: min(1200px, 100%); flex: 1;">
         <div class="chapter-tag-row">
           <span class="chapter-tag">工具与模型</span>
           <span class="gold-dash"></span>
@@ -1277,7 +1277,7 @@
           选错的代价，<br/>
           比<span class="gradient-text">选对</span>更显著。
         </h2>
-        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 640px;">
+        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 900px;">
           模型与工具不是技术细节，而是组织能力的底座。这里讨论的是"能力供给侧的选型"。
         </p>
       </div>
@@ -1440,7 +1440,7 @@
     </div>
     <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
       <div class="roman">III</div>
-      <div style="max-width: min(880px, 100%); flex: 1;">
+      <div style="max-width: min(1200px, 100%); flex: 1;">
         <div class="chapter-tag-row">
           <span class="chapter-tag">最佳实践</span>
           <span class="gold-dash"></span>
@@ -1449,7 +1449,7 @@
           让 AI 用<span class="gradient-text">最低成本</span><br/>
           理解你。
         </h2>
-        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 640px;">
+        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 900px;">
           所有实践都围绕一个目标：让 AI 尽快理解你的需求涉及哪些文件 + 约束条件。
         </p>
       </div>
@@ -1715,7 +1715,7 @@
     </div>
     <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
       <div class="roman">IV</div>
-      <div style="max-width: min(880px, 100%); flex: 1;">
+      <div style="max-width: min(1200px, 100%); flex: 1;">
         <div class="chapter-tag-row">
           <span class="chapter-tag">Skills 与工作流</span>
           <span class="gold-dash"></span>
@@ -1724,7 +1724,7 @@
           把方法论沉淀为<br/>
           <span class="gradient-text">可调用的能力</span>。
         </h2>
-        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 640px;">
+        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 900px;">
           每个团队都有 30% 的方法论是隐性的。把它们写成 Skill，AI 就能稳定复用。
         </p>
       </div>
@@ -1853,7 +1853,7 @@
     </div>
     <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
       <div class="roman">V</div>
-      <div style="max-width: min(880px, 100%); flex: 1;">
+      <div style="max-width: min(1200px, 100%); flex: 1;">
         <div class="chapter-tag-row">
           <span class="chapter-tag">能力转变</span>
           <span class="gold-dash"></span>
@@ -1862,7 +1862,7 @@
           从掌握细节，<br/>
           到掌握<span class="gradient-text">原理</span>。
         </h2>
-        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 640px;">
+        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 900px;">
           不是不学语言，而是把学习曲线从「语法和 API」迁移到「原理与权衡」。
         </p>
       </div>
@@ -2006,7 +2006,7 @@
     </div>
     <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
       <div class="roman">VI</div>
-      <div style="max-width: min(880px, 100%); flex: 1;">
+      <div style="max-width: min(1200px, 100%); flex: 1;">
         <div class="chapter-tag-row">
           <span class="chapter-tag">团队协作</span>
           <span class="gold-dash"></span>
@@ -2015,7 +2015,7 @@
           从横向分工，<br/>
           到<span class="gradient-text">垂直赋能</span>。
         </h2>
-        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 640px;">
+        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 900px;">
           不再是 "需求 → 设计 → 开发 → 测试" 的串行接力，而是按"产品交付单元"组织的小队作战。
         </p>
       </div>
@@ -2297,7 +2297,7 @@
     </div>
     <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
       <div class="roman">VII</div>
-      <div style="max-width: min(880px, 100%); flex: 1;">
+      <div style="max-width: min(1200px, 100%); flex: 1;">
         <div class="chapter-tag-row">
           <span class="chapter-tag">思维转变</span>
           <span class="gold-dash"></span>
@@ -2306,7 +2306,7 @@
           从执行者，<br/>
           到<span class="gradient-text">放大器</span>。
         </h2>
-        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 640px;">
+        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 900px;">
           如果 AI 能写代码，程序员的价值在哪里？答案是 — 思考、协调、放大他人。
         </p>
       </div>
@@ -2385,7 +2385,7 @@
     </div>
     <div style="display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); flex: 1;">
       <div class="roman">VIII</div>
-      <div style="max-width: min(880px, 100%); flex: 1;">
+      <div style="max-width: min(1200px, 100%); flex: 1;">
         <div class="chapter-tag-row">
           <span class="chapter-tag">陷阱与质量</span>
           <span class="gold-dash"></span>
@@ -2394,7 +2394,7 @@
           失败的方式，<br/>
           比<span class="gradient-text">成功的多</span>。
         </h2>
-        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 640px;">
+        <p class="body strong" style="margin-top: 28px; font-size: 17px; max-width: 900px;">
           AI 编程的常见失败不来自模型，而来自<span style="color: var(--text);">流程缺失</span>。
         </p>
       </div>

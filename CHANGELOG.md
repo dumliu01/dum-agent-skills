@@ -2,6 +2,22 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [1.1.8] - 2026-07-02
+
+### Fixed
+- **`dum-ppt` fintech-dark 模板章节分隔页宽度修复**：章节分隔页（`.section-divider`）
+  的标题/正文列 `max-width` 由 `min(880px, 100%)` 放宽到 `min(1200px, 100%)`，描述段
+  `max-width` 由 `640px` 放宽到 `900px`（各 8 处分隔页同步）。此前在宽屏下，巨大的罗马
+  数字只占约 380px，右侧留白很多，标题与描述却被窄容器挤得过早换行；放宽后两处文字随
+  页面宽度自然折行，不再被约束提前断行。相关 CSS 注释一并更新。
+
+### Changed
+- **README「Claude Code 更新」指令简化**：由「`/plugin marketplace update` +
+  `/plugin update`」两步（及本地路径装法说明）收敛为一行 `claude plugin update
+  dum-agent-skills@dum-skills`。
+- 各 manifest 与 `package.json` 版本 `1.1.7` → `1.1.8`（含修正 `gemini-extension.json`
+  误写成 `"8"` 为 `"1.1.8"`）。
+
 ## [1.1.7] - 2026-06-26
 
 ### Added
