@@ -2,6 +2,27 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [1.2.0] - 2026-07-19
+
+### Added
+- **新技能 `dum-doc-reconcile-domain`（领域模块权威文档生成）**：把 zebook 项目内验证过的
+  `dum-doc-reconcile-newest` 通用化收编。维护 `docs/domain-tech-design/` 与
+  `docs/domain-product-design/` 两棵按领域模块组织的"现状真相"权威树（`<模块>/<模块>-<子模块>.md`，
+  每模块 README 作总入口 + 鲜度总览表）；含三种模式——M（`*-newest` 旧目录一次性迁移：
+  `git mv` 改名 + 批量修 related 链接 + 换新脚本）、A（Bootstrap：读全量 dated + 深读现状代码
+  合成 v1.0，只写当前生效结论）、B（Incremental：鲜度 🟡 驱动，`git diff` 取证只吸收增量）；
+  记账体系为 frontmatter 鲜度头 + 修改记录表 + 四步收尾，报告先行确认后才动正文。
+- **打包鲜度脚本**：`skills/dum-doc-reconcile-domain/scripts/` 下 `check_module_freshness.py`
+  （扫 domain 树、按 `reconciled-through`/`source.paths` 比对 git 提交与新 dated 快照判 🟢/🟡、
+  回写各模块 README 鲜度表；domain→dated 用显式映射表）与 `_freshness_lib.py`（判定纯函数库，
+  仅 stdlib + pyyaml）；首次使用复制到目标项目 `scripts/`。
+- `docs/原始需求/` 收录《技术方案文档规范》《产品文档规范》，是该技能两套正文骨架的对齐依据。
+
+### Changed
+- 根 `CLAUDE.md`（软链 `AGENTS.md`）/`GEMINI.md`/`README.md` 技能清单与衔接说明补入新技能，
+  明确与 `dum-doc-reconcile` 按路径分工（domain 树 vs architecture/dated prose）。
+- 各 manifest 与 `package.json` 版本 `1.1.9` → `1.2.0`。
+
 ## [1.1.9] - 2026-07-02
 
 ### Changed
