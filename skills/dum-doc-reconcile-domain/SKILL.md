@@ -113,7 +113,7 @@ related: [architecture/mail-sync-worker.md, domain-product-design/邮箱/邮箱-
 - `status`：固定 `authoritative-current`，标记这是现状权威文档（区别于 dated 的归档文档）。
 - `last-reconciled` / `reconciled-through`：鲜度检查器唯一依据，每次四步收尾第 3 步必须同步。
 - `covers`：本文档覆盖的主题/机制点列表，供人快速判断"这份文档答不答得了我的问题"。
-- `source.services` / `source.paths`：鲜度检测的比对源——这些路径/服务有新提交，检查器就判 🟡。
+- `source.paths`：鲜度检测的比对源——这些路径有新提交，检查器就判 🟡；`source.services` 仅供人阅读定位归属服务，不参与判定。
 - `supersedes`：本文档收口的历史 dated 快照，Bootstrap 首次写入全量，Incremental 追加新收口的。
 - `related`：链到 `architecture/<service>.md`、对面 domain 树的姊妹文档等不重复抄写的关联文档。
 
