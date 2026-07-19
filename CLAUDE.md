@@ -14,6 +14,7 @@
 | **dum-arch-spec-doc** | 给单个服务按语言（前端/Go/Python）生成**两份分离**的文档：程序架构文档（`docs/architecture/`，描述性）+ 开发规范文档（`docs/specification/`，规范性）。触发："给前端/Go/Python 写架构文档和规范文档"/"架构和规范分两份"/"生成开发规范文档" | `skills/dum-arch-spec-doc/SKILL.md` |
 | **dum-solution-design** | 出结构化技术方案（架构/时序/关键逻辑/接口/遗留 五段 + 文档与代码分离；方案多了自动按模块分子目录）。触发："出个技术方案"/"方案设计"/"帮忙实现 XX 功能" | `skills/dum-solution-design/SKILL.md` |
 | **dum-doc-reconcile** | 按时间范围依据 `docs/modify_history`（兼查 git）把 architecture/方案设计文档跟代码现状对账修正。触发："校对/修正设计文档"/"文档对账" | `skills/dum-doc-reconcile/SKILL.md` |
+| **dum-doc-reconcile-domain** | 建立/维护 `docs/domain-tech-design/` 与 `docs/domain-product-design/` 下按领域模块的"现状真相"权威文档：从 dated 历史方案合成首份（Bootstrap）、按鲜度标记增量校对（Incremental）、兼做 `*-newest` 旧目录迁移。触发："建领域模块现状文档"/"生成领域权威文档"/"reconcile domain"/"把 dated 方案收口成现状" | `skills/dum-doc-reconcile-domain/SKILL.md` |
 | **dum-session-summary** | 把本次会话的改动总结进 `docs/modify_history/`，生成交接/续接文档（记录多了自动按年分子目录）。触发："把这次会话的修改总结成文档"/"记录修改历史" | `skills/dum-session-summary/SKILL.md` |
 | **dum-ppt** | 把 Markdown 转成单 HTML、可全屏播放的专业演示文档。触发："做 PPT"/"演示文稿"/"把这份文档做成 PPT" | `skills/dum-ppt/SKILL.md` |
 | **dum-e2e-test** | 给带后端的前端/客户端做端到端测试：按权威阶梯从文档派生用例→生成脚本(Web/Electron 走 Playwright，Flutter 走 integration_test)→agent 实测→三层校验(交互/界面数据/持久化)→失败三段定责(脚本/用例/代码)→仅出修复方案。触发："做端到端测试"/"e2e"/"UI 自动化测试"/"验证XX数据是否正确" | `skills/dum-e2e-test/SKILL.md` |
@@ -22,6 +23,7 @@
 `dum-doc-reconcile` 据此对账文档；`dum-knowledge-base-build` 提供承载这一切的 `docs/` 文档体系，
 `dum-arch-spec-doc` 在它建好的 `docs/architecture/` 与 `docs/specification/` 里逐个服务填实架构与规范两份文档。
 `dum-e2e-test` 消费 `dum-solution-design` 的技术方案与需求/架构文档派生用例，复用 `webapp-testing` 实测，定责出的文档冲突回流 `dum-doc-reconcile`、修复后用 `dum-session-summary` 记账。
+`dum-doc-reconcile-domain` 同为 `dum-session-summary` 的下游：把 dated 方案堆收口成 `docs/domain-tech-design/` `docs/domain-product-design/` 的现状权威文档，并由随技能打包的鲜度脚本驱动增量校对；与 `dum-doc-reconcile` 按路径分工——domain 树归它，`architecture/` 与 dated 方案的 prose 漂移归 `dum-doc-reconcile`。
 
 ## 跨 agent 工具名对照
 

@@ -14,6 +14,7 @@
 | [`dum-arch-spec-doc`](skills/dum-arch-spec-doc/README.md) | 给单个服务按语言（前端/Go/Python）生成**分离的两份**文档：程序架构文档（`docs/architecture/`）+ 开发规范文档（`docs/specification/`） | [SKILL.md](skills/dum-arch-spec-doc/SKILL.md) |
 | [`dum-solution-design`](skills/dum-solution-design/README.md) | 出结构化技术方案：架构/时序/关键逻辑/接口/遗留 五段，文档与代码分离 | [SKILL.md](skills/dum-solution-design/SKILL.md) |
 | [`dum-doc-reconcile`](skills/dum-doc-reconcile/README.md) | 按修改记录（兼查 git）把设计文档跟代码现状对账修正 | [SKILL.md](skills/dum-doc-reconcile/SKILL.md) |
+| [`dum-doc-reconcile-domain`](skills/dum-doc-reconcile-domain/README.md) | 把 dated 历史方案收口成 `docs/domain-*-design/` 按领域模块的现状权威文档（Bootstrap 合成 + 鲜度驱动增量校对） | [SKILL.md](skills/dum-doc-reconcile-domain/SKILL.md) |
 | [`dum-session-summary`](skills/dum-session-summary/README.md) | 把会话改动总结进 `docs/modify_history/`，生成交接文档 | [SKILL.md](skills/dum-session-summary/SKILL.md) |
 | [`dum-ppt`](skills/dum-ppt/README.md) | 把 Markdown 转成单 HTML、可全屏播放的演示文档 | [SKILL.md](skills/dum-ppt/SKILL.md) |
 | [`dum-e2e-test`](skills/dum-e2e-test/README.md) | 给带后端的前端/客户端做端到端测试：文档派生用例 → 脚本 → agent 实测 → 三层校验 → 三段定责 → 仅出修复方案（Web/Electron/Flutter 实，Android/iOS 占位） | [SKILL.md](skills/dum-e2e-test/SKILL.md) |
@@ -105,6 +106,7 @@ gemini extensions update dum-agent-skills
 │   ├── dum-arch-spec-doc/
 │   ├── dum-solution-design/
 │   ├── dum-doc-reconcile/
+│   ├── dum-doc-reconcile-domain/
 │   ├── dum-session-summary/
 │   ├── dum-ppt/
 │   └── dum-e2e-test/
