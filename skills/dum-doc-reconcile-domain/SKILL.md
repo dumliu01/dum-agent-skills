@@ -222,7 +222,7 @@ related: [architecture/mail-sync-worker.md, domain-product-design/邮箱/邮箱-
 
 ## 出口判断
 
-- ✅ 合成/漂移报告已交并获用户确认（报告先行硬 gate）。
+- ✅ 合成/漂移报告已交并获用户确认（报告先行）。
 - ✅ 正文、修改记录表、frontmatter（`last-reconciled`/`reconciled-through`/`supersedes`）三处已同步更新。
 - ✅ `python3 scripts/check_module_freshness.py --module <模块>` 已跑过，且该模块对应文档在 README 鲜度总览表里转为 🟢。
 - ✅ 未触碰 `domain-*-design` 之外的目录；README 鲜度表未被手写，全部由脚本回写。
