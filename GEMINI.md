@@ -14,3 +14,4 @@
 | **dum-session-summary** | "把这次会话的修改总结成文档"/生成交接文档/记录修改历史到 docs/modify_history | `skills/dum-session-summary/SKILL.md` |
 | **dum-ppt** | "做 PPT/演示文稿"，把 Markdown 转成单 HTML、可全屏播放的演示文档 | `skills/dum-ppt/SKILL.md` |
 | **dum-e2e-test** | 给带后端的前端/客户端做端到端测试，文档派生用例→脚本→实测→三段定责→仅出方案；"做端到端测试"/"e2e"/"UI 自动化" | `skills/dum-e2e-test/SKILL.md` |
+| **dum-server-api-test** | 给带服务端的项目生成并运行基于真实服务端 API 的 Go 功能测试（正常+异常，goconvey，优先复用项目 client SDK 否则裸 HTTP），命名约定+run.sh 按模块/优先级选跑；"写接口测试"/"API 功能测试"/"go test 测接口" | `skills/dum-server-api-test/SKILL.md` |

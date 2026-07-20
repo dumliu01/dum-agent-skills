@@ -18,8 +18,9 @@
 | [`dum-session-summary`](skills/dum-session-summary/README.md) | 把会话改动总结进 `docs/modify_history/`，生成交接文档 | [SKILL.md](skills/dum-session-summary/SKILL.md) |
 | [`dum-ppt`](skills/dum-ppt/README.md) | 把 Markdown 转成单 HTML、可全屏播放的演示文档 | [SKILL.md](skills/dum-ppt/SKILL.md) |
 | [`dum-e2e-test`](skills/dum-e2e-test/README.md) | 给带后端的前端/客户端做端到端测试：文档派生用例 → 脚本 → agent 实测 → 三层校验 → 三段定责 → 仅出修复方案（Web/Electron/Flutter 实，Android/iOS 占位） | [SKILL.md](skills/dum-e2e-test/SKILL.md) |
+| [`dum-server-api-test`](skills/dum-server-api-test/README.md) | 给带服务端的项目生成并运行基于真实服务端 API 的 Go 功能测试：`go test` + goconvey，读需求/方案/代码派生每接口正常+异常用例，命名约定 + `run.sh` 按模块/优先级选跑 | [SKILL.md](skills/dum-server-api-test/SKILL.md) |
 
-> 当前版本 **v1.2.0**；变更历史见 [`CHANGELOG.md`](CHANGELOG.md)。
+> 当前版本 **v1.3.0**；变更历史见 [`CHANGELOG.md`](CHANGELOG.md)。
 
 ## 安装
 
@@ -109,7 +110,8 @@ gemini extensions update dum-agent-skills
 │   ├── dum-doc-reconcile-domain/
 │   ├── dum-session-summary/
 │   ├── dum-ppt/
-│   └── dum-e2e-test/
+│   ├── dum-e2e-test/
+│   └── dum-server-api-test/
 ├── .claude-plugin/             # Claude Code：plugin.json + marketplace.json
 ├── .codex-plugin/plugin.json   # Codex
 ├── .cursor-plugin/plugin.json  # Cursor

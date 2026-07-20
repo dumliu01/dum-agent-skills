@@ -2,6 +2,17 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [1.3.0] - 2026-07-20
+
+### Added
+- **新技能 `dum-server-api-test`（服务端 API 功能测试）**：连真实服务端（不 mock），
+  `go test` + goconvey，读需求/方案/代码派生每个接口的正常+异常用例，命名约定 +
+  `run.sh` 按模块/优先级选跑；补 `dum-e2e-test` 排除的无 UI 纯接口测试场景。
+
+### Changed
+- 根 `CLAUDE.md`（软链 `AGENTS.md`）/`GEMINI.md`/`README.md` 技能清单与衔接说明补入新技能。
+- 各 manifest 与 `package.json` 版本 `1.2.0` → `1.3.0`。
+
 ## [1.2.0] - 2026-07-19
 
 ### Added
