@@ -697,3 +697,5 @@ Expected: `VET-OK`（依赖可下载时）。若因离线/网络失败，记录�
 ## Execution Handoff
 
 见对话中的执行方式选择。
+
+> 自检结果（2026-07-20）：VET-OK —— go 1.24.5 下渲染 scaffold，`go vet ./...` 通过，`go test -run "^$"` 输出 `ok apitest`（测试文件真实编译通过，含 goconvey 依赖）。
