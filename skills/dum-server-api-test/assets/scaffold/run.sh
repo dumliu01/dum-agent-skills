@@ -41,7 +41,7 @@ if [[ -n "$RAW_RUN" ]]; then
   RUN="$RAW_RUN"
 elif [[ -n "$IFACE" ]]; then
   # 按 @interface 注解取对应函数名并 OR 拼接
-  FUNCS=$(grep -B4 -E "@interface:.*${IFACE}" *_test.go | grep -oE 'Test_[A-Za-z0-9_]+' | sort -u | paste -sd '|' -)
+  FUNCS=$(grep -A4 -E "@interface:.*${IFACE}" *_test.go | grep -oE 'Test_[A-Za-z0-9_]+' | sort -u | paste -sd '|' -)
   if [[ -z "$FUNCS" ]]; then echo "没有匹配 @interface=${IFACE} 的测试"; exit 1; fi
   RUN="^($FUNCS)$"
 else
