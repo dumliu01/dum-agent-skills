@@ -1,0 +1,11 @@
+# 复制为 test.yml 并填真实值；test.yml 已在 .gitignore，勿提交真实密钥。
+# 仅连测试/beta 环境。
+app:
+  baseURL: "https://<your-test-host>"
+  appId: 0
+  secret: "<your-secret>"
+  requestTimeout: 10
+
+modules:
+  example:
+    sampleText: "hello"
