@@ -49,4 +49,10 @@ else
 fi
 
 echo "-test.run: $RUN"
-go test -v -run "$RUN" -args -c "$CONFIG"
+if [[ -x ./apitest.test ]]; then
+  echo "run: ./apitest.test (compiled)"
+  ./apitest.test -test.v -test.run "$RUN" -c "$CONFIG"
+else
+  echo "run: go test (source)"
+  go test -v -run "$RUN" -args -c "$CONFIG"
+fi

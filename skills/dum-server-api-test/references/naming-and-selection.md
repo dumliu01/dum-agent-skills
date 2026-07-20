@@ -47,10 +47,10 @@ Test_<字母><NN>_<P0|P1|P2>_<Case>
 示例：
 
 ```go
-// @desc 正常注册一个 agent，校验返回的 agent_id 非空且状态为 active
-// @label normal
-// @interface RegisterAgent
-// @dependent 无
+// @desc: 正常注册一个 agent，校验返回的 agent_id 非空且状态为 active
+// @label: normal
+// @interface: RegisterAgent
+// @dependent: 无
 func Test_A01_P0_Normal(t *testing.T) {
     ...
 }
@@ -64,18 +64,21 @@ func Test_A01_P0_Normal(t *testing.T) {
 
 ### 构造规则
 
-1. `--module A,B,C` → 取模块字母集合，拼成 `(A|B|C)`，插在 `Test_` 之后：`^Test_(A|B|C)[0-9]+_`。
-2. `--priority p0,p1` → 优先级统一大写，拼成 `(P0|P1)`：`^Test_[A-Z][0-9]+_(P0|P1)_`。
+1. `--module A,B,C` → 取模块字母集合，拼成 `(A|B|C)`，插在 `Test_` 之后；`--priority` 未指定则该槽代入 `.*`：`^Test_(A|B|C)[0-9]+_.*_`。
+2. `--priority p0,p1` → 优先级统一大写，拼成 `(P0|P1)`；`--module` 未指定则该槽代入 `.*`：`^Test_.*[0-9]+_(P0|P1)_`。
 3. 同时传 `--module` 与 `--priority` → 两段都替换为具体集合：`^Test_(<模块集合>)[0-9]+_(<优先级集合>)_`。
 4. `--interface <name>` → 不走字母/优先级正则，而是先 `grep` 源码里的 `@interface:.*<name>` 注解，取命中的函数名列表，再 OR 拼接成正则（如 `^(Test_A01_P0_Normal|Test_A01_P1_NoToken)$`）。
 
 ### Worked Examples
 
+> `--module`/`--priority` 未指定的那一槽，`run.sh` 会代入 `.*`（而非省略），所以只传一侧时正则里仍保留另一侧的 `.*` 占位。
+
 | 命令 | 生成的 `-test.run` 正则 |
 |---|---|
-| `--module A,B` | `^Test_(A|B)[0-9]+_` |
-| `--priority p0` | `^Test_[A-Z][0-9]+_P0_` |
+| `--module A,B` | `^Test_(A|B)[0-9]+_.*_` |
+| `--priority p0` | `^Test_.*[0-9]+_(P0)_` |
 | `--module B --priority p0,p1` | `^Test_(B)[0-9]+_(P0|P1)_` |
+| `--module A,B --priority p0` | `^Test_(A|B)[0-9]+_(P0)_` |
 | `--interface RegisterAgent` | 先 `grep '@interface:.*RegisterAgent'` 取函数名，再 OR 拼接，如 `^(Test_A01_P0_Normal|Test_A01_P0_NoToken)$` |
 
 ---

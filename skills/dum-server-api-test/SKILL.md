@@ -109,7 +109,7 @@ description: Use when 用户要给带服务端的项目做接口/API 功能测�
 1. 复制 `assets/scaffold/` 到 `testcase/<service>-api-test/`，按目标 `<service>` 改包名、module path、接口相关类型/常量。
 2. **选调用策略**：
    - **优先复用项目已有 client SDK**：若阶段①探测到目标项目暴露了 Go client SDK，在 `A00_Main_test.go` 中 new 该 SDK 的 client 并直接调用其方法。
-   - **否则走裸 HTTP**（脚手架默认）：用 `tool.go` 里的 `doRequest` 封装发请求、解析响应、统一处理错误码。
+   - **否则走裸 HTTP**（脚手架默认）：用 `tool.go` 里的 `DoRequest` 封装发请求、解析响应、统一处理错误码。
 3. 按 `references/naming-and-selection.md` 的规则命名测试文件与函数：文件 `<字母><NN>_<Interface>_test.go`，函数 `Test_<字母><NN>_<P0|P1|P2>_<Case>`。
 4. 每个测试函数头部写 `@desc / @label / @interface / @dependent` 注解（语义见 `references/naming-and-selection.md`），供 `run.sh` 与 `--list` 解析。
 5. goconvey 结构：外层一个接口一个 `Convey`，内层按正常/异常场景拆子 `Convey`，用 `So` 断言；**每条产生资源的用例末尾必须加「清理数据」子 Convey**，删除/回收本用例产生的资源。
