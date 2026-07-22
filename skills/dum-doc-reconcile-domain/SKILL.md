@@ -9,7 +9,7 @@ description: Use when 建立/维护 docs/domain-tech-design 与 docs/domain-prod
 
 本技能维护**四棵树模型**里的"现状权威树"：`docs/tech-design/` `docs/product-design/` 是**带日期的历史快照堆**（一次决策的存档），`docs/domain-tech-design/` `docs/domain-product-design/` 是与之 1:1 对照的**无日期、按领域模块、现状真相**的活文档——想知道某模块"现在是什么样"只看 domain 树，dated 树只在追溯"当时为何这么决定"时才翻。
 
-组织形式：`docs/domain-<type>-design/[模块]/[模块]-[子模块].md`（子模块粒度，避免单文件过大、鲜度更精细），每个模块目录下一份 `README.md` 作为**现状总入口 + 鲜度总览表**（表由 `check_module_freshness.py` 自动刷新，不手写）。
+组织形式：`docs/domain-<type>-design/[模块]/[模块]-[子模块].md`（子模块粒度，避免单文件过大、鲜度更精细），每个模块目录下一份 `README.md` 作为**现状总入口 + 鲜度总览表**（表由 `check_module_freshness.py` 自动刷新，不手写）。模块可嵌套在分类层下（如 `app应用/假勤/`、`app应用/审批/`——`app应用` 是纯分类目录、`假勤`/`审批` 才是模块）；`check_module_freshness.py` 会递归把「直接放着子模块文档的目录」当作模块单元、纯分类目录（只含子目录、无直接 `*.md`）自动跳过，`--module` 可传叶子名（`假勤`）或相对路径（`app应用/假勤`）。
 
 本技能是 `dum-session-summary → modify_history` 的下游：`dum-session-summary` 只如实记录"改了什么、为什么"，不预判哪份 domain 文档过时；`check_module_freshness.py` 负责把"谁可能过时"判成 🟢/🟡 状态标记；本技能负责**真正把内容改对**——合成首份、或把增量吸收进已有正文。三者分工：**记录事实（session-summary）→ 判定状态（freshness 脚本）→ 合成/校对内容（本技能）**。
 

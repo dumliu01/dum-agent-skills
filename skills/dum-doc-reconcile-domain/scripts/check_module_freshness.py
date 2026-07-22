@@ -39,15 +39,29 @@ def _newer_dated_count(docs_root: Path, tree_dir: str, module: str,
     return n
 
 
+def _module_dirs(base: Path):
+    """产出 base 下任意层级、直接含非 README *.md 的目录（模块单元）。
+
+    支持嵌套模块（如 app应用/假勤/、app应用/审批/）：只把「直接放着子模块
+    文档的目录」当作模块，纯分类目录（如 app应用/，只含子目录）自动跳过。
+    """
+    for d in sorted(p for p in base.rglob("*") if p.is_dir()):
+        if any(f.name != "README.md" for f in d.glob("*.md")):
+            yield d
+
+
 def scan(docs_root: Path, repo: Path, only_module: str | None) -> list[dict]:
     results: list[dict] = []
     for tree_dir in _DOMAIN_TO_DATED:
         base = docs_root / tree_dir
         if not base.is_dir():
             continue
-        for module_dir in sorted(p for p in base.iterdir() if p.is_dir()):
-            module = module_dir.name
-            if only_module and module != only_module:
+        for module_dir in _module_dirs(base):
+            # module 用相对 base 的路径（嵌套模块如 "app应用/假勤"），
+            # 兼容旧的一级模块（如 "邮箱"）。--module 可传相对路径或叶子名。
+            module = module_dir.relative_to(base).as_posix()
+            leaf = module_dir.name
+            if only_module and only_module not in (module, leaf):
                 continue
             for doc in sorted(module_dir.glob("*.md")):
                 if doc.name == "README.md":
