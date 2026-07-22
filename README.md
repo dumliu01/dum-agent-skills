@@ -82,11 +82,23 @@ claude plugin update dum-agent-skills@dum-skills
 
 ### Codex CLI
 
-在 clone 下来的仓库目录里拉取最新：
+Codex 是把本仓库**当作本地目录引入**的（没有中心化的版本仓库），所以更新＝在安装时 clone 下来的那个目录里拉取最新代码：
 
 ```bash
-cd dum-agent-skills && git pull
+cd dum-agent-skills   # 安装时 clone / 引入的那个目录
+git pull              # 拉取最新技能正文与 AGENTS.md
 ```
+
+拉取后需要**重启（或新开）Codex 会话**，让它重新读取 `AGENTS.md`（软链到 `CLAUDE.md`）与 `.codex-plugin/plugin.json` 指向的 `./skills/`——运行中的会话不会热加载改动。
+
+确认已更新到位（版本号应与本仓库 [`CHANGELOG.md`](CHANGELOG.md) 最新一致）：
+
+```bash
+git -C dum-agent-skills log -1 --oneline          # 看是否已到最新提交
+grep '"version"' dum-agent-skills/.codex-plugin/plugin.json   # 看插件版本号
+```
+
+> 若安装时是用软链/直接指向本仓库工作目录（而非独立 clone），则本仓库 `git pull` 后同样重启 Codex 会话即可，无需重复拉取。
 
 ### Gemini CLI
 
