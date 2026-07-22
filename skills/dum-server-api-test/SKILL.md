@@ -21,8 +21,8 @@ description: Use when 用户要给带服务端的项目做接口/API 功能测�
 |---|---|---|
 | ① 摄入与探测 | 接口清单（入参/出参/鉴权/错误码/依赖/副作用） | 随 SKILL 产出，供②③消费 |
 | ② 用例设计 | 正常+异常用例文档（P0/P1/P2 分层） | `docs/test-cases/<service>-api.md` |
-| ③ 脚手架 + 生成 | 可编译 Go 测试工程（goconvey） | `testcase/<service>-api-test/` |
-| ④ 选择运行 | 编译产物 + 按 `--module`/`--priority` 选跑的结果 | `testcase/<service>-api-test/`（`build.sh`/`run.sh`） |
+| ③ 脚手架 + 生成 | 共享引擎(复用) + 可编译 Go 测试薄壳（goconvey） | 公共 `testcase/apitest-common/` + 本服务 `testcase/<service>-api-test/` |
+| ④ 选择运行 | 编译产物 + 按 `--module`/`--priority` 选跑的结果 | `testcase/{build,run}.sh <服务目录> …`（脚本在 testcase/ 层，参数化） |
 
 ---
 
@@ -104,19 +104,28 @@ description: Use when 用户要给带服务端的项目做接口/API 功能测�
 
 **目标**：把用户确认后的用例翻译成可编译的 Go 测试工程。
 
+> **公共脚手架复用优先**：HTTP 引擎 / 配置加载 / 登录换 JWT 引导 / 依赖版本 / 构建脚本是**跨服务共用**的，抽成 `testcase/apitest-common/`（独立 Go module `apitest-common`，包名 `apitesting`）+ `testcase/` 层参数化 `build.sh`/`run.sh`，**每个 testcase/ 只建一次，后续每个待测服务只生成薄壳、复用公共引擎**——不要每个服务重复生成整套引擎。
+
 **步骤**：
 
-1. 复制 `assets/scaffold/` 到 `testcase/<service>-api-test/`，按目标 `<service>` 改包名、module path、接口相关类型/常量。
-2. **选调用策略**：
+1. **建/复用公共脚手架（每个 `testcase/` 一次）**：
+   - `testcase/apitest-common/`：若不存在，从 `assets/scaffold/apitest-common/` 复制过去（`client.go` HTTP 引擎 + `config.go` 泛型 yaml 加载 + `bootstrap.go` 双登录引导 + `envelope.go` 统一封套 + `go.mod`）；已存在则直接复用，**不重复生成**。
+   - `testcase/build.sh`、`testcase/run.sh`：若不存在，从 `assets/scaffold/testcase-scripts/` 复制过去（参数化：第一位置参数是服务目录）；已存在则复用。
+2. **生成本服务薄壳**：复制 `assets/scaffold/service/*` 到 `testcase/<service>-api-test/`，按目标服务改：
+   - `config.go`：`Config` 的字段（`baseURL`/`loginBaseURL`/`loginPath`、内部密钥、`CapabilitiesConfig` 开关）。
+   - `tool.go`：便捷方法名与 baseURL/鉴权语义（示例 `Do/DoAdmin/DoToken/DoH/DoRaw` → 按服务改成 `Mail*`/`Server*` 等）；`Envelope`/`Credential` 是共享类型的**别名**，测试文件直接用不变。
+   - `test.yml.example`、`.gitignore` 按需微调。
+   - `go.mod` 已带 `require apitest-common` + `replace apitest-common => ../apitest-common`；改完跑 `go mod tidy`（自动补 require/go.sum，`yaml.v3` 转 indirect，`goconvey` 保持直接依赖）。
+3. **选调用策略**：
    - **优先复用项目已有 client SDK**：若阶段①探测到目标项目暴露了 Go client SDK，在 `A00_Main_test.go` 中 new 该 SDK 的 client 并直接调用其方法。
-   - **否则走裸 HTTP**（脚手架默认）：用 `tool.go` 里的 `DoRequest` 封装发请求、解析响应、统一处理错误码。
-3. 按 `references/naming-and-selection.md` 的规则命名测试文件与函数：文件 `<字母><NN>_<Interface>_test.go`，函数 `Test_<字母><NN>_<P0|P1|P2>_<Case>`。
-4. 每个测试函数头部写 `@desc / @label / @interface / @dependent` 注解（语义见 `references/naming-and-selection.md`），供 `run.sh` 与 `--list` 解析。
-5. goconvey 结构：外层一个接口一个 `Convey`，内层按正常/异常场景拆子 `Convey`，用 `So` 断言；**每条产生资源的用例末尾必须加「清理数据」子 Convey**，删除/回收本用例产生的资源。
+   - **否则走共享引擎**（薄壳默认）：用 `tool.go` 的便捷方法（内部调 `cli.EnvDo`/`cli.RawDo`）发请求；`{code,message,data}` 封套用 `EnvDo` 取 `Envelope`，非此封套用 `RawDo` 取原始字节；签名类鉴权把 token 传 `""`、在 headers 里放签名头。
+4. 按 `references/naming-and-selection.md` 的规则命名测试文件与函数：文件 `<字母><NN>_<Interface>_test.go`，函数 `Test_<字母><NN>_<P0|P1|P2>_<Case>`。
+5. 每个测试函数头部写 `@desc / @label / @interface / @dependent` 注解（语义见 `references/naming-and-selection.md`），供 `run.sh` 与 `--list` 解析。
+6. goconvey 结构：外层一个接口一个 `Convey`，内层按正常/异常场景拆子 `Convey`，用 `So` 断言；**每条产生资源的用例末尾必须加「清理数据」子 Convey**，删除/回收本用例产生的资源。
 
-**落点**：`testcase/<service>-api-test/`
+**落点**：公共引擎 `testcase/apitest-common/` + 脚本 `testcase/{build,run}.sh`（各一次）；本服务薄壳 `testcase/<service>-api-test/`。
 
-**脚手架**：`assets/scaffold/`
+**脚手架**：`assets/scaffold/apitest-common/`（共享引擎）、`assets/scaffold/testcase-scripts/`（脚本）、`assets/scaffold/service/`（每服务薄壳）。
 
 详见 `references/naming-and-selection.md`。
 
@@ -126,14 +135,14 @@ description: Use when 用户要给带服务端的项目做接口/API 功能测�
 
 **目标**：编译测试工程，按模块/优先级/接口选跑，失败时按定责路径转出。
 
-**步骤**：
+**步骤**（脚本在 `testcase/` 层，第一位置参数是服务目录）：
 
-1. `build.sh` 编译测试工程，确认可编译通过。
-2. `run.sh` 支持 `--module`（字母，逗号分隔）、`--priority`（p0/p1/p2，逗号分隔）、`--interface`（按 `@interface` 注解匹配）、`--list`（列出全部可选项）、`--run`（实际执行）。参数会被拼成 `-test.run` 正则去选跑，映射规则与 worked example 见 `references/naming-and-selection.md`。
-3. 跑之前先用 `--list` 核对将要跑的范围（模块/优先级/接口是否符合预期），再加 `--run` 真正执行。
+1. `testcase/build.sh <service>-api-test` 编译测试工程为 `apitest.test`，确认可编译通过。
+2. `testcase/run.sh <service>-api-test <config.yml> [flags]` 选跑，flag 支持 `--module`（字母，逗号分隔）、`--priority`（p0/p1/p2，逗号分隔）、`--interface`（按 `@interface` 注解匹配）、`--list`（列出全部可选项）、`--run`（直接给正则）。参数会被拼成 `-test.run` 正则去选跑，映射规则与 worked example 见 `references/naming-and-selection.md`。`<config.yml>` 相对/绝对路径均可（脚本内部会在切目录前解析为绝对路径）。
+3. 跑之前先用 `testcase/run.sh <service>-api-test <config> --list` 核对将要跑的范围（模块/优先级/接口是否符合预期），再去掉 `--list` 真正执行。
 4. **失败处理**：把失败原始日志/断言输出透出给用户；若怀疑是代码 bug，需要先定位根因，提示转 `superpowers:systematic-debugging`；若怀疑是需求/方案与代码不一致，提示转 `dum-doc-reconcile`；测试工程/用例文档改动完成后，提示用 `dum-session-summary` 记账。
 
-**落点**：`testcase/<service>-api-test/`（`build.sh` / `run.sh` 就地产出编译结果与运行结果）
+**落点**：`testcase/<service>-api-test/`（`apitest.test` 编译产物就地产出）；脚本与运行入口在 `testcase/{build,run}.sh`。
 
 ---
 
@@ -160,4 +169,6 @@ description: Use when 用户要给带服务端的项目做接口/API 功能测�
 | 产物 | 落点（强制） | 格式 |
 |---|---|---|
 | 测试用例文档 | `docs/test-cases/<service>-api.md` | Markdown，按 `assets/test-cases.md.tmpl` |
-| 接口测试工程 | `testcase/<service>-api-test/` | Go + goconvey，按 `assets/scaffold/` 落地 |
+| 公共引擎（每 testcase/ 一次） | `testcase/apitest-common/` | 独立 module `apitest-common`(pkg `apitesting`)，按 `assets/scaffold/apitest-common/` |
+| 参数化脚本（每 testcase/ 一次） | `testcase/build.sh`、`testcase/run.sh` | Bash，第一参数为服务目录，按 `assets/scaffold/testcase-scripts/` |
+| 本服务测试薄壳 | `testcase/<service>-api-test/` | Go + goconvey，`require+replace ../apitest-common`，按 `assets/scaffold/service/` |

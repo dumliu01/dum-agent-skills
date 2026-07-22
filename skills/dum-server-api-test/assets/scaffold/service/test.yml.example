@@ -1,0 +1,21 @@
+# 复制为 test.yml 并填真实值；test.yml 已在 .gitignore，勿提交真实账号/密钥。
+# ⚠️ 只连测试/beta 环境，禁止指向生产。
+app:
+  baseURL: "http://localhost:<port>"        # 被测服务根地址
+  loginBaseURL: "http://localhost:<port>"   # 登录换 JWT 的服务（同服务鉴权时与 baseURL 相同，可留空回退）
+  loginPath: "/api/<service>/user/login"    # 登录接口路径（含前缀）
+  requestTimeout: 15
+
+auth:
+  # ⚠️ 必须是「可密码登录」的真实账号（部分系统会拒绝需改初始密码的账号）。
+  testUser:
+    email: "<user@example.com>"
+    password: "<password>"
+    # token: "可选：直接填已签发的 JWT，填了就跳过登录"
+  adminUser:
+    email: "<admin@example.com>"
+    password: "<password>"
+
+# 能力开关：默认全 false → 需外部依赖的正常流按最低档跳过(skipped，不算失败)。
+# 按项目在 config.go 的 CapabilitiesConfig 补字段后在此配置。
+capabilities: {}

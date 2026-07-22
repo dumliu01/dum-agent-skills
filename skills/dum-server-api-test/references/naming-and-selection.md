@@ -1,7 +1,7 @@
 # 命名约定与 run.sh 选择正则映射
 
 > 用途：指导 `dum-server-api-test` 技能阶段③「脚手架 + 生成」的文件/函数命名，以及阶段④「选择运行」里 `run.sh` 参数到 `-test.run` 正则的构造规则。
-> 本文件是**方法论 reference**，不含可运行实现代码（`run.sh` 的实际实现在 `assets/scaffold/`）。
+> 本文件是**方法论 reference**，不含可运行实现代码（`run.sh` 的实际实现在 `assets/scaffold/testcase-scripts/`，参数化后第一位置参数是服务目录：`run.sh <服务目录> <config> [flags]`）。
 
 ---
 

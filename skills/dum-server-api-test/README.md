@@ -10,8 +10,8 @@
 
 1. **摄入与探测** — 按权威阶梯（需求 > 技术方案 > 代码）抽取每个接口的入参/出参/鉴权/错误码/依赖/副作用，探测目标项目是否已有 client SDK。
 2. **用例设计** — 每接口至少 1 正常 + 按语义选异常（鉴权/参数/幂等/依赖/状态机），分 P0/P1/P2 优先级。
-3. **脚手架 + 生成** — 复制脚手架生成 Go 测试工程，goconvey 断言，优先复用目标项目已有 client SDK，否则裸 HTTP。
-4. **选择运行** — `build.sh` 编译，`run.sh` 按 `--module`/`--priority`/`--interface`/`--list` 选跑。
+3. **脚手架 + 生成** — 公共引擎（HTTP/配置/登录引导）抽成 `testcase/apitest-common/` 每个 testcase/ 建一次、各服务复用；本服务只生成薄壳（config/tool/Main + `replace ../apitest-common`）。goconvey 断言，优先复用目标项目已有 client SDK，否则走共享引擎。
+4. **选择运行** — `testcase/build.sh <服务目录>` 编译，`testcase/run.sh <服务目录> <config>` 按 `--module`/`--priority`/`--interface`/`--list` 选跑。
 
 ## 何时触发
 
@@ -38,7 +38,8 @@
 | | |
 |---|---|
 | 测试用例文档 | `docs/test-cases/<service>-api.md`（按 `assets/test-cases.md.tmpl`） |
-| 接口测试工程 | `testcase/<service>-api-test/`（Go + goconvey，按 `assets/scaffold/` 落地） |
+| 公共引擎 + 脚本（每 testcase/ 一次） | `testcase/apitest-common/`（module `apitest-common`）+ `testcase/{build,run}.sh` |
+| 本服务测试薄壳 | `testcase/<service>-api-test/`（Go + goconvey，`replace ../apitest-common`，按 `assets/scaffold/service/` 落地） |
 
 ## 跨 agent 工具名
 
@@ -46,10 +47,11 @@
 
 ## 快速上手
 
-1. 复制 `assets/scaffold/` 到 `testcase/<service>-api-test/`。
-2. 填 `test.yml`：目标环境地址（只填测试/beta）、鉴权配置（敏感值占位，真实值放本地未纳入版本控制的文件）。
-3. `./build.sh` 编译测试工程，确认可编译通过。
-4. `./run.sh --list` 核对可选的模块/优先级/接口范围，再用 `./run.sh --module A --priority p0 --run` 之类的组合按需选跑。
+1. 公共脚手架（每个 `testcase/` 一次）：`testcase/apitest-common/` 从 `assets/scaffold/apitest-common/`、`testcase/{build,run}.sh` 从 `assets/scaffold/testcase-scripts/` 复制；已存在则复用。
+2. 本服务薄壳：复制 `assets/scaffold/service/*` 到 `testcase/<service>-api-test/`，改 config 字段/tool 便捷方法/test.yml.example，跑 `go mod tidy`。
+3. 填 `test.yml`：目标环境地址（只填测试/beta）、鉴权配置（敏感值占位，真实值放本地未纳入版本控制的文件）。
+4. `testcase/build.sh <service>-api-test` 编译，确认可编译通过。
+5. `testcase/run.sh <service>-api-test ./test.yml --list` 核对范围，再去掉 `--list` 并加 `--module A --priority p0` 之类组合按需选跑。
 
 ## 跟其它技能怎么衔接
 
