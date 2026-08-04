@@ -1,97 +1,141 @@
-# 环境清单模板（env-manifest-template.yaml）
-#
-# 用途：描述被测项目的环境起停、数据库连接、前置数据、复位钩子、依赖 mock 与隔离策略。
-# 使用方式：复制到被测项目根或 docs/test-cases/ 同级，按项目实际情况填写。
-# 字段定义来源：方案 §4.7 + references/oracle-and-data.md §5。
-#
-# 隔离档位（isolation）阶梯（从严到松）：
-#   ephemeral-container  → 最佳：容器化临时栈，每轮抛弃式 DB+后端，跑完销毁
-#   test-db-reset        → 实用：专用 *_test 库 + 按用例 truncate&seed（或唯一命名空间数据）
-#   app-reset-endpoint   → 兜底：后端暴露 test-only reset/seed HTTP 端点（env flag 守门）
-# 原则：项目就高填隔离档。
+version: 2
 
----
+project:
+  name: "<project>"
+  e2e_root: "<detected-existing-path>"
+  entrypoint: "<existing-runner-or-test-entry>"
+  toolchain:
+    flutter_authority: ".fvmrc"
+    expected_flutter: "<version>"
+    expected_dart: "<version>"
+    verify_package_config_sdk: true
+    no_pub_during_test: true
+    protect_lockfiles: ["pubspec.lock"]
+    node: "<version-if-needed>"
 
-# bring_up: 怎么起前后端。
-# 取值：
-#   compose 文件路径（相对项目根）—— 推荐，隔离最干净
-#   shell 命令字符串       —— 启动脚本
-#   已起环境 URL            —— 连外部已起服务，不自行起
-# 示例（Web + Postgres 项目）：
-bring_up:
-  type: compose          # compose | command | url
-  path: docker-compose.test.yml   # type=compose 时：文件路径
-  # command: "npm run start:test"  # type=command 时：启动命令
-  # url: "http://localhost:3000"   # type=url 时：已起服务地址
-  ready_check: "http://localhost:3000/health"  # 健康检查端点（可选，用于等待就绪）
+selection:
+  scope: "all" # all | module | modules | file | case
+  modules: []
+  files: []
+  cases: []
+  fail_on_empty: true
 
-# test_db: 测试库 DSN（白盒断言 / DB 直连 reset 用）。
-# 可空（置 null）表示纯黑盒模式：所有断言走 API，不直连 DB。
-# 示例（Postgres）：
-test_db: "postgresql://testuser:testpass@localhost:5432/myapp_test"
-# test_db: null   # 纯黑盒时填 null
+run:
+  run_id_prefix: "e2e"
+  batch_reuse: true
+  device_lease: true
+  workspace_build_lease: true
+  single_e2e_command_per_workspace: true
+  preserve_first_failure: true
+  fail_on_post_test_async_error: true
+  fail_on_cleanup_residual: true
+  artifact_root: "<artifacts/e2e>"
 
-# seed: 前置数据 seed 脚本 / 数据集入口。
-# 在每次 reset 后（或用例 data_setup 之前）执行，恢复基线数据。
-# 示例：
-seed:
-  script: "scripts/seed-test-data.sh"    # shell 脚本入口
-  # fixture: "tests/fixtures/base.sql"   # SQL fixture 文件（二选一）
-  args: []   # 传给脚本的额外参数（可空列表）
+timeouts:
+  preflight_seconds: 60
+  build_seconds: 900
+  install_seconds: 300
+  login_seconds: 120
+  ready_seconds: 120
+  business_step_seconds: 60
+  external_event_seconds: 180
+  coordination_seconds: 120
+  cleanup_seconds: 120
 
-# reset_hook: 复位方式——每条用例结束（或开始前）如何清理 / 复位环境。
-# 取值：
-#   truncate&seed       → truncate 测试库相关表再跑 seed 脚本
-#   test-only-endpoint  → 调后端暴露的 test-only reset HTTP 端点
-#   container-destroy   → 销毁容器并重新起（仅 ephemeral-container 时）
-# 示例：
-reset_hook:
-  strategy: "truncate&seed"     # truncate&seed | test-only-endpoint | container-destroy
-  # endpoint: "POST http://localhost:3000/test/reset"  # strategy=test-only-endpoint 时
-  tables:                        # strategy=truncate&seed 时列出需 truncate 的表
-    - users
-    - sessions
-    - orders
+services:
+  hard:
+    - name: "<business-api>"
+      health_url: "<url>"
+  soft:
+    - name: "<non-blocking-service>"
+      health_url: "<url>"
+      on_failure: "record-noise"
+  optional: []
 
-# mocks: 外部依赖 mock 配置。
-# 用于隔离第三方服务（支付 / 邮件 / 短信 / 三方 API）和确定性控制（时间 / 随机种子）。
-# 示例（Web + Postgres 项目常见依赖）：
-mocks:
-  # 支付网关 mock
-  payment:
-    type: http-stub             # http-stub | env-flag | sdk-mock
-    base_url: "http://localhost:4000"  # mock 服务地址（如 WireMock / MSW）
-    preset: "always-success"    # mock 场景预设（按项目定义）
+actors:
+  A:
+    account_env: "E2E_ACTOR_A_ACCOUNT"
+    password_env: "E2E_ACTOR_A_PASSWORD"
+    expected_roles: ["<role>"]
+    required_capabilities: ["<capability>"]
+    device:
+      platform: "macos"
+      id: "<exact-device-id>"
+      timezone: "Asia/Shanghai"
+  B:
+    enabled: false
+    account_env: "E2E_ACTOR_B_ACCOUNT"
+    password_env: "E2E_ACTOR_B_PASSWORD"
+    expected_roles: ["<role>"]
+    required_capabilities: ["<capability>"]
+    device:
+      platform: "ios"
+      id: "<exact-simulator-or-device-id>"
+      timezone: "America/Los_Angeles"
 
-  # 邮件发送 mock（验证邮件是否发出，但不真实投递）
-  email:
-    type: env-flag
-    env: "EMAIL_BACKEND=test"   # 后端通过此 env 切换到 test 实现（写入内存或日志，不发送）
+external_capabilities:
+  - name: "<capability>"
+    dependency: "hard" # hard | soft | optional
+    required_secret_envs: []
+    missing: "fail" # fail | skip | degrade
 
-  # 三方 OAuth / API mock
-  third_party_api:
-    type: http-stub
-    base_url: "http://localhost:4001"
+fixtures:
+  validate_against_production_code:
+    id_format: true
+    resource_existence: true
+    membership: true
+    purpose: true
+    forbid_invented_ids: true
+  persistent:
+    - name: "<organization-or-group>"
+      resolve_by: "<stable-semantic-name>"
+      verify: true
+      bootstrap_if_missing: true
+      delete_after_run: false
+      restore_after_run: true
+  suite: []
+  ephemeral:
+    naming: "<resource>-{runId}-{caseId}"
+    register_before_first_act: true
+    cleanup_by_exact_id: true
+    residual_audit_by_run_id: true
 
-  # 时间冻结（避免时间相关断言飘移）
-  clock:
-    freeze: true
-    fixed_time: "2024-01-15T10:00:00Z"   # ISO-8601，测试期间时间固定为此值
+coordination:
+  enabled: false
+  event_key: ["runId", "batchId", "caseId", "actor", "stage"]
+  propagate_peer_failure: true
+  cleanup_barrier:
+    - "cleanup_requested"
+    - "peer_ready"
+    - "cleanup_completed"
+    - "peer_settled"
 
-  # 随机种子（保证随机生成的 id / token 可预测）
-  random:
-    seed: 42
+rerun_matrix:
+  clean_run: true
+  dirty_rerun: true
+  failure_rerun: true
+  module_composition_after_file: true
 
-# isolation: 隔离档位（见文件顶部阶梯说明）。
-# 取值（精确）：ephemeral-container | test-db-reset | app-reset-endpoint
-# 示例（Web + Postgres 推荐）：
-isolation: test-db-reset
-# isolation: ephemeral-container   # 有 Docker 时升档
-# isolation: app-reset-endpoint    # 无 DB 直连时降档
+flutter_preflight:
+  startup_lock: true
+  xcode_build_db: true
+  active_flutter_test_process: true
+  active_xcodebuild_process: true
+  responsive_navigation: true
 
-# parallel: 是否启用唯一命名空间数据以支持用例并行运行。
-# true  → 每条用例造数据时自动附唯一前缀/后缀（如 email 加 UUID 后缀），避免并行用例数据碰撞。
-# false → 串行运行，用例间共享测试库（依赖 reset_hook 保证隔离）。
-# 示例：
-parallel: false
-# parallel: true   # 配合 isolation=test-db-reset + 唯一命名空间数据时可开启
+progress:
+  stages: ["resolve", "build", "install", "login", "ready", "case", "tc", "step", "cleanup"]
+  heartbeat: true
+  include_source_file: true
+  include_actor_stage: true
+
+evidence:
+  screenshot: true
+  ui_tree: true
+  client_logs: true
+  api_summary: true
+  actor_logs: true
+  coordinator_events: true
+  build_install_logs: true
+  cleanup_audit: true
+  redact_headers: ["Authorization", "Cookie", "Set-Cookie"]

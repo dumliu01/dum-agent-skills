@@ -2,6 +2,8 @@
  * 参考模板，非即用；落地按目标项目调整。
  *
  * Playwright 适配器骨架 —— Web / Electron 双端统一驱动实现。
+ * 仅用于项目没有现成 E2E 基础设施时；已有 config、fixture、
+ * Page Object、Gateway 和 Runner 时必须复用，不得用本文件覆盖。
  * 实现来源：skills/dum-e2e-test/references/platform-adapters.md §1 统一驱动契约。
  * 数据网关来源：skills/dum-e2e-test/references/oracle-and-data.md §4 数据网关契约。
  *

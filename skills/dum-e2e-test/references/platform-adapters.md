@@ -61,9 +61,9 @@ teardown(session)
 |---|---|---|---|---|---|
 | Web | Playwright | role / text / `data-testid` | DOM 提取（`textContent` / `inputValue` / ARIA 文本） | 起前后端 / 连 URL | **实** |
 | Electron | Playwright（原生支持） | 同 Web | DOM 提取 | 起 Electron 二进制 | **实** |
-| Flutter | **`integration_test` + WidgetTester（白盒·主）**；`flutter_driver` / `appium-flutter-driver`（黑盒·备） | `ValueKey` / `Semantics` label，Finder | **widget/semantics 树**提取；`CustomPaint`/图表退截图+OCR | 模拟器/设备 + `--dart-define` 指测试后端 | **实**（integration_test） |
-| Android | Appium（UiAutomator2） | `resource-id` / `content-desc` | 原生元素树提取 | 模拟器/真机 + 装 apk | 占位（`not-implemented`） |
-| iOS | Appium（XCUITest） | `accessibilityIdentifier` | 原生元素树提取 | 模拟器/真机 + 装 app | 占位（`not-implemented`） |
+| Flutter | **`integration_test` + WidgetTester（白盒·主）** | `ValueKey` / `Semantics` label，Finder | **widget/semantics 树**提取；`CustomPaint`/图表退截图+OCR | 桌面、Android/iOS 模拟器或真机 + `--dart-define` | **实**（integration_test） |
+| 原生 Android | Appium（UiAutomator2） | `resource-id` / `content-desc` | 原生元素树提取 | 模拟器/真机 + 装 apk | 占位（`not-implemented`） |
+| 原生 iOS | Appium（XCUITest） | `accessibilityIdentifier` | 原生元素树提取 | 模拟器/真机 + 装 app | 占位（`not-implemented`） |
 
 ### 适配器登记（v1）
 
@@ -72,12 +72,12 @@ teardown(session)
 | Web | `PlaywrightAdapter`（`assets/playwright-adapter-skeleton.ts`） | 是 |
 | Electron | `PlaywrightAdapter`（同上，Playwright 原生支持 Electron） | 是 |
 | Flutter | `FlutterAdapter`（`assets/flutter-adapter-skeleton.dart`，integration_test 白盒） | 是 |
-| Android | 占位适配器 `AndroidAdapter`（`not-implemented`） | 否 |
-| iOS | 占位适配器 `IosAdapter`（`not-implemented`） | 否 |
+| 原生 Android | 占位适配器 `AndroidAdapter`（`not-implemented`） | 否 |
+| 原生 iOS | 占位适配器 `IosAdapter`（`not-implemented`） | 否 |
 
 ---
 
-## 3. 各端实现说明（Flutter 已实现 · Android/iOS 占位）
+## 3. 各端实现说明（Flutter 已实现 · 原生 Android/iOS 占位）
 
 ### Flutter 适配器（`integration_test` 白盒为主）
 
@@ -85,9 +85,9 @@ Flutter 在 v1 **已做实**，骨架见 `assets/flutter-adapter-skeleton.dart`�
 
 | 契约方法 | Flutter（integration_test + WidgetTester）实现 |
 |---|---|
-| `launch` | `IntegrationTestWidgetsFlutterBinding.ensureInitialized()` → 启动 app → `pumpAndSettle()`；后端地址用 `--dart-define` 注入 |
+| `launch` | `IntegrationTestWidgetsFlutterBinding.ensureInitialized()` → 启动 app → 等待可观察 ready 条件；后端地址用 `--dart-define` 注入 |
 | `locate` | 返回 `Finder`：`find.byKey(ValueKey('...'))`（testid 类比，首选）/ `find.bySemanticsLabel(...)` / `find.text(...)`，非 CSS/XPath |
-| `act` | `tester.tap` / `enterText` / `drag` 后 `pumpAndSettle()` |
+| `act` | `tester.tap` / `enterText` / `drag` 后等待目标状态；仅对确定会稳定的局部动画使用 `pumpAndSettle()` |
 | `observe` | widget/semantics 树描述 + 截图（截图供取证/视觉回归/OCR 兜底） |
 | `readDisplay` | **结构化提取**：直接读 widget 属性（如 `tester.widget<Text>(finder).data`），展示预言机主路径 |
 | `assert` | `expect(finder, findsOneWidget)` / `expect(readDisplay(...), matcher)` |
@@ -98,11 +98,9 @@ Flutter 在 v1 **已做实**，骨架见 `assets/flutter-adapter-skeleton.dart`�
 
 **数据网关注意（白盒 DB 限制）**：integration_test 跑在设备/模拟器上，**设备难直连测试库**，故 Flutter 的持久化校验**走 API 黑盒为主**（设备经网络访问宿主后端，base URL 由 `--dart-define` 注入）。若确需 DB 白盒兜底，需改用宿主侧 runner（`flutter_driver` / `appium-flutter-driver`），不在本进程内适配器范围。这是 Flutter 端相对 Web/Electron 的唯一数据层差异；三层校验的①交互②展示仍完整。
 
-### Android / iOS 的原生树（占位）
+### 原生 Android / iOS 的原生树（占位）
 
-Android/iOS 仍为 v1 占位：适配器骨架 8 个契约方法均标 `not-implemented`，抛「当前版本未实现」明确错误，防止误触发。其原生壳走 Appium 原生树（非 WebView 内嵌页面）：
-
-Android/iOS 原生壳走 Appium 原生树（非 WebView 内嵌页面）：
+这里的占位仅指 Appium 原生适配器，不代表 Flutter 应用不能运行在 Android/iOS。Flutter + `integration_test` 可直接选择 Android/iOS 模拟器或真机。原生壳 Appium 适配器仍标 `not-implemented`：
 
 - Android：UiAutomator2，`resource-id`（如 `com.example:id/submit_button`）/ `content-desc`（ARIA 类比）
 - iOS：XCUITest，`accessibilityIdentifier`
@@ -114,4 +112,4 @@ Android/iOS 原生壳走 Appium 原生树（非 WebView 内嵌页面）：
 > **与其它 reference 的衔接**：
 > - 契约中 `observe() / readDisplay()` 的「展示预言机」语义 → `oracle-and-data.md §2②`
 > - 契约中 `collectEvidence()` 证据包用途 → `triage-decision-tree.md`（三段定责取证）
-> - 占位适配器 `not-implemented` 仅 Android/iOS；Flutter 已按本契约实现。后续扩展 Android/iOS 时同样按本契约补实现，SKILL.md 主流程零改动（方案 §3.5）
+> - 占位适配器 `not-implemented` 仅指原生 Android/iOS Appium；Flutter 在 Android/iOS 上仍可用 `integration_test`。后续扩展原生适配器时按本契约补实现。

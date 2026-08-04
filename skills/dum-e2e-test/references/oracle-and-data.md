@@ -156,6 +156,8 @@ rollback(handle)
 ```
 回滚本用例通过 `seed` 造的数据，按 `handle` 精确回收，避免污染其他用例。
 
+`handle` 必须携带真实资源 ID、`runId/caseId` 和生命周期，禁止只凭名称模糊删除。创建资源后立即登记；teardown 必须在第一个业务 Act 前注册。
+
 ### 网关选择规则（`gateway` 参数）
 
 | 值 | 含义 | 选用条件 |
@@ -167,7 +169,31 @@ rollback(handle)
 
 ---
 
-## 5. 环境与隔离阶梯
+## 5. 资源生命周期与刷新语义
+
+| 生命周期 | 网关行为 |
+|---|---|
+| `ephemeral` | 使用 `runId/caseId` 命名，创建后登记真实 ID，结束后精确回滚并做残留审计 |
+| `suite` | 套件内复用，批次结束统一清理 |
+| `persistent` | 按稳定语义名称解析 ID，只 verify；需要修改时先登记恢复快照，不默认删除 |
+
+`bootstrap` 与 `verify` 必须分开且幂等。组织、普通群、固定账号等环境级资源通常属于 `persistent`，不能每轮重建或误删。
+
+三层断言还必须声明 `refresh_semantics`：
+
+- 实时推送；
+- 自动轮询；
+- 重新进入页面；
+- 手动刷新；
+- 导航触发刷新。
+
+持久化正确但 UI 旧值时，先核对刷新语义与缓存失效，再判 `frontend/suspect-cache`；固定 sleep 不能替代产品刷新契约。
+
+多角色场景需为每个 actor 选择可用预言机。参与者拒绝或退出后可能失去详情读取权限，此时应由仍有权限的角色或管理端 API 验证最终状态，不能把 403/404 误判为数据未持久化。
+
+---
+
+## 6. 环境与隔离阶梯
 
 ### 可插拔环境清单
 
@@ -221,4 +247,5 @@ flowchart TD
 > - `expected_interaction` → §2 ① 交互预言机
 > - `expected_display(source)` → §2 ② 展示预言机 + §3 取值方式
 > - `expected_data(gateway)` → §2 ③ 持久化预言机 + §4 数据网关契约
-> - `env-manifest-template.yaml` → §5 环境清单字段
+> - `resources / refresh_semantics` → §5
+> - `env-manifest-template.yaml` → §6 环境清单字段
