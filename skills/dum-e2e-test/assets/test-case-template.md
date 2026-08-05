@@ -1,118 +1,67 @@
-# 测试用例模板
+# <顶级模块> 完整 E2E 测试用例
 
-> 复制此文件到 `docs/test-cases/<feature>.md`，每个场景一个二级标题块。  
-> 字段定义来源：方案 §4.1 + references/oracle-and-data.md。  
-> **必填字段**：id / title / platform / provenance / steps / expected_interaction / expected_display / expected_data / authority。  
-> 可选字段：preconditions / data_setup / cleanup / conflicts（无则填 `无`）。
+> 权威来源：<需求、技术方案、客户端/服务端代码链接>
+> 一个顶级模块只维护这一份当前权威用例；脚本可按子模块分文件。
 
----
+## 1. 覆盖总览
 
-## 字段说明
+| 域 | 用例数 | P0 | P1 | P2 | 主要运行层 | UI+API | 部分覆盖 | 未实现/非自动化 |
+|---|---:|---:|---:|---:|---|---:|---:|---:|
+| SUB 子模块名称 | 0 | 0 | 0 | 0 | local | 0 | 0 | 0 |
+| 合计 | 0 | 0 | 0 | 0 | — | 0 | 0 | 0 |
 
-| 字段 | 说明 |
+- 完整覆盖率：`UI+API / 用例数`
+- 脚本触达率：`(UI+API + 部分覆盖) / 用例数`
+- 自动化状态：`UI+API / API-partial / implemented-unverified / MANUAL / BLOCKED / EXTERNAL / not-implemented`
+- 执行状态：`passed / failed / skipped / not-run`
+
+## 2. 功能清单与覆盖取舍
+
+| 子模块 | 主流程/基础功能 | 已覆盖 TC | 未自动化项及理由 |
+|---|---|---|---|
+| SUB | <创建、查看、编辑、删除等> | <ID> | <MANUAL/EXTERNAL/P2> |
+
+## 3. 冲突与环境约束
+
+| 编号 | 冲突/约束 | 权威依据 | 处理状态 |
+|---|---|---|---|
+| C-01 | <无或具体内容> | <文档/代码> | resolved/BLOCKED |
+
+## 4. SUB｜<子模块名称>
+
+| ID / 优先级 / 状态 | provenance | 操作步骤 | ①交互与②展示预期 | ③数据预期 | 真实覆盖 | 证据 / 缺口 |
+|---|---|---|---|---|---|---|
+| TC-MOD-SUB-001<br>P0 / not-implemented / not-run | 产品：<章节><br>技术：<章节><br>代码：<文件/符号> | 1. [A] <真实 UI 动作><br>2. [B] <真实 UI 动作或 A 后续检查> | 1. <与步骤 1 同编号的反馈和展示><br>2. <与步骤 2 同编号的反馈和展示> | 1. <步骤 1 后的数据状态><br>2. <步骤 2 后的数据状态> | not-implemented | 缺 Step 1/2 脚本；或 `<source_file>` + runId |
+
+### TC-MOD-SUB-001 补充约束
+
+| 字段 | 内容 |
 |---|---|
-| `id` | 用例唯一编号，格式 `TC-<feature>-<序号>`，如 `TC-login-001` |
-| `title` | 一句话描述场景 |
-| `platform` | `web` / `electron` / `flutter` / `android` / `ios` |
-| `provenance` | **溯源链接**：格式 `<权威层>:<文件路径>#<章节>`，指向此用例期望所依据的最高权威条款 |
-| `preconditions` | 前置状态（登录态 / 角色 / 后端 mock / 依赖数据） |
-| `data_setup` | **走后门**布置的前置数据：走 API 还是 DB、造哪些记录（见 references/oracle-and-data.md §1） |
-| `steps` | 操作步骤（语义动作，非脚本代码） |
-| `expected_interaction` | **交互预言机**：操作后的即时 UI 反馈（toast / 页面跳转 / 按钮态 / 弹窗关闭） |
-| `expected_display` | **展示预言机**：界面上呈现的数据值应符合预期；附 `source`：`dom`（默认结构化提取）/ `visual`（视觉回归）/ `ocr`（无 DOM 文本兜底） |
-| `expected_data` | **数据预言机**：持久化状态断言；附 `gateway`：`api`（默认黑盒）/ `db`（白盒兜底，须说明原因） |
-| `cleanup` | 清理方式（可写 `继承环境清单默认` 或具体方式：truncate / 回滚 / 销毁） |
-| `authority` | 期望所依据的最高权威层级：`需求` / `技术方案` / `代码` |
-| `conflicts` | 相关冲突点（指向冲突报告条目；无则填 `无`） |
+| actors / capabilities | A；或 A+B；<角色/权限> |
+| preconditions | <页面、账号、服务、既有状态> |
+| resources | `<名称>: ephemeral/suite/persistent` |
+| refresh_semantics | 推送/轮询/重进/手动刷新/导航 |
+| time_window | 即时/每步骤动态未来时间/跨天跨周/长延迟事件 |
+| cleanup | <成功路径 UI 删除；失败路径精确 ID 兜底；恢复项> |
+| source_file | <真实脚本路径> |
 
----
+### 逐步骤脚本映射
 
-## 用例模板块
+| TC | Step | Actor | UI action | 即时断言 | 展示断言 | 数据 oracle | 清理 | 代码位置 |
+|---|---:|---|---|---|---|---|---|---|
+| TC-MOD-SUB-001 | 1 | A | <Robot/Page Object 方法> | <断言> | <断言> | <API/DB> | <登记> | <file:line/symbol> |
 
-复制以下块，每个场景一份，放在本文件对应 feature 章节下。
+## 编辑类最小矩阵
 
----
-
-### TC-FEATURE-001: <一句话场景标题>
-
-**id**: `TC-FEATURE-001`  
-**title**: <一句话场景，如「用户提交错误密码，登录失败并显示错误提示」>  
-**platform**: `web`  
-
-**provenance**:  
-`需求:docs/原始需求/<需求文件>.md#<章节锚点>`
-
-**preconditions**:
-- 用户未登录
-- 测试用户账号已存在（由 data_setup 造）
-- 无外部服务依赖（或 mock 已配置）
-
-**data_setup**:
-```
-方式: api
-操作: POST /api/test/users/factory { email: "tc001@test.local", password: "correct-pwd" }
-说明: 走后门 API 造测试用户；无 factory API 时降级 DB 直插 users 表
-```
-
-**steps**:
-1. 打开登录页 `/login`
-2. 在「邮箱」字段输入 `tc001@test.local`
-3. 在「密码」字段输入 `wrong-password`
-4. 点击「登录」按钮
-
-**expected_interaction**:
-- 按钮进入加载态（文字变为「登录中…」或 spinner 出现）
-- 请求返回后，页面不跳转，停留在 `/login`
-- 出现错误 toast，文本包含「密码错误」或「账号或密码不正确」
-
-**expected_display**:
-```
-source: dom
-断言:
-  - 错误提示元素（role=alert 或 data-testid=login-error）textContent 包含「密码错误」
-  - 密码字段未被清空（可选：按产品设计）
-  - 「登录」按钮恢复可点击状态
-```
-
-**expected_data**:
-```
-gateway: api
-断言: GET /api/me 返回 401（用户未登录态）
-说明: 登录失败不应产生有效 session；API 黑盒验证即可
-```
-
-**cleanup**: 继承环境清单默认（truncate users 或容器销毁）
-
-**authority**: `需求`
-
-**conflicts**: 无
-
----
-
-## 补充说明
-
-### 三层校验要求
-
-每条含数据变更的用例**必须同时断言三层**（缺层须说明原因）：
-
-| 层 | 字段 | 说明 |
+| 变更类型 | 覆盖项 | ID 约束 |
 |---|---|---|
-| 交互 | `expected_interaction` | 操作即时反馈（toast / 跳转 / 状态） |
-| 界面数据展示 | `expected_display` | 页面渲染的数据值（dom / visual / ocr） |
-| 持久化 | `expected_data` | 后端状态（api 优先 / db 兜底） |
+| 标量 | 旧值 → 新值 | 主 ID 不变 |
+| 集合 | 增加、删除、删除最后一项 | 主 ID 不变 |
+| 资源引用 | A → B | 主 ID 不变、引用 ID 改变 |
 
-### data_setup 走后门原则
+## 多 Actor 补充
 
-- 前置数据**不走 UI 点击**造，避免耦合被测场景。
-- 优先调后端 **factory API**（`gateway: api`）；无 API 时 **DB 直插**（`gateway: db`）并说明原因。
-- `data_setup` 的 seed 句柄须在 `cleanup` 或环境清单 reset_hook 中回收。
-
-### provenance 格式
-
-```
-需求:docs/原始需求/xxx.md#章节锚点
-技术方案:docs/tech-design/xxx.md#章节锚点
-代码:src/xxx/yyy.ts#行号或函数名
-```
-
-溯源层级优先选最高权威；多条款时列多行，用换行分隔。
+- 每一步明确 actor，A/B 分别走真实 UI 前门。
+- 中间状态与最终状态分别断言，不能只由发起端自证。
+- 协调键使用 `runId/batchId/caseId/actor/stage`。
+- 记录所有 actor 的退出码；任一端失败均不得写 `passed`。

@@ -1,88 +1,111 @@
 # dum-e2e-test
 
-> 把「带后端的前端/客户端」端到端测试做成**四阶段闭环流水线**：用例派生 → 脚本生成 → agent 实测 → 三段定责 + 修复提案。全程**仅出方案**，实际改动须用户确认后再执行。
+`dum-e2e-test` 用于为带后端的 Web、Electron、Flutter 客户端设计、补充、修改、审计并运行端到端/UI 自动化测试。
 
-## 它做什么
+> 本 README 面向维护者快速阅读；技能执行规则以 [`SKILL.md`](SKILL.md) 为准。
 
-端到端测试往往有三个难点：用例来源不清（哪层文档为准？）、断言不全（只验交互、漏了数据）、失败后不知道该改脚本还是改代码。本技能用**权威阶梯 + 三层校验 + 三段定责**把这三个难点都纳入流程：
+## 工作闭环
 
-**四阶段**：
+```text
+项目发现与可行性审计
+→ 用例派生或修订
+→ 覆盖编译与脚本生成
+→ 环境预检与实测
+→ 证据定责与修复提案
+→ 覆盖回写与残留审计
+```
 
-| 阶段 | 做什么 | 产物落点 |
-|---|---|---|
-| ① 用例派生 | 按权威阶梯（需求 > 技术方案 > 代码 > 用例）读入文档，派生带溯源的用例；两层权威矛盾时记冲突、不私自裁决 | `docs/test-cases/<feature>.md` |
-| ② 脚本生成 | 将确认后的用例翻译成可运行 Playwright 脚本，按三层断言编写，走后门 seed 前置数据 | `tests/e2e/<feature>/` |
-| ③ agent 实测 | 起干净环境、跑脚本、收证据包（截图/DOM 快照/日志/trace）、去抖判 flaky | `tests/e2e/.artifacts/<run>/` |
-| ④ 三段定责 + 提案 | 依证据按决策树定责，出文字修复方案，等用户确认后再改 | `docs/test-report/YYYYMMDD-<feature>.md` |
+技能优先复用项目已有的 E2E 目录、Runner、Robot/Page Object、Gateway、环境清单和工具链约定，不默认使用固定目录，也不会在修改或补充任务中从零重建已有体系。
 
-**三层校验**（每条含数据变更的用例必须同时断言）：
+## 用例设计目标
 
-| 层 | 校验内容 | 意义 |
-|---|---|---|
-| ① 交互反馈 | toast / 跳转 / 按钮态 / 弹窗关闭 | 确认操作有无被响应 |
-| ② 界面数据展示 | 列表/详情/计数器/格式化值在 DOM 中是否正确渲染（默认 `source=dom`） | 确认前端正确显示 |
-| ③ 持久化状态 | 操作后后端/DB 中实际存的值（API 黑盒优先，DB 白盒兜底） | 确认数据真正写入 |
+- 结合需求、技术方案、客户端和服务端代码，覆盖顶级模块的全部主流程与基础功能。
+- 每个顶级模块只维护一份当前权威用例文件；子模块在文件内分节，自动化脚本可以按业务域拆分。
+- 覆盖总览记录域、用例数、P0/P1/P2、主要运行层、UI+API、部分覆盖和未实现/非自动化。
+- 每条用例按相同编号写操作步骤和预期；多端步骤明确 A/B，不能省略中间动作和断言。
+- 每个步骤编译为 actor、真实 UI 动作、即时断言、展示断言、数据预言机和清理；最弱步骤决定覆盖状态。
 
-**三段定责**（失败时互斥可判）：
+## 核心规范
 
-| 定责结论 | 含义 | 分层 |
-|---|---|---|
-| `script` | 脚本定位/步骤/断言编写错误 | — |
-| `test-case` | 用例期望与权威文档不符 | — |
-| `code` | 应用行为违背权威期望 | `frontend`（渲染 bug）/ `backend`（持久化 bug）/ `suspect-cache`（乐观更新掩盖持久化错误） |
-| `flaky` | 去抖重跑后间歇失败，先排查等待策略/竞态/数据隔离 | — |
-| `escalate` | 两层权威本身矛盾，停止定责，转交用户或 `dum-doc-reconcile` | — |
+### 权威顺序
 
-## 何时触发
+```text
+需求 > 技术方案 > 当前代码 > 已有用例
+```
 
-- ✅ "给登录/订单/…功能做端到端测试"
-- ✅ "写 UI 自动化" / "跑 e2e"
-- ✅ "验证前端金额展示与后端是否一致"
-- ✅ "验证订单创建后数据库是否正确写入"
-- ✅ "我改了状态机逻辑，想用用例跑一遍确认"
-- ✅ 需要同时产生用例文档 + 脚本 + 报告（而不只是手写脚本）
-- ❌ 遇到 bug 需先定位根因 → 先用 `superpowers:systematic-debugging`（本技能定责只出方案，不做 debug）
-- ❌ 纯单元测试 / 无 UI 的接口测试 → 直接写 unit/integration test，无需本技能
-- ❌ 一次性脚本，不需要用例文档 → 直接写 Playwright 脚本手跑
-- ❌ Android/iOS 原生壳——v1 未支持这两端，占位适配器会抛 `not-implemented`（Web/Electron/Flutter 已支持）
+每条期望记录来源；权威材料自身冲突时标记阻塞并请求裁决。
 
-## 它交付什么
+### 三层校验
 
-| 产物 | 落点 | 格式 |
-|---|---|---|
-| 测试用例 | `docs/test-cases/<feature>.md` | Markdown，按 `assets/test-case-template.md` 结构 |
-| e2e 脚本 | `tests/e2e/<feature>/` | TypeScript（Web/Electron · Playwright，参考 `assets/playwright-adapter-skeleton.ts`）/ Dart（Flutter · integration_test，参考 `assets/flutter-adapter-skeleton.dart`） |
-| 证据包 | `tests/e2e/.artifacts/<run>/TC-<feature>-<序号>/` | 截图 + DOM 快照 + console.log + network.json + trace.zip |
-| 测试报告 | `docs/test-report/YYYYMMDD-<feature>.md` | Markdown，按 `assets/test-report-template.md` 结构，含定责字段与修复提案 |
-| 环境清单 | 项目根 或 `docs/test-cases/` 同级 | YAML，按 `assets/env-manifest-template.yaml` 结构 |
+含数据变更的用例必须同时断言：
 
-## 跟其它技能怎么衔接
+| 层 | 校验内容 |
+|---|---|
+| 交互反馈 | 跳转、按钮状态、Toast、弹窗状态 |
+| UI 展示 | 列表、详情、计数、格式化值 |
+| 持久化 | 独立 API 黑盒优先，必要时 DB 白盒 |
 
-- **`webapp-testing`**：阶段 ③ 实测时复用——`webapp-testing` 提供真实 Playwright/Electron 执行能力，本技能在其上加用例派生 + 三段定责方法论。
-- **[`dum-solution-design`](../dum-solution-design/)**：技术方案是权威阶梯第二层，`docs/tech-design/` 是用例期望的主要来源；通常先出方案，实现后再用本技能做 e2e 验收。
-- **[`dum-doc-reconcile`](../dum-doc-reconcile/)**：`verdict=escalate`（两层权威互相矛盾）时转交——对账后更新权威文档，再重新派生受影响用例。
-- **[`dum-session-summary`](../dum-session-summary/)**：用例/脚本/代码修复落地后，用本技能记录本次会话改动到 `docs/modify_history/`，方便下次续接。
+Arrange 可以使用 API/DB 后门，被测 Act 必须通过真实 UI 前门。截图是证据或视觉回归手段，不能替代结构化数据断言。
 
-## 完整工作流
+### 三段定责
 
-四阶段详细步骤（权威阶梯裁决、脚本三层断言编写、去抖与证据收集、定责决策树与展示×持久化交叉表）、核心原则（仅出方案、走后门 seed、DOM 优先）、常见错误与 Red Flags，详见 [`SKILL.md`](SKILL.md)。
+稳定失败按以下语义定责：
 
-## 资源
+| verdict | 含义 |
+|---|---|
+| `script` | Runner、定位、步骤、等待、断言或网关编码错误 |
+| `test-case` | 用例期望与更高权威不一致 |
+| `code` | 应用行为违背权威期望 |
+| `flaky` | 间歇失败、设备竞争、脏数据或环境波动 |
+| `escalate` | 权威材料自身冲突，需要用户裁决 |
 
-**references/**（方法论文档）：
+`code` 进一步区分 `frontend / backend / suspect-cache`。报告同时记录 `failure_phase`、首个失败和后续次生错误，避免 pending-frame、late network 或 dispose 异常覆盖首因。
 
-- `references/triage-decision-tree.md` — 三段定责决策树：稳定性闸 → 环境类闸 → 语义定责 → 展示×持久化交叉表定 layer
-- `references/oracle-and-data.md` — 三层校验预言机实现：Arrange 走后门 / Act 走前门、展示值 DOM 提取规则、持久化网关接口
-- `references/platform-adapters.md` — 统一驱动契约与平台适配器登记（Web/Electron/Flutter 已实现，Android/iOS 占位）
+## 稳定性约束
 
-**assets/**（可用模板）：
+- 用例文档、脚本声明和运行证据是三类不同事实，不用测试函数数量推断覆盖率。
+- 自动化状态和执行状态分开；脚本存在不等于测试通过。
+- 选择结果为 0 或 `No tests ran` 属于 Runner/selection 失败。
+- 临时资源使用 `runId/caseId` 命名并按精确 ID 清理。
+- persistent 资源只核验或恢复，不默认删除。
+- 用例明确刷新语义，避免用固定等待掩盖缓存问题。
+- 时间数据使用统一 Clock 和未来窗口；时区分别校验 UTC、事件墙钟和设备展示。
+- Flutter Finder 需要检查重复实例、hit-test、滚动、遮挡和点击后状态。
+- 所有异步 teardown 都要完成；测试结束后的异步异常仍使本轮失败。
+- fixture 必须满足生产代码的 ID、存在性、成员关系和用途约束，不能自行猜测环境 ID。
+- Flutter 运行前比较项目 SDK、实际 SDK 和 package_config，使用项目 Runner/`--no-pub` 并保护 lockfile。
+- clean run、dirty rerun、失败后重跑和模块串跑分别验证，覆盖第一次与非第一次添加路径。
+- 异步表单、搜索、多选、MouseRegion 子菜单、懒加载列表和响应式导航按状态机操作。
+- 邮件、scanner、push 等长延迟结果按业务 ID 条件等待，不使用固定 1～2 分钟 sleep。
+- 跨天、跨周、提醒等场景使用独立的逐步骤动态时间窗。
 
-- `assets/test-case-template.md` — 用例文件模板（`TC-<feature>-<序号>` 结构，含 provenance / 三层 expected 字段）
-- `assets/test-report-template.md` — 测试报告模板（顶部汇总 + 每条定责字段 + proposal）
-- `assets/playwright-adapter-skeleton.ts` — Web/Electron 的 Playwright 适配器骨架（按统一驱动契约：launch / locate / act / readDisplay / assert / collectEvidence / teardown）
-- `assets/flutter-adapter-skeleton.dart` — Flutter 的 integration_test 适配器骨架（同一契约 + ApiGateway 走后门造数；DB 白盒在设备上受限，持久化以 API 黑盒为主）
-- `assets/env-manifest-template.yaml` — 环境清单模板（bring_up / test_db / seed / reset_hook / mocks / isolation 档位）
+为可测性修改客户端时先输出改动账本。Key/Semantics/testid 只能做不改变功能和交互的最小修改；真实业务逻辑变化必须提供产品/技术依据并获得明确授权。
 
----
+## Flutter 与多 Actor
 
-> **v1 平台范围**：Web 与 Electron（Playwright 驱动）、Flutter（integration_test 白盒）已做实；Android / iOS 以统一驱动契约占位，v1 不可执行，运行会抛 `not-implemented`。Flutter 的持久化校验以 API 黑盒为主（设备难直连测试库，DB 白盒需宿主侧 runner）。
+Flutter 使用 `integration_test`，可运行在桌面、Android/iOS 模拟器或真机。
+
+一个 Flutter 测试进程只能控制一个设备和一棵 Widget 树。双端协作使用多个 Flutter 进程，由一个宿主 Runner 启动和聚合，并通过以下复合键协调：
+
+```text
+runId / batchId / caseId / actor / stage
+```
+
+原生 Android/iOS Appium 适配器仍未内建；这不影响 Flutter 应用在 Android/iOS 设备上运行。
+
+## 目录
+
+| 路径 | 用途 |
+|---|---|
+| [`SKILL.md`](SKILL.md) | 技能主流程和强制规则 |
+| [`references/case-design-and-step-coverage.md`](references/case-design-and-step-coverage.md) | 模块结构、逐步骤用例和脚本覆盖规范 |
+| [`references/coverage-and-feasibility.md`](references/coverage-and-feasibility.md) | 覆盖追踪、状态定义和旧用例复核 |
+| [`references/flutter-e2e-stability.md`](references/flutter-e2e-stability.md) | Flutter、多设备、定位、等待和清理 |
+| [`references/oracle-and-data.md`](references/oracle-and-data.md) | 三层预言机和数据网关 |
+| [`references/triage-decision-tree.md`](references/triage-decision-tree.md) | 三段定责决策树 |
+| [`references/platform-adapters.md`](references/platform-adapters.md) | 各端适配映射 |
+| [`assets/test-case-template.md`](assets/test-case-template.md) | 用例模板 |
+| [`assets/env-manifest-template.yaml`](assets/env-manifest-template.yaml) | 环境清单模板 |
+| [`assets/test-report-template.md`](assets/test-report-template.md) | 报告模板 |
+
+适配器骨架只用于没有现成 E2E 基础设施的新项目，不应覆盖成熟项目的 Runner。

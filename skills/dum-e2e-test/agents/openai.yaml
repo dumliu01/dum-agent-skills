@@ -1,0 +1,4 @@
+interface:
+  display_name: "dum-e2e-test"
+  short_description: "设计、补齐、运行并稳定化多端 E2E 用例"
+  default_prompt: "使用 $dum-e2e-test 审计现有 E2E 体系，设计或补齐可追踪、可稳定运行的自动化用例。"
