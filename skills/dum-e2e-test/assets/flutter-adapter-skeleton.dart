@@ -1,6 +1,9 @@
 /// 参考模板，非即用；落地按目标项目调整。
 ///
 /// Flutter 适配器骨架 —— integration_test + WidgetTester（白盒·进程内）统一驱动实现。
+/// 仅用于“项目没有现有 E2E 基础设施”的单 Actor 适配器起点。
+/// 已有 Runner/Robot/Gateway/协调器时必须复用，不得用本文件覆盖。
+/// 多 Actor 需要一设备一进程和宿主协调器，见 flutter-e2e-stability.md。
 /// 实现来源：skills/dum-e2e-test/references/platform-adapters.md §1 统一驱动契约。
 /// 数据网关来源：skills/dum-e2e-test/references/oracle-and-data.md §4 数据网关契约。
 ///
@@ -42,10 +45,7 @@ class LaunchTarget {
   /// 可选：被测 App 启动参数（如环境标识、feature flag 等）
   final Map<String, String> dartDefines;
 
-  const LaunchTarget({
-    required this.apiBase,
-    this.dartDefines = const {},
-  });
+  const LaunchTarget({required this.apiBase, this.dartDefines = const {}});
 }
 
 /// launch() 返回的会话句柄，供后续所有方法使用
@@ -93,12 +93,12 @@ class LocateQuery {
     this.text,
     this.textContaining,
   }) : assert(
-          key != null ||
-              semanticsLabel != null ||
-              text != null ||
-              textContaining != null,
-          'locate() 至少需提供 key / semanticsLabel / text / textContaining 之一',
-        );
+         key != null ||
+             semanticsLabel != null ||
+             text != null ||
+             textContaining != null,
+         'locate() 至少需提供 key / semanticsLabel / text / textContaining 之一',
+       );
 }
 
 /// act() 语义动作描述符
@@ -114,14 +114,17 @@ class WidgetAction {
 
   const WidgetAction.tap() : type = 'tap', value = null, scrollDelta = null;
   const WidgetAction.enterText(String text)
-      : type = 'enterText',
-        value = text,
-        scrollDelta = null;
+    : type = 'enterText',
+      value = text,
+      scrollDelta = null;
   const WidgetAction.scroll({Offset delta = const Offset(0, -300)})
-      : type = 'scroll',
-        value = null,
-        scrollDelta = delta;
-  const WidgetAction.longPress() : type = 'longPress', value = null, scrollDelta = null;
+    : type = 'scroll',
+      value = null,
+      scrollDelta = delta;
+  const WidgetAction.longPress()
+    : type = 'longPress',
+      value = null,
+      scrollDelta = null;
 }
 
 /// observe() 返回的快照
@@ -132,10 +135,7 @@ class WidgetSnapshot {
   /// 截图 Buffer（PNG），供取证与可选视觉/OCR 兜底
   final Uint8List screenshot;
 
-  const WidgetSnapshot({
-    required this.widgetTree,
-    required this.screenshot,
-  });
+  const WidgetSnapshot({required this.widgetTree, required this.screenshot});
 }
 
 /// collectEvidence() 返回的证据包
@@ -192,14 +192,14 @@ class FlutterAdapter {
   FlutterAdapter(this._tester);
 
   // ──────────────────────────────────────────
-  // 1. launch —— 绑定 Binding、泵入 App、等待稳定
+  // 1. launch —— 绑定 Binding、泵入 App
   // ──────────────────────────────────────────
 
   /// 启动被测应用，返回 FlutterSession 供后续调用。
   ///
   /// - 绑定 IntegrationTestWidgetsFlutterBinding（ensureInitialized）
   /// - pump 被测 App（app.main() 或 tester.pumpWidget(...)）
-  /// - pumpAndSettle() 等待帧稳定
+  /// - 仅泵送首帧；调用方随后等待项目特定的 ready Finder
   /// - 后端 baseUrl 从 --dart-define=APP_API_BASE=... 注入，存入 session
   ///
   /// @param target LaunchTarget（含 apiBase）
@@ -222,8 +222,9 @@ class FlutterAdapter {
     await _tester.pumpWidget(
       const Placeholder(), // ← 占位，落地时替换为 app 根 Widget
     );
-    // 等待首帧稳定（动画/Future 全部完成）
-    await _tester.pumpAndSettle();
+    // 只泵送首帧。持续 timer/stream 的真实页面可能永不 settle；
+    // 调用方应使用 waitForVisible() 等待项目特定的 ready 条件。
+    await _tester.pump();
 
     _session = FlutterSession(
       tester: _tester,
@@ -263,17 +264,33 @@ class FlutterAdapter {
       // 包含文本匹配
       return find.textContaining(query.textContaining!);
     }
-    throw StateError('locate() 至少需提供 key / semanticsLabel / text / textContaining 之一');
+    throw StateError(
+      'locate() 至少需提供 key / semanticsLabel / text / textContaining 之一',
+    );
+  }
+
+  /// 有界等待目标出现并可命中；超时时保留明确 Finder 信息。
+  Future<void> waitForVisible(
+    Finder finder, {
+    Duration timeout = const Duration(seconds: 30),
+    Duration interval = const Duration(milliseconds: 100),
+  }) async {
+    final deadline = DateTime.now().add(timeout);
+    while (DateTime.now().isBefore(deadline)) {
+      await _tester.pump(interval);
+      if (finder.hitTestable().evaluate().isNotEmpty) return;
+    }
+    throw TestFailure('等待可命中 Widget 超时：$finder');
   }
 
   // ──────────────────────────────────────────
   // 3. act —— 对 Widget 执行语义动作
   // ──────────────────────────────────────────
 
-  /// 对 finder 定位的 Widget 执行语义动作，动作后自动 pumpAndSettle()。
+  /// 对 finder 定位的 Widget 执行语义动作，动作后泵送一帧。
   ///
   /// 支持 tap / enterText / scroll / longPress。
-  /// pumpAndSettle 确保动画与 Future 在动作后全部完成。
+  /// 调用方应等待动作对应的可观察状态，不能以 blanket pumpAndSettle 代替。
   ///
   /// @param handle 由 locate() 返回的 Finder
   /// @param action WidgetAction 语义动作
@@ -285,7 +302,7 @@ class FlutterAdapter {
       case 'enterText':
         // 先 tap 获取焦点，再输入文本
         await _tester.tap(handle);
-        await _tester.pumpAndSettle();
+        await _tester.pump();
         await _tester.enterText(handle, action.value ?? '');
         break;
       case 'scroll':
@@ -297,8 +314,8 @@ class FlutterAdapter {
       default:
         throw ArgumentError('未知动作类型：${action.type}');
     }
-    // 等帧稳定（动画完成、FutureBuilder 刷新）
-    await _tester.pumpAndSettle();
+    // 泵送一帧；业务就绪由调用方通过 Finder/API/协调事件显式等待。
+    await _tester.pump();
   }
 
   // ──────────────────────────────────────────
@@ -325,7 +342,9 @@ class FlutterAdapter {
     treeBuffer.writeln(_tester.binding.rootElement.toString());
 
     // 截图（integration_test 提供，返回 PNG 字节）
-    final screenshotBytes = await session.binding.takeScreenshot('observe-snapshot');
+    final screenshotBytes = await session.binding.takeScreenshot(
+      'observe-snapshot',
+    );
 
     return WidgetSnapshot(
       widgetTree: treeBuffer.toString(),
@@ -392,10 +411,7 @@ class FlutterAdapter {
   ///
   /// @param target Finder 或 WidgetSnapshot
   /// @param expectation Expectation 期望描述符
-  Future<void> assertWidget(
-    Object target,
-    Expectation expectation,
-  ) async {
+  Future<void> assertWidget(Object target, Expectation expectation) async {
     if (target is WidgetSnapshot) {
       // 对快照（widgetTree 字符串）断言
       _assertString(target.widgetTree, expectation, 'Widget 树快照');
@@ -442,7 +458,9 @@ class FlutterAdapter {
     final session = _requireSession();
 
     // ① 截图
-    final screenshotBytes = await session.binding.takeScreenshot('evidence-$label');
+    final screenshotBytes = await session.binding.takeScreenshot(
+      'evidence-$label',
+    );
 
     // ② Widget 树转储
     final treeBuffer = StringBuffer();
@@ -605,9 +623,11 @@ class ApiGateway implements DataGateway {
     required String baseUrl,
     Map<String, String>? headers,
     http.Client? client,
-  })  : _baseUrl = baseUrl.endsWith('/') ? baseUrl.substring(0, baseUrl.length - 1) : baseUrl,
-        _headers = {'Content-Type': 'application/json', ...?headers},
-        _client = client ?? http.Client();
+  }) : _baseUrl = baseUrl.endsWith('/')
+           ? baseUrl.substring(0, baseUrl.length - 1)
+           : baseUrl,
+       _headers = {'Content-Type': 'application/json', ...?headers},
+       _client = client ?? http.Client();
 
   /// 走后门造前置数据：POST /test/seed
   /// 后端按 spec.type 路由到对应 factory，返回 { id, type }。
@@ -620,11 +640,7 @@ class ApiGateway implements DataGateway {
     );
     _assertOk(resp, 'seed');
     final body = jsonDecode(resp.body) as Map<String, dynamic>;
-    return SeedHandle(
-      id: body['id'] as Object,
-      type: spec.type,
-      meta: body,
-    );
+    return SeedHandle(id: body['id'] as Object, type: spec.type, meta: body);
   }
 
   /// 读持久化状态供断言：GET /test/query?type=...&filter=...
@@ -788,98 +804,91 @@ void runDemoIntegrationTest() {
       apiGateway.dispose();
     });
 
-    testWidgets(
-      'TC-xxx-001: 新增订单后列表展示正确，持久化确认',
-      (WidgetTester tester) async {
-        // ── 构造适配器（WidgetTester 由 testWidgets 注入）──────────
-        adapter = FlutterAdapter(tester);
+    testWidgets('TC-xxx-001: 新增订单后列表展示正确，持久化确认', (WidgetTester tester) async {
+      // ── 构造适配器（WidgetTester 由 testWidgets 注入）──────────
+      adapter = FlutterAdapter(tester);
 
-        // ── Arrange：走后门 seed 前置数据 ──────────────────────────
-        // 通过 ApiGateway 造一条订单，不经 UI（走后门）
-        seedHandle = await apiGateway.seed(
-          const SeedSpec(
-            type: 'order',
-            data: {
-              'productName': '测试商品-TC-xxx-001',
-              'quantity': 2,
-              'status': 'pending',
-            },
-          ),
-        );
+      // ── Arrange：走后门 seed 前置数据 ──────────────────────────
+      // 通过 ApiGateway 造一条订单，不经 UI（走后门）
+      seedHandle = await apiGateway.seed(
+        const SeedSpec(
+          type: 'order',
+          data: {
+            'productName': '测试商品-TC-xxx-001',
+            'quantity': 2,
+            'status': 'pending',
+          },
+        ),
+      );
 
-        // ── 起测应用 ────────────────────────────────────────────────
-        session = await adapter.launch(LaunchTarget(apiBase: apiBase));
-        // 注：launch() 内会调用 app.main() + pumpAndSettle()
-        //     落地时确保 app.main() 已替换为被测应用入口
+      // ── 起测应用 ────────────────────────────────────────────────
+      session = await adapter.launch(LaunchTarget(apiBase: apiBase));
+      // 注：launch() 内会调用 app.main() 并泵送首帧；
+      //     落地时应等待项目特定的登录后/首页 ready Finder
+      //     落地时确保 app.main() 已替换为被测应用入口
 
-        // ── Act：走前门 UI 操作 ─────────────────────────────────────
-        // 定位商品名输入框（ValueKey = testid，落地时按实际 Widget Key 替换）
-        final productInput = adapter.locate(
-          const LocateQuery(key: 'order-product-name-input'),
-        );
-        await adapter.act(productInput, const WidgetAction.tap());
-        await adapter.act(
-          productInput,
-          const WidgetAction.enterText('前门商品-TC-xxx-001'),
-        );
+      // ── Act：走前门 UI 操作 ─────────────────────────────────────
+      // 定位商品名输入框（ValueKey = testid，落地时按实际 Widget Key 替换）
+      final productInput = adapter.locate(
+        const LocateQuery(key: 'order-product-name-input'),
+      );
+      await adapter.act(productInput, const WidgetAction.tap());
+      await adapter.act(
+        productInput,
+        const WidgetAction.enterText('前门商品-TC-xxx-001'),
+      );
 
-        // 定位数量输入框
-        final qtyInput = adapter.locate(
-          const LocateQuery(key: 'order-quantity-input'),
-        );
-        await adapter.act(
-          qtyInput,
-          const WidgetAction.enterText('3'),
-        );
+      // 定位数量输入框
+      final qtyInput = adapter.locate(
+        const LocateQuery(key: 'order-quantity-input'),
+      );
+      await adapter.act(qtyInput, const WidgetAction.enterText('3'));
 
-        // 点击提交按钮
-        final submitBtn = adapter.locate(
-          const LocateQuery(semanticsLabel: '提交订单'),
-        );
-        await adapter.act(submitBtn, const WidgetAction.tap());
+      // 点击提交按钮
+      final submitBtn = adapter.locate(
+        const LocateQuery(semanticsLabel: '提交订单'),
+      );
+      await adapter.act(submitBtn, const WidgetAction.tap());
 
-        // ── Assert ① 交互预言机：操作后出现成功 SnackBar/Toast ──────
-        // 通过文本定位 SnackBar 内容（integration_test 中 SnackBar 是普通 Widget）
-        final successToast = adapter.locate(
-          const LocateQuery(text: '提交成功'),
-        );
-        await adapter.assertWidget(successToast, const Expectation.visible());
+      // ── Assert ① 交互预言机：操作后出现成功 SnackBar/Toast ──────
+      // 通过文本定位 SnackBar 内容（integration_test 中 SnackBar 是普通 Widget）
+      final successToast = adapter.locate(const LocateQuery(text: '提交成功'));
+      await adapter.assertWidget(successToast, const Expectation.visible());
 
-        // ── Assert ② 展示预言机：列表中新增行显示正确商品名 ──────────
-        // pumpAndSettle 确保列表刷新完成
-        await tester.pumpAndSettle();
+      // ── Assert ② 展示预言机：列表中新增行显示正确商品名 ──────────
+      // 定位列表中第一行的商品名（ValueKey 由被测 Widget 打 key）
+      final firstRowName = adapter.locate(
+        const LocateQuery(key: 'order-row-product-name-0'),
+      );
+      await adapter.waitForVisible(firstRowName);
+      // readDisplay 从 Widget 树精确读取 Text.data（非截图，非 OCR）
+      final displayedName = adapter.readDisplay(firstRowName);
+      await adapter.assertWidget(
+        firstRowName,
+        const Expectation.contains('前门商品'),
+      );
 
-        // 定位列表中第一行的商品名（ValueKey 由被测 Widget 打 key）
-        final firstRowName = adapter.locate(
-          const LocateQuery(key: 'order-row-product-name-0'),
-        );
-        // readDisplay 从 Widget 树精确读取 Text.data（非截图，非 OCR）
-        final displayedName = adapter.readDisplay(firstRowName);
-        await adapter.assertWidget(
-          firstRowName,
-          const Expectation.contains('前门商品'),
-        );
+      // 附加验证：readDisplay 返回值与期望一致
+      if (!displayedName.contains('前门商品')) {
+        throw TestFailure('展示预言机②断言失败：期望包含"前门商品"，实际：$displayedName');
+      }
 
-        // 附加验证：readDisplay 返回值与期望一致
-        if (!displayedName.contains('前门商品')) {
-          throw TestFailure(
-            '展示预言机②断言失败：期望包含"前门商品"，实际：$displayedName',
-          );
-        }
+      // ── Assert ③ 持久化预言机：apiGateway.query 确认持久化 ──────
+      // gateway = api（默认，不耦合表结构；oracle-and-data.md §2③）
+      // 走 HTTP 查后端，确认订单已写入持久层
+      final rows = await apiGateway.query(
+        const QuerySelector(
+          type: 'order',
+          filter: {'productName': '前门商品-TC-xxx-001'},
+        ),
+      );
+      expect(
+        rows,
+        isNotEmpty,
+        reason: '持久化预言机③断言失败：apiGateway.query 未返回对应订单记录',
+      );
 
-        // ── Assert ③ 持久化预言机：apiGateway.query 确认持久化 ──────
-        // gateway = api（默认，不耦合表结构；oracle-and-data.md §2③）
-        // 走 HTTP 查后端，确认订单已写入持久层
-        final rows = await apiGateway.query(
-          const QuerySelector(
-            type: 'order',
-            filter: {'productName': '前门商品-TC-xxx-001'},
-          ),
-        );
-        expect(rows, isNotEmpty, reason: '持久化预言机③断言失败：apiGateway.query 未返回对应订单记录');
-
-        debugPrint('[TC-xxx-001] 三层断言全部通过 ✓');
-      },
-    );
+      debugPrint('[TC-xxx-001] 三层断言全部通过 ✓');
+    });
   });
 }

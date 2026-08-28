@@ -1,122 +1,126 @@
-# 三段定责决策树
+# E2E 失败定责决策树
 
-> 用途：指导 `dum-e2e-test` 技能对每条 e2e 失败用例执行「脚本 / 用例 / 代码」三段归责裁决，保证定责有据可查、结论互斥可判。  
-> 本文件是**方法论 reference**，仅含决策逻辑与字段定义，**不包含可运行实现代码**。
+## 1. 先保存首因
 
----
+保留第一条业务、断言或 Runner 错误及时间。以下后续异常只能作为附加证据，不能覆盖首因：
 
-## 1. 定责前置闸
+- pending frame / `pumpAndSettle` 超时；
+- late network / Dio 异常；
+- dispose 后回调；
+- 对端因首个 actor 失败而退出；
+- cleanup 失败。
 
-在进入语义定责之前，必须先通过两道前置闸，否则打回修环境/脚本，**不进入三段语义定责**：
+测试完成后发生的异步异常仍会使本轮失败，但定责时必须区分首因与次生错误。
 
-### 前置闸 A：稳定性闸（防 flaky 误判）
+## 2. 失败阶段
 
-- **操作**：失败后去抖重跑 N 次（建议 3 次）。
-- **间歇失败**（非每次都挂）→ 归 **flaky 类**，先排查：
-  - 等待策略（异步未就绪、动画）
-  - 选择器竞态
-  - 测试数据隔离不足（跨用例污染）
-  - 端口/进程竞争
-- 只有**稳定复现**的失败才进入下一步。
+先填写 `failure_phase`：
 
-### 前置闸 B：环境类闸（防环境/数据污染误判）
+| 阶段 | 典型问题 |
+|---|---|
+| `preflight` | 工具链、服务、账号、能力、设备、Secret、fixture |
+| `build` | SDK/package_config 不一致、依赖签名、symlink、编译、安装、签名、Xcode build.db |
+| `selection` | 路径错误、未登记、选择为 0、`No tests ran` |
+| `launch` | 应用无法启动或登录 |
+| `coordination` | actor/stage 事件缺失、对端失败、批次超时 |
+| `ui` | Finder、hit-test、滚动、遮挡、手势、交互反馈 |
+| `display` | UI 数据错误或未按刷新语义更新 |
+| `persistence` | API/DB 最终状态错误 |
+| `cleanup` | 删除、恢复或残留审计失败 |
+| `teardown` | 未 await、dispose 后工作、异步异常 |
 
-- **若 seed / 起环境 / 前置数据准备失败**，或**清理残留导致脏数据** → 归 **环境类**：
-  - 先修**环境清单**（`bring_up` / `seed` / `reset_hook` / `isolation` 字段）。
-  - 不进入语义定责。
-- 环境类与 flaky 类在 verdict 上均取 `flaky`（见 §4.4 注解）。
+`No tests ran`、选择为 0、真实文件未登记一律归 `selection + script/runner`，不是业务代码问题。
 
----
+## 3. 前置闸
 
-## 2. 三段定责决策树
+### 稳定性
 
-转写自方案 §2.2，扩展了数据维度（§3.9）。
+对适合重跑的失败去抖重跑。间歇失败通常归 `flaky`，子类可为：
+
+- `wait-race`
+- `finder-race`
+- `dirty-data`
+- `device-contention`
+- `network-environment`
+
+稳定重现再进入语义定责。不要对确定性的权限、契约或断言失败盲目重跑。
+
+### 环境
+
+区分：
+
+- hard dependency：缺失或不健康，preflight 直接失败；
+- soft dependency：记录旁路噪声，不直接判业务失败；
+- optional：按用例约定 skip 或降级。
+
+Docker daemon 可用不等于业务服务健康。账号配置写着某角色也不等于实际具备该 capability，必须读回验证。
+
+Flutter 的 `.fvmrc`、实际 SDK 和 package_config 不一致，或同 workspace 存在 startup/build.db 锁时，归 `preflight/build + environment/toolchain`；业务 UI 尚未启动，不能判模块功能失败。
+
+## 4. 语义定责
 
 ```mermaid
 flowchart TD
-    A["一条用例失败"] --> B{"去抖重跑后<br/>仍稳定失败?"}
-    B -->|否·间歇| SC1["verdict = flaky<br/>（等待策略/选择器/数据隔离）"]
-    B -->|是| ENV{"seed/起环境<br/>失败或脏数据?"}
-    ENV -->|是·环境类| SC2["verdict = flaky<br/>（先修环境清单，不进语义定责）"]
-    ENV -->|否·进入语义定责| C{"脚本是否忠实<br/>复现了用例意图?<br/>（选择器/步骤/断言/查询编码正确）"}
-    C -->|否| SC3["verdict = script<br/>修脚本编码（定位/等待/网关调用）"]
-    C -->|是| D{"观察到的应用行为<br/>vs 用例期望"}
-    D -->|一致，但断言挂| SC4["verdict = script<br/>（断言编写错误）"]
-    D -->|不一致| E{"用例期望是否符合<br/>更高权威?<br/>（需求 > 技术方案 > 代码）"}
-    E -->|用例期望与权威矛盾| TC["verdict = test-case<br/>改用例对齐权威"]
-    E -->|用例期望符合权威<br/>但应用行为违背| CD["verdict = code<br/>应用违背需求/技术方案<br/>→ 进展示×持久化交叉表定 layer"]
-    E -->|需求与技术方案<br/>本身互相矛盾| ESC["verdict = escalate<br/>升级用户 / 转 dum-doc-reconcile<br/>（超出定责权威）"]
+    A["稳定失败"] --> B{"脚本忠实复现用例意图?"}
+    B -->|否| S["verdict=script"]
+    B -->|是| C{"应用行为与用例期望一致?"}
+    C -->|一致但断言失败| S
+    C -->|不一致| D{"用例期望符合更高权威?"}
+    D -->|否| T["verdict=test-case"]
+    D -->|是| E["verdict=code"]
+    D -->|权威自身冲突| X["verdict=escalate"]
 ```
 
-> **权威阶梯**：需求 > 技术方案 > 代码 > 用例。  
-> 判节点 E 时，以当前可得的最高权威为准；两层权威自身矛盾时，才走 `escalate`。
+权威阶梯：
 
----
+```text
+需求 > 技术方案 > 当前代码 > 已有用例
+```
 
-## 3. 展示×持久化交叉表
+脚本忠实性包括：
 
-适用于 `verdict=code` 的进一步定位（前提：已通过 §2 的脚本忠实性核查 + 前置闸）。  
-转写自方案 §3.10。
+- 权威用例中的每个 Step 都有同 actor 的真实动作和同编号断言；
+- UI 前门真实执行，而不是由 API 替代 Act；
+- Finder、手势、等待和 actor 正确；
+- API 查询字段、资源 ID、实例键和时间键正确；
+- 刷新语义符合产品行为；
+- 断言比较的是正确角色仍可读取的数据。
 
-| 界面数据展示（展示预言机） | 持久化状态（数据预言机） | 定位 | `layer` 子标 |
+Finder 失败先区分：数据不存在、Widget 未构建、已构建但不可见、可见但不可点击、权限/状态不渲染。若脚本使用合法前门稳定复现真实视口/遮挡缺陷，应判产品代码问题并加回归测试，不能永久滚到安全位置掩盖问题。
+
+## 5. 展示 × 持久化
+
+| UI 展示 | 持久化 | 定位 | subtype |
 |---|---|---|---|
-| ✓ 符合预期 | ✓ 符合预期 | **通过** | — |
-| ✗ 不符合预期 | ✓ 符合预期 | **前端展示 bug**（渲染/绑定/格式化错误） | `frontend` |
-| ✓ 符合预期 | ✗ 不符合预期 | **可疑：前端读缓存或乐观更新盖住了持久化错误**；或根本未真正持久化 → 重点查写链路 | `suspect-cache` |
-| ✗ 不符合预期 | ✗ 不符合预期 | **后端/持久化 bug** 传导到界面 | `backend` |
+| 正确 | 正确 | 通过 | — |
+| 错误 | 正确 | 前端渲染、绑定、刷新或格式化 | `frontend` |
+| 正确 | 错误 | 乐观更新/缓存可能掩盖写失败 | `suspect-cache` |
+| 错误 | 错误 | 后端或持久化链路 | `backend` |
 
-**说明**：
+若 API 正确、UI 旧值，先核对 `refresh_semantics`。只有超过契约规定的刷新条件仍旧值，才判代码问题；任意延长 sleep 不是修复。
 
-- 展示预言机默认从 DOM / 语义树**结构化提取**（`textContent` / `inputValue` / 表格单元格 / ARIA 文本）；截图作为取证存档与可选视觉回归，不替代结构化提取。
-- 数据预言机默认走**后端读 API（黑盒）**；仅当副作用 API 观测不到（审计日志 / 软删标记 / 旁表 / 计数器）时，才降级到 **DB 直查（白盒）**，并在用例里显式标注。
-- 当 `verdict=code` 时，**必须**补 `layer` 字段（取值：`frontend` / `backend` / `suspect-cache`），供开发直接定位改动方向。
+角色状态变化后可能失去资源读取权限。拒绝邀请的一方出现 403/404 时，改用组织者或仍有权限的 actor 验证最终状态，不能直接判 persistence 失败。
 
----
+## 6. 结论字段
 
-## 4. 定责结论字段
-
-写入 `docs/test-report/YYYYMMDD-<feature>.md`，对应方案 §4.4。
-
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `case_id` | string | 关联用例编号，如 `TC-login-001` |
-| `verdict` | enum | `script` / `test-case` / `code` / `flaky` / `escalate`（见下） |
-| `layer` | enum | 仅当 `verdict=code` 时填写：`frontend` / `backend` / `suspect-cache` |
-| `confidence` | enum | `高` / `中` / `低` |
-| `evidence` | string | 证据包路径 + 关键观察（交互 / 展示 / 持久化三层 + 期望值 + 权威对照） |
-| `proposal` | string | 建议修复（按类别，仅文字方案，不含已改动代码或文件） |
-
-**`verdict` 取值语义**：
-
-| 取值 | 语义 |
+| 字段 | 说明 |
 |---|---|
-| `script` | 脚本编码问题（选择器脆/步骤漏/断言写错/网关调用错） |
-| `test-case` | 用例期望问题（与更高权威矛盾，需改用例对齐权威） |
-| `code` | 应用代码问题（行为违背需求或技术方案；必须补 `layer`） |
-| `flaky` | 不稳定或环境类（包括：间歇失败、seed 失败、脏数据残留） |
-| `escalate` | 超出定责权威（需求与技术方案互相矛盾，需用户/doc-reconcile 裁决） |
+| `case_id` | 权威用例 ID |
+| `failure_phase` | preflight/build/selection/launch/coordination/ui/display/persistence/cleanup/teardown |
+| `verdict` | script/test-case/code/flaky/escalate |
+| `subtype` | runner/finder/gesture/frontend/backend/suspect-cache/environment/contract 等 |
+| `confidence` | 高/中/低 |
+| `first_failure` | 首因、时间和原始摘要 |
+| `secondary_errors` | 次生异常列表 |
+| `peer_exit` | 对端因首败被终止的退出码，例如 143；不得覆盖首因 |
+| `partial_evidence` | 已观察到的局部链路证据，不等于整条 case 通过 |
+| `evidence` | 截图、树、API 摘要、actor/协调日志、退出码 |
+| `proposal` | 建议修复和验证方式 |
 
-**强制规则**：
+`confidence=低` 或 `verdict=escalate` 时必须请求用户裁决。
 
-- `confidence=低` 时，必须在 `proposal` 中明确标注「需用户裁决」。
-- `verdict=escalate` 时，必须暂停自动定责，向用户展示矛盾点并请求裁决（或转 `dum-doc-reconcile`）。
+只有所有文档 Step、所有 actor、三层断言、协调和清理均完成，才能写整条用例 passed。静态分析、Widget 测试、单条 SDK 回调或历史 runId 只证明对应局部事实。
 
----
+## 7. 修改边界
 
-## 5. 仅出方案边界
-
-> **定责器只写报告，不改任何源文件。**
-
-本技能三段定责完成后，所有输出**仅为文字报告与修复建议**，遵守以下边界：
-
-- **脚本问题**：报告哪个定位/等待/断言/网关调用有误及建议改法；**不自动修改 `tests/e2e/` 脚本**。
-- **用例问题**：报告哪条期望与权威（需求/技术方案）不符，建议如何对齐；**不自动修改 `docs/test-cases/`**。
-- **代码问题**：描述应有行为与疑似出错位置；**不自动修改任何业务代码**。
-- **escalate**：转交用户裁决或触发 `dum-doc-reconcile`，定责器不私自决断。
-
-用户确认具体修复条目后，才进入实际修改（修改本身走常规编辑流程 / TDD）。  
-这条边界是**设计约束**，不是操作建议——技能内任何步骤都不得绕过。
-
----
-
-*本文件供 `SKILL.md` 「三段定责」段引用，并与 `assets/test-report-template.md` 的 `verdict` / `layer` 字段定义保持严格一致。*
+在“运行并定责”任务中，默认只生成报告和修复提案。用户明确要求设计、补充或修改用例/脚本时，可直接修改该授权范围；修改业务代码仍需用户明确要求。
