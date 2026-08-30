@@ -1,0 +1,4 @@
+interface:
+  display_name: "dum-coding"
+  short_description: "严格控制编码需求范围，保持最小改动并在扩展前先确认"
+  default_prompt: "使用 $dum-coding 实现编码需求：先识别范围与验收条件，范围扩张或新增外部影响前先确认，保持最小改动并完成针对性验证。"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "dum-merge-code"
+  short_description: "安全核对分支基线，避免旧代码覆盖新代码并验证冲突结果"
+  default_prompt: "使用 $dum-merge-code 安全合并代码：先确认源/目标分支与基线，逐项核对冲突并完成必要验证。"
