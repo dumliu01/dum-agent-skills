@@ -2,6 +2,18 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [1.4.0] - 2026-09-02
+
+### Added
+- **新技能 `dum-coding`（编码范围控制）**：实现或修改代码时只做验收所需的最小改动，
+  需求不明确或需要扩大范围时先确认。
+- **新技能 `dum-merge-code`（安全代码合并）**：合并前核对源/目标分支与提交基线，
+  逐项处理冲突并验证，避免旧行为覆盖新行为。
+
+### Changed
+- 根 `CLAUDE.md`（软链 `AGENTS.md`）/`GEMINI.md`/`README.md` 技能清单补入新技能。
+- 各 manifest 与 `package.json` 版本 `1.3.0` → `1.4.0`，插件描述补充编码与代码合并能力。
+
 ## [1.3.0] - 2026-07-20
 
 ### Added

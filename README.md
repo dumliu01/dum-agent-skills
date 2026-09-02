@@ -19,8 +19,10 @@
 | [`dum-ppt`](skills/dum-ppt/README.md) | 把 Markdown 转成单 HTML、可全屏播放的演示文档 | [SKILL.md](skills/dum-ppt/SKILL.md) |
 | [`dum-e2e-test`](skills/dum-e2e-test/README.md) | 给带后端的前端/客户端做端到端测试：文档派生用例 → 脚本 → agent 实测 → 三层校验 → 三段定责 → 仅出修复方案（Web/Electron/Flutter 实，Android/iOS 占位） | [SKILL.md](skills/dum-e2e-test/SKILL.md) |
 | [`dum-server-api-test`](skills/dum-server-api-test/README.md) | 给带服务端的项目生成并运行基于真实服务端 API 的 Go 功能测试：`go test` + goconvey，读需求/方案/代码派生每接口正常+异常用例，命名约定 + `run.sh` 按模块/优先级选跑 | [SKILL.md](skills/dum-server-api-test/SKILL.md) |
+| [`dum-coding`](skills/dum-coding/) | 按明确目标实施代码修改，以验收所需的最小改动为边界，范围扩大前先确认 | [SKILL.md](skills/dum-coding/SKILL.md) |
+| [`dum-merge-code`](skills/dum-merge-code/) | 安全合并 Git 代码：核对源/目标与提交基线，逐项处理冲突并验证，避免旧行为覆盖新行为 | [SKILL.md](skills/dum-merge-code/SKILL.md) |
 
-> 当前版本 **v1.3.0**；变更历史见 [`CHANGELOG.md`](CHANGELOG.md)。
+> 当前版本 **v1.4.0**；变更历史见 [`CHANGELOG.md`](CHANGELOG.md)。
 
 ## 安装
 
@@ -123,7 +125,9 @@ gemini extensions update dum-agent-skills
 │   ├── dum-session-summary/
 │   ├── dum-ppt/
 │   ├── dum-e2e-test/
-│   └── dum-server-api-test/
+│   ├── dum-server-api-test/
+│   ├── dum-coding/
+│   └── dum-merge-code/
 ├── .claude-plugin/             # Claude Code：plugin.json + marketplace.json
 ├── .codex-plugin/plugin.json   # Codex
 ├── .cursor-plugin/plugin.json  # Cursor

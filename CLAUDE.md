@@ -1,6 +1,6 @@
 # Dum Agent Skills
 
-一组可复用的工作流技能（skills），覆盖文档体系搭建、架构与规范文档生成、技术方案设计、文档对账、会话总结、PPT 生成。
+一组可复用的工作流技能（skills），覆盖编码、代码合并、文档体系搭建、架构与规范文档生成、技术方案设计、文档对账、会话总结、PPT 生成。
 作为**多 agent 插件**发布：技能正文集中放在 `skills/`，各 agent 生态各有一份薄 manifest 指向它。
 
 > 给 AI agent：当用户请求命中某技能的「触发场景」时，**先完整读取该技能的 `SKILL.md`**，
@@ -19,6 +19,8 @@
 | **dum-ppt** | 把 Markdown 转成单 HTML、可全屏播放的专业演示文档。触发："做 PPT"/"演示文稿"/"把这份文档做成 PPT" | `skills/dum-ppt/SKILL.md` |
 | **dum-e2e-test** | 给带后端的前端/客户端做端到端测试：按权威阶梯从文档派生用例→生成脚本(Web/Electron 走 Playwright，Flutter 走 integration_test)→agent 实测→三层校验(交互/界面数据/持久化)→失败三段定责(脚本/用例/代码)→仅出修复方案。触发："做端到端测试"/"e2e"/"UI 自动化测试"/"验证XX数据是否正确" | `skills/dum-e2e-test/SKILL.md` |
 | **dum-server-api-test** | 给带服务端的项目生成并运行基于真实服务端 API 的 Go 功能测试（正常+异常，goconvey，优先复用项目 client SDK 否则裸 HTTP），命名约定+run.sh 按模块/优先级选跑。触发："写接口测试"/"API 功能测试"/"go test 测接口"/"按模块/优先级跑接口测试" | `skills/dum-server-api-test/SKILL.md` |
+| **dum-coding** | 实现或修改代码时控制范围，只做验收所需的最小改动；需求不明确或需要扩大范围时先确认。触发："实现功能"/"修改代码"/"修复代码" | `skills/dum-coding/SKILL.md` |
+| **dum-merge-code** | 安全合并 Git 代码：核对源/目标分支与提交基线，防止旧行为覆盖新行为，逐项处理冲突并验证。触发："合并代码"/"合并分支"/"处理合并冲突" | `skills/dum-merge-code/SKILL.md` |
 
 这几个技能相互衔接：`dum-solution-design` 出方案 → 实现 → `dum-session-summary` 记录改动 →
 `dum-doc-reconcile` 据此对账文档；`dum-knowledge-base-build` 提供承载这一切的 `docs/` 文档体系，
@@ -26,6 +28,7 @@
 `dum-e2e-test` 消费 `dum-solution-design` 的技术方案与需求/架构文档派生用例，复用 `webapp-testing` 实测，定责出的文档冲突回流 `dum-doc-reconcile`、修复后用 `dum-session-summary` 记账。
 `dum-doc-reconcile-domain` 同为 `dum-session-summary` 的下游：把 dated 方案堆收口成 `docs/domain-tech-design/` `docs/domain-product-design/` 的现状权威文档，并由随技能打包的鲜度脚本驱动增量校对；与 `dum-doc-reconcile` 按路径分工——domain 树归它，`architecture/` 与 dated 方案的 prose 漂移归 `dum-doc-reconcile`。
 `dum-server-api-test` 补 `dum-e2e-test` 排除的「无 UI 纯服务端 API」测试；消费 `dum-solution-design` 的技术方案 + 需求 + 代码派生每个接口的正常/异常用例；失败结果转 `superpowers:systematic-debugging` 定位根因或 `dum-doc-reconcile` 校文档，改完用 `dum-session-summary` 记账。
+`dum-coding` 约束方案确认后的代码实施范围；涉及 Git 分支整合时切换到 `dum-merge-code` 做方向、基线、冲突和验证门禁。
 
 ## 跨 agent 工具名对照
 
