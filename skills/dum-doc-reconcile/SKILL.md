@@ -36,7 +36,7 @@ description: Use when the user wants to 校对/修正/更新 docs/architecture �
 ### Phase 3 · 应用（确认后才做）
 按确认结果改文档，遵守：
 - **不碰** `architecture/*.md` 的 `<!-- AUTO-GENERATED:START/END -->` 区；若目录树明显过时，**提示**用户重跑 `python scripts/docs/update_architecture_*.py`，而不是手改。
-- 保 `方案设计` 的 **5 模块结构**（架构/时序/关键逻辑/接口/遗留）与**文档代码分离**（不塞示例代码；接口签名、配置项名、commit hash 可以）。
+- 保 `方案设计` 的 **原有章节结构**（概要/架构/时序/关键逻辑/接口/待决策/遗留 骨架 + 按类型追加的章节）与**文档代码分离**（不塞示例代码；接口签名、配置项名、commit hash 可以）。
 - 改"遗留问题"时，已解决项标 `(已解决 YYYY-MM-DD)` 并补新引入的权衡，不要直接删历史。
 
 ### Phase 4 · 水印 + 收尾
@@ -91,7 +91,7 @@ description: Use when the user wants to 校对/修正/更新 docs/architecture �
 
 - 还没出漂移报告就开始改文档 → 停，先出报告等确认。
 - 手改了 `architecture/*.md` 的 AUTO-GENERATED 区 → 撤销，改为提示重跑脚本。
-- 往 `方案设计` 里塞示例代码、或打破 5 模块结构 → 撤销。
+- 往 `方案设计` 里塞示例代码、或打破原有章节结构 → 撤销。
 - 把范围外目录（如 guides/、product/）也改了 → 撤销，超出本技能范围。
 
 ## 常见错误
@@ -111,7 +111,7 @@ description: Use when the user wants to 校对/修正/更新 docs/architecture �
 
 - ✅ Phase 2 漂移报告已交并获确认（报告先行）。
 - ✅ 确认项已改；`architecture` 的 AUTO 区未被手改（必要时已提示重跑脚本）。
-- ✅ `方案设计` 5 模块结构与文档代码分离保持完好。
+- ✅ `方案设计` 原有章节结构与文档代码分离保持完好。
 - ✅ 每个校对过的文档已打/更新校对水印。
 - ✅ 收尾报告列清：改了什么、哪些仍需人工。
 

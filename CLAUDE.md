@@ -12,7 +12,7 @@
 |---|---|---|
 | **dum-knowledge-base-build** | 给项目搭建/维护知识库文档体系：脚手架 `docs/` 分类目录 + 根与子项目 `CLAUDE.md` 入口 + 各服务架构文档 + 自动维护的源码清单与文档索引。触发："整理架构文档"/"搭建知识库"/"文档体系"/"文档索引" | `skills/dum-knowledge-base-build/SKILL.md` |
 | **dum-arch-spec-doc** | 给单个服务按语言（前端/Go/Python）生成**两份分离**的文档：程序架构文档（`docs/architecture/`，描述性）+ 开发规范文档（`docs/specification/`，规范性）。触发："给前端/Go/Python 写架构文档和规范文档"/"架构和规范分两份"/"生成开发规范文档" | `skills/dum-arch-spec-doc/SKILL.md` |
-| **dum-solution-design** | 出结构化技术方案（架构/时序/关键逻辑/接口/遗留 五段 + 文档与代码分离；方案多了自动按模块分子目录）。触发："出个技术方案"/"方案设计"/"帮忙实现 XX 功能" | `skills/dum-solution-design/SKILL.md` |
+| **dum-solution-design** | 出技术方案，以讲清核心要点为目标（概要/架构/时序/关键逻辑/接口/待决策/遗留 为基础骨架，按新功能/基础架构/bug 修复/重构/性能等类型追加章节 + 文档与代码分离；方案多了自动按模块分子目录）。触发："出个技术方案"/"方案设计"/"帮忙实现 XX 功能"/"出个修复方案" | `skills/dum-solution-design/SKILL.md` |
 | **dum-doc-reconcile** | 按时间范围依据 `docs/modify_history`（兼查 git）把 architecture/方案设计文档跟代码现状对账修正。触发："校对/修正设计文档"/"文档对账" | `skills/dum-doc-reconcile/SKILL.md` |
 | **dum-doc-reconcile-domain** | 建立/维护 `docs/domain-tech-design/` 与 `docs/domain-product-design/` 下按领域模块的"现状真相"权威文档：从 dated 历史方案合成首份（Bootstrap）、按鲜度标记增量校对（Incremental）、兼做 `*-newest` 旧目录迁移。触发："建领域模块现状文档"/"生成领域权威文档"/"reconcile domain"/"把 dated 方案收口成现状" | `skills/dum-doc-reconcile-domain/SKILL.md` |
 | **dum-session-summary** | 把本次会话的改动总结进 `docs/modify_history/`，生成交接/续接文档（记录多了自动按年分子目录）。触发："把这次会话的修改总结成文档"/"记录修改历史" | `skills/dum-session-summary/SKILL.md` |
