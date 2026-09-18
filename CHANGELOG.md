@@ -2,6 +2,12 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [Unreleased]
+
+### Changed
+- **`dum-merge-code` 精简重写**：红线独立成节；流程收成预检 → 确认 → 执行 → 三方解冲突 → 验证 → 停止报告 六步；
+  测试触发规则由十条长句改为"情况 → 动作"表，规则不变。篇幅约减三分之一。
+
 ## [1.5.0] - 2026-09-18
 
 ### Changed
