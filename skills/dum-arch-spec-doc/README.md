@@ -27,14 +27,14 @@
 
 | | |
 |---|---|
-| 架构文档 | `docs/architecture/<service>.md`（含 `<!-- AUTO-GENERATED -->` 占位，复用 doc-build 的脚本回填源码树） |
+| 架构文档 | `docs/architecture/<service>.md`（源码树已填实；有生成器时手动运行回填，否则静态维护） |
 | 规范文档 | `docs/specification/<service>-规范.md`（祈使句 + ✅Good/❌Bad 例子） |
 | 互链 | 两份文档头部互链，且各链到 CLAUDE.md 入口 |
 
 ## 跟其它技能怎么衔接
 
-- 通常先跑 [`dum-knowledge-base-build`](../dum-knowledge-base-build/) 建好目录与 hook，再用本技能逐个服务填实两份文档；也可单用——目录不存在时只补建 `docs/architecture/` 或 `docs/specification/`。
-- 架构文档的 AUTO-GENERATED 源码树由 doc-build 的脚本回填，本技能只放占位。
+- 可先跑 [`dum-knowledge-base-build`](../dum-knowledge-base-build/) 建好目录，再用本技能逐个服务填实两份文档；也可单用——目录不存在时只补建 `docs/architecture/` 或 `docs/specification/`。
+- 仓库已有源码树生成脚本时手动运行并核对结果；否则直接写静态目录说明。本技能不配置文件变更脚本钩子。
 
 ## 完整工作流
 

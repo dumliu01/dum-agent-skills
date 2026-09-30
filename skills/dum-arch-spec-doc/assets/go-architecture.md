@@ -32,7 +32,7 @@
 
 ## 2. 目录结构（自动生成区域）
 
-> 💡 此区域由 `scripts/update_architecture_{{service}}.py` 自动维护（dum-knowledge-base-build 的 hook 驱动）。
+> 💡 若仓库有 `scripts/update_architecture_{{service}}.py`，手动运行并核对生成结果；否则将下方占位替换为静态目录说明。
 > 描述来源：每个 `.go` 文件首部注释。高层分组见下方 §2.1。
 
 <!-- AUTO-GENERATED:START -->
