@@ -1,4 +1,4 @@
 interface:
   display_name: "dum-merge-code"
-  short_description: "安全核对分支基线，避免旧代码覆盖新代码并验证冲突结果"
-  default_prompt: "使用 $dum-merge-code 安全合并代码：先确认源/目标分支与基线，逐项核对冲突并完成必要验证。"
+  short_description: "审计提交图与最终代码树，安全合并或回补代码"
+  default_prompt: "使用 $dum-merge-code 合并或回补代码：先冻结源/目标、审计回滚与迁移谱系，再按语义范围验证最终树。"
